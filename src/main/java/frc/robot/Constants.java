@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -117,5 +118,23 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 7; 
 
     public static final boolean kGyroReversed = false;
+  }
+
+  public static final class AutoConstants {
+    public static final double kMaxSpeedMetersPerSecond = 2; //Can go up to 3, for safety and accuracy only 2 at the current moment
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2; //Can go up to 3, for safety and accuracy only 2 at the current moment
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+
+    //The distance from the center of the robot to the farthers module
+    public static final double kSwerveDriveRadius = (DriveConstants.kTrackWidth * Math.sqrt(2)) / 2.0;
+
+    public static final double kPXController = 1;
+    public static final double kPYController = 1;
+    public static final double kPThetaController = 1;
+
+    // Constraint for the motion profiled robot angle controller
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 }
