@@ -59,6 +59,24 @@ public class MAXSwerveModule
         m_drivingEncoder.setPositionConversionFactor(ModuleConstants.kDrivingEncoderPositionFactor);
         m_drivingEncoder.setVelocityConversionFactor(ModuleConstants.kDrivingEncoderVelocityFactor);
 
+        // Apply position and velocity conversion factors for the turning encoder. We
+        // want these in radians and radians per second to use with WPILib's swerve
+        // APIs.
+        m_turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
+        m_turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
+
+        // Invert the turning encoder, since the output shaft rotates in the opposite direction of
+        // the steering motor in the MAXSwerve Module.
+        m_turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted);
+
+        // Enable PID wrap around for the turning motor. This will allow the PID
+        // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
+        // to 10 degrees will go through 0 rather than the other direction which is a
+        // longer route.
+        m_turningPIDController.setPositionPIDWrappingEnabled(true);
+        m_turningPIDController.setPositionPIDWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
+        m_turningPIDController.setPositionPIDWrappingMaxInput(ModuleConstants.kTurningEncoderPositionPIDMaxInput);
+
         // Set the PID gains for the driving motor. Note these are example gains, and you
         m_drivingPIDController.setP(ModuleConstants.kDrivingP);
         m_drivingPIDController.setI(ModuleConstants.kDrivingI);
