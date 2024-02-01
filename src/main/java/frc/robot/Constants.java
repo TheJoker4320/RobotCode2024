@@ -138,9 +138,9 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
    public static final class LimeLightConstants{
-      public static final double AIMING_KP = 0.014;
-      public static final double AIMING_KI = 0;
-      public static final double AIMING_KD = 0.1;
+      public static final double AIMING_KP = 0.004;
+      public static final double AIMING_KI = 0.003;
+      public static final double AIMING_KD = 0;
       public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0; // how many degrees back is your limelight rotated from
                                                                 // perfectly vertical
       public static final double LIMELIGHT_LENSE_HEIGHT_CM = 27; // distance from the center of the Limelight lens to the floor

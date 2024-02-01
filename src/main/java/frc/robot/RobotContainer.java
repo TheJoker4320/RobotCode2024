@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimToTarget;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -40,10 +42,10 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
+  private final LimeLight limeLight = new LimeLight();
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
-
+  private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -72,6 +74,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    JoystickButton btnAimToTarget = new JoystickButton(m_driverController, 2);
+    btnAimToTarget.onTrue(aimToTarget);
   }
 
   /**
