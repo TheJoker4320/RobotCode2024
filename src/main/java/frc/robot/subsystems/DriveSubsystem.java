@@ -61,6 +61,8 @@ public class DriveSubsystem extends SubsystemBase
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -78,6 +80,10 @@ public class DriveSubsystem extends SubsystemBase
     //Zeroes heading.
     //TODO: This constructor might require changing since its not guranteed we zero the angle here.
     zeroHeading();
+
+    
+      //TODO: Check if pose2d should be a new one or the initial position
+
   }
 
   @Override
@@ -108,6 +114,14 @@ public class DriveSubsystem extends SubsystemBase
   public Pose2d getPose() 
   {
     return m_odometry.getPoseMeters();
+  }
+  /**
+   * returns the module state of the modules
+   * 
+   */
+  public SwerveModulePosition[] getModulePosition(){
+    SwerveModulePosition[] swerveModuleStates =  {m_frontLeft.getPosition(), m_frontRight.getPosition(), m_rearLeft.getPosition(), m_rearRight.getPosition()};
+    return swerveModuleStates;
   }
 
   /**
@@ -259,6 +273,8 @@ public class DriveSubsystem extends SubsystemBase
     m_rearRight.setDesiredState(desiredStates[3]);
   }
 
+  
+
   /**
    * Sets the swerve ChassisSpeeds
    * 
@@ -285,6 +301,8 @@ public class DriveSubsystem extends SubsystemBase
   public double getHeading() {
     return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
   }
+  
+  
 
   /**
    * Returns the turn rate of the robot.

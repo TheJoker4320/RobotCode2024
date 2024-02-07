@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimToTarget;
+import frc.robot.commands.DriveToTarget;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class RobotContainer {
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
+  private final DriveToTarget driveToTarget = new DriveToTarget(limeLight, m_robotDrive);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -76,6 +78,9 @@ public class RobotContainer {
   private void configureBindings() {
     JoystickButton btnAimToTarget = new JoystickButton(m_driverController, 2);
     btnAimToTarget.onTrue(aimToTarget);
+    
+    JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
+    btnDriveToTarget.onTrue(driveToTarget);
   }
 
   /**
