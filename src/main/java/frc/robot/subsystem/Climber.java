@@ -4,11 +4,34 @@
 
 package frc.robot.subsystem;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-  /** Creates a new Climber. */
-  public Climber() {}
+  private CANSparkMax masterMotor;
+  private CANSparkMax slaveMotor;
+  private RelativeEncoder encoder;
+  private static Climber climberInstance;
+  public Climber() {
+    masterMotor = new CANSparkMax(9, MotorType.kBrushless);
+    slaveMotor = new CANSparkMax(10, MotorType.kBrushless);
+    encoder = masterMotor.getEncoder();
+    slaveMotor.follow(masterMotor);
+  }
+  public void elevate(double speed){
+    masterMotor.set(speed);
+  }
+  public double getPosition(){
+    return encoder.getPosition();
+  }
+  public static Climber getClimberInstance(){
+    if (climberInstance == null)
+      climberInstance = new Climber();
+    return climberInstance;
+  }
 
   @Override
   public void periodic() {
