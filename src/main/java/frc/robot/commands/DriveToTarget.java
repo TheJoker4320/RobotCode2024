@@ -5,45 +5,70 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.LimeLight;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.utils.PoseEstimatorUtils;
 
 public class DriveToTarget extends Command {
+  private PoseEstimatorUtils m_poseEstimator;
+  private PIDController m_pidControllerX;
+  private PIDController m_pidControllerY;
+  private PIDController m_pidControllerOmega;
+  private DriveSubsystem m_driveSubsystem;
+  private LimeLight limeLight;
+  private Pose3d goalPose;
+  
+
   /** Creates a new DriveToTarget. */
-  private final LimeLight limelight;
-  private final DriveSubsystem driveSubsystem;
-  private final PIDController pidController;
-  public DriveToTarget(LimeLight limelight, DriveSubsystem driveSubsystem) {
+  public DriveToTarget(DriveSubsystem m_driveSubsystem, PoseEstimatorUtils m_PoseEstimator, LimeLight limeLight) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.limelight = limelight;
-    this.driveSubsystem = driveSubsystem;
-    pidController = new PIDController(0, 0, 0);
-    pidController.setSetpoint(limelight.getTrueDistance());
-    pidController.setTolerance(5);
-    addRequirements(driveSubsystem);
+    this.m_driveSubsystem = m_driveSubsystem;
+    this.m_poseEstimator = m_PoseEstimator;
+    this.limeLight = limeLight;
+    this.m_pidControllerX = new PIDController(0, 0, 0);
+    this.m_pidControllerY = new PIDController(0, 0, 0);
+    this.m_pidControllerOmega = new PIDController(0, 0, 0);
+    m_pidControllerX.setTolerance(0.05);
+    m_pidControllerY.setTolerance(0.05);
+    m_pidControllerOmega.setTolerance(Units.degreesToRadians(2.5));
+
+    //TODO: calculate pid and add to constants
+    addRequirements(m_driveSubsystem);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    goalPose = Constants.FieldConstants.APRILTAGS.get(limeLight.GetId());
+    m_pidControllerX.setSetpoint(goalPose.getY());
+    m_pidControllerY.setSetpoint(goalPose.getX());
+    m_pidControllerOmega.setSetpoint(goalPose.getRotation().getZ());
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double yspeed = pidController.calculate(limelight.getTrueDistance());
-    driveSubsystem.drive(0, yspeed, 0, false, true);
+    double xSpeed = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getX());
+    double ySpeed = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getY());
+    double omega = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getRotation().getRadians());
+    m_driveSubsystem.drive(xSpeed,ySpeed,omega,true,true);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.drive(0,0,0,true,true);
+    m_driveSubsystem.drive(0,0,0,true,true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(pidController.getPositionError()) <= Math.abs(pidController.getPositionTolerance());
+    return m_pidControllerX.atSetpoint() && m_pidControllerY.atSetpoint() && m_pidControllerOmega.atSetpoint();
   }
 }

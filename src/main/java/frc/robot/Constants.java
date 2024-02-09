@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -149,5 +153,61 @@ public final class Constants {
       public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 16.2;
       public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; //distance to target in to calibrate the 
     
+    }
+
+    public static final class FieldConstants{
+      public static final double FIELD_CENTER_X = 8.308467;
+      public static final double FIELD_CENTER_Y = 4.098925;
+
+      public static final Map<Integer, Pose3d> APRILTAGS = Map.of(
+          1,
+          new Pose3d(
+              Constants.FieldConstants.FIELD_CENTER_X + 6.808597,
+              Constants.FieldConstants.FIELD_CENTER_Y + (-3.859403),
+              1.355852,
+              new Rotation3d(0.0, 0.0, Math.PI)),
+          2,
+          new Pose3d(
+              Constants.FieldConstants.FIELD_CENTER_X + 7.914259,
+              Constants.FieldConstants.FIELD_CENTER_Y + (-3.221609),
+              1.355852,
+              new Rotation3d(0.0, 0.0, Math.PI * 2 / 3)),
+          3,
+          new Pose3d(
+              (610.77),
+              (174.19), // FIRST's diagram has a typo (it says 147.19)
+              (18.22),
+              new Rotation3d(0.0, 0.0, Math.PI)),
+          4,
+          new Pose3d(
+              (636.96),
+              (265.74),
+              (27.38),
+              new Rotation3d(0.0, 0.0, Math.PI)),
+          5,
+          new Pose3d(
+              (14.25),
+              (265.74),
+              (27.38),
+              new Rotation3d()),
+          6,
+          new Pose3d(
+              (40.45),
+              (174.19), // FIRST's diagram has a typo (it says 147.19)
+              (18.22),
+              new Rotation3d()),
+          7,
+          new Pose3d(
+              (40.45),
+              (108.19),
+              (18.22),
+              new Rotation3d()),
+          8,
+          new Pose3d(
+              (40.45),
+              (42.19),
+              (18.22),
+              new Rotation3d()));
+              //TODO: correct the poses according to the 2024 field
     }
 }

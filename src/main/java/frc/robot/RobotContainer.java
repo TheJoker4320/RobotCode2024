@@ -9,6 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimToTarget;
 import frc.robot.commands.DriveToTarget;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.utils.PoseEstimatorUtils;
 
 import java.util.List;
 
@@ -43,11 +44,12 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils();
   private final LimeLight limeLight = new LimeLight();
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
-  private final DriveToTarget driveToTarget = new DriveToTarget(limeLight, m_robotDrive);
+  private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, limeLight);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings

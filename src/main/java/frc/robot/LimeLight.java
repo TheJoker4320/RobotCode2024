@@ -1,5 +1,6 @@
 package frc.robot;
 
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -10,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimeLight {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry jsonDumpNetworkTableEntry = table.getEntry("json");
-
     
 
     public double getLimeLightXValue() {
@@ -39,6 +38,11 @@ public class LimeLight {
     public double getLimeLightAreaValue() {
         return table.getEntry("ta").getDouble(0.0);
     }
+
+    public int GetId(){
+        return (int) table.getEntry("tid").getInteger(0);
+    }
+
     public Pose3d getLimeLightBotPose(){
         Double[] botpose = table.getEntry("botpose").getDoubleArray(new Double[6]);
         Pose3d pose = new Pose3d(new Translation3d(botpose[0], botpose[1], botpose[2]),
