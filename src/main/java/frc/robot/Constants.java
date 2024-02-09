@@ -24,14 +24,12 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants 
-  {
+    public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
   }
 
-  public static class ModuleConstants
-  {
+  public static class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
     // This changes the drive speed of the module (a pinion gear with more teeth will result in a
     // robot that drives faster).
@@ -43,7 +41,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kFreeSpeedRpm = 5676;
-    public static final double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60; 
+    public static final double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = 0.0762;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
@@ -79,15 +77,15 @@ public final class Constants {
     public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
     public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
 
-    public static final int kDrivingMotorCurrentLimit = 50; // amps 
+    public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8; 
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second 
+    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
@@ -111,26 +109,28 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 4; 
-    public static final int kRearLeftDrivingCanId = 6; 
-    public static final int kFrontRightDrivingCanId = 2; 
-    public static final int kRearRightDrivingCanId = 8; 
+    public static final int kFrontLeftDrivingCanId = 4;
+    public static final int kRearLeftDrivingCanId = 6;
+    public static final int kFrontRightDrivingCanId = 2;
+    public static final int kRearRightDrivingCanId = 8;
 
-    public static final int kFrontLeftTurningCanId = 3; 
-    public static final int kRearLeftTurningCanId = 5; 
-    public static final int kFrontRightTurningCanId = 1; 
-    public static final int kRearRightTurningCanId = 7; 
+    public static final int kFrontLeftTurningCanId = 3;
+    public static final int kRearLeftTurningCanId = 5;
+    public static final int kFrontRightTurningCanId = 1;
+    public static final int kRearRightTurningCanId = 7;
 
     public static final boolean kGyroReversed = false;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2; //Can go up to 3, for safety and accuracy only 2 at the current moment
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2; //Can go up to 3, for safety and accuracy only 2 at the current moment
+      public static final double kMaxSpeedMetersPerSecond = 2; // Can go up to 3, for safety and accuracy only 2 at the
+                                                               // current moment
+      public static final double kMaxAccelerationMetersPerSecondSquared = 2; // Can go up to 3, for safety and accuracy
+                                                                             // only 2 at the current moment
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    //The distance from the center of the robot to the farthers module
+    // The distance from the center of the robot to the farthers module
     public static final double kSwerveDriveRadius = (DriveConstants.kTrackWidth * Math.sqrt(2)) / 2.0;
 
     public static final double kPXController = 1;
@@ -141,73 +141,123 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
-   public static final class LimeLightConstants{
+
+  public static final class LimeLightConstants {
       public static final double AIMING_KP = 0.004;
       public static final double AIMING_KI = 0.003;
       public static final double AIMING_KD = 0;
-      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0; // how many degrees back is your limelight rotated from
-                                                                // perfectly vertical
-      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 27; // distance from the center of the Limelight lens to the floor
+      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0; // how many degrees back is your limelight rotated
+                                                                    // from perfectly vertical
+      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 27; // distance from the center of the Limelight lens to
+                                                                 // the floor
       public static final double GOAL_HEIGHT_CM = 74.6; // distance from the target to the floor
 
-      public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 16.2;
-      public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; //distance to target in to calibrate the 
-    
-    }
+    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 16.2;
+    public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; // distance from target in to calibrate
+                                                                                 // the LimeLight mount angle
 
-    public static final class FieldConstants{
+}
+
+public static final class FieldConstants {
       public static final double FIELD_CENTER_X = 8.308467;
       public static final double FIELD_CENTER_Y = 4.098925;
 
-      public static final Map<Integer, Pose3d> APRILTAGS = Map.of(
-          1,
-          new Pose3d(
-              Constants.FieldConstants.FIELD_CENTER_X + 6.808597,
-              Constants.FieldConstants.FIELD_CENTER_Y + (-3.859403),
-              1.355852,
-              new Rotation3d(0.0, 0.0, Math.PI)),
-          2,
-          new Pose3d(
-              Constants.FieldConstants.FIELD_CENTER_X + 7.914259,
-              Constants.FieldConstants.FIELD_CENTER_Y + (-3.221609),
-              1.355852,
-              new Rotation3d(0.0, 0.0, Math.PI * 2 / 3)),
-          3,
-          new Pose3d(
-              (610.77),
-              (174.19), // FIRST's diagram has a typo (it says 147.19)
-              (18.22),
-              new Rotation3d(0.0, 0.0, Math.PI)),
-          4,
-          new Pose3d(
-              (636.96),
-              (265.74),
-              (27.38),
-              new Rotation3d(0.0, 0.0, Math.PI)),
-          5,
-          new Pose3d(
-              (14.25),
-              (265.74),
-              (27.38),
-              new Rotation3d()),
-          6,
-          new Pose3d(
-              (40.45),
-              (174.19), // FIRST's diagram has a typo (it says 147.19)
-              (18.22),
-              new Rotation3d()),
-          7,
-          new Pose3d(
-              (40.45),
-              (108.19),
-              (18.22),
-              new Rotation3d()),
-          8,
-          new Pose3d(
-              (40.45),
-              (42.19),
-              (18.22),
-              new Rotation3d()));
-              //TODO: correct the poses according to the 2024 field
-    }
+      public static final Map<Integer, Pose3d> APRILTAGS = Map.ofEntries(
+              Map.entry(1,
+                      new Pose3d(
+                              FIELD_CENTER_X + 6.808597,
+                              FIELD_CENTER_Y + -3.859403,
+                              1.355852,
+                              new Rotation3d(0.0, 0.0, Math.PI * 2 / 3))),
+              Map.entry(2,
+                      new Pose3d(
+                              FIELD_CENTER_X + 7.914259,
+                              FIELD_CENTER_Y + -3.221609,
+                              1.355852,
+                              new Rotation3d(0.0, 0.0, Math.PI * 2 / 3))),
+              Map.entry(3,
+                      new Pose3d(
+                              FIELD_CENTER_X + 8.308467,
+                              FIELD_CENTER_Y + 0.877443, // FIRST's diagram has a typo (it says 147.19)
+                              1.451102,
+                              new Rotation3d(0.0, 0.0, Math.PI))),
+              Map.entry(4,
+                      new Pose3d(
+                              FIELD_CENTER_X + 8.308467,
+                              FIELD_CENTER_Y + 1.442593,
+                              1.451102,
+                              new Rotation3d(0.0, 0.0, Math.PI))),
+              Map.entry(5,
+                      new Pose3d(
+                              FIELD_CENTER_X + 6.429883,
+                              FIELD_CENTER_Y + 4.098925,
+                              1.355852,
+                              new Rotation3d(0, 0, -Math.PI / 2))),
+              Map.entry(6,
+                      new Pose3d(
+                              FIELD_CENTER_X + -6.429375,
+                              FIELD_CENTER_Y + 4.098925,
+                              1.355852,
+                              new Rotation3d(0, 0, -Math.PI / 2))),
+              Map.entry(7,
+                      new Pose3d(
+                              FIELD_CENTER_X + -8.308975,
+                              FIELD_CENTER_Y + 1.442593,
+                              1.451102,
+                              new Rotation3d(0, 0, 0))),
+              Map.entry(8,
+                      new Pose3d(
+                              FIELD_CENTER_X + -8.308975,
+                              FIELD_CENTER_Y + 0.877443,
+                              1.451102,
+                              new Rotation3d(0, 0, 0))),
+              Map.entry(9,
+                      new Pose3d(
+                              FIELD_CENTER_X + -7.914767,
+                              FIELD_CENTER_Y + -3.221609,
+                              1.355852,
+                              new Rotation3d(0, 0, Math.PI / 3))),
+              Map.entry(10,
+                      new Pose3d(
+                              FIELD_CENTER_X + -6.809359,
+                              FIELD_CENTER_Y + -3.859403,
+                              1.355852,
+                              new Rotation3d(0, 0, Math.PI / 3))),
+              Map.entry(11,
+                      new Pose3d(
+                              FIELD_CENTER_X + 3.633851,
+                              FIELD_CENTER_Y + -0.392049,
+                              1.3208,
+                              new Rotation3d(0, 0, -Math.PI / 3))),
+              Map.entry(12,
+                      new Pose3d(
+                              FIELD_CENTER_X + 3.633851,
+                              FIELD_CENTER_Y + 0.393065,
+                              1.3208,
+                              new Rotation3d(0, 0, Math.PI / 3))),
+              Map.entry(13,
+                      new Pose3d(
+                              FIELD_CENTER_X + 2.949321,
+                              FIELD_CENTER_Y + -0.000127,
+                              1.3208,
+                              new Rotation3d(0, 0, Math.PI))),
+              Map.entry(14,
+                      new Pose3d(
+                              FIELD_CENTER_X + -2.950083,
+                              FIELD_CENTER_Y + -0.000127,
+                              1.3208,
+                              new Rotation3d(0, 0, 0))),
+              Map.entry(15,
+                      new Pose3d(
+                              FIELD_CENTER_X + -3.629533,
+                              FIELD_CENTER_Y + 0.393065,
+                              1.3208,
+                              new Rotation3d(0, 0, Math.PI * 2 / 3))),
+              Map.entry(16,
+                      new Pose3d(
+                              FIELD_CENTER_X + -3.629533,
+                              FIELD_CENTER_Y + -0.392049,
+                              1.3208,
+                              new Rotation3d(0, 0, -Math.PI * 2 / 3))));
+  }
 }

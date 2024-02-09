@@ -45,14 +45,16 @@ public class DriveToTarget extends Command {
   @Override
   public void initialize() {
     goalPose = Constants.FieldConstants.APRILTAGS.get(limeLight.GetId());
-    m_pidControllerX.setSetpoint(goalPose.getY());
-    m_pidControllerY.setSetpoint(goalPose.getX());
+    m_pidControllerX.setSetpoint(goalPose.getX());
+    m_pidControllerY.setSetpoint(goalPose.getY());
     m_pidControllerOmega.setSetpoint(goalPose.getRotation().getZ());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // FIXME: move the setPoint half of the robot length towards the field so it'll
+    // be where the robot center should be
     double xSpeed = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getX());
     double ySpeed = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getY());
     double omega = m_pidControllerX.calculate(m_poseEstimator.GetPosition().getRotation().getRadians());

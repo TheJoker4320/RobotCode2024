@@ -48,9 +48,9 @@ public class AimToTarget extends Command {
   public boolean isFinished() {
     //if(limelight.getLimeLightXValue() < 5 && limelight.getLimeLightXValue() >= -5)
       //return true;
-    SmartDashboard.putNumber("postion error", pidController.getPositionError());
+    SmartDashboard.putNumber("position error", pidController.getPositionError());
     SmartDashboard.putNumber("position tolerance", pidController.getPositionTolerance());
-    SmartDashboard.putBoolean("isfinished", pidController.getPositionError() <= pidController.getPositionTolerance());
+    SmartDashboard.putBoolean("isFinished", pidController.getPositionError() <= pidController.getPositionTolerance());
     return Math.abs(pidController.getPositionError()) <= Math.abs(pidController.getPositionTolerance());
     
   }
