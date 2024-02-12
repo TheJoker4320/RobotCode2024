@@ -7,9 +7,11 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Collector collector = Collector.getInstance();
+  private final Shooter shooter = Shooter.GetInstance();
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
@@ -65,6 +68,8 @@ public class RobotContainer {
     collectBtn.toggleOnTrue(new Collect(collector));
     JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
+    JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
+    ejectBtn.whileTrue(new Shoot(shooter));
   }
 
   /**

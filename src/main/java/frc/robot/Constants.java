@@ -28,6 +28,8 @@ public final class Constants {
 
     public static final int kCollectBtn = XboxController.Button.kA.value;
     public static final int kEjectBtn = XboxController.Button.kB.value;
+    public static final int kShootBtn = XboxController.Button.kY.value;
+    public static final double kDriveDeadband = 0.05;
   }
 
   public static final class CollectorConstants {
@@ -35,7 +37,6 @@ public final class Constants {
     public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
 
     public static final double COLLECTOR_SPEED = 0.2;
-    public static final double kDriveDeadband = 0.05;
   }
 
   public static class ModuleConstants
@@ -130,5 +131,12 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 3; 
 
     public static final boolean kGyroReversed = false;
+  }
+
+  public static final class ShooterConstants{
+    public static final int SHOOTER_MASTER_PORT = 14;
+    public static final int SHOOTER_SLAVE_PORT = 13;
+
+    public static final double SHOOT_SPEED = 1;
   }
 }
