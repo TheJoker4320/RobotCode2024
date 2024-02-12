@@ -9,7 +9,10 @@ import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,15 +25,30 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Collector collector = Collector.getInstance();
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  // The robot's subsystems
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  // Creating the XboxController
+  private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(OperatorConstants.kOperatorControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    // Configure default commands
+    m_robotDrive.setDefaultCommand(
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        new RunCommand(
+            () -> m_robotDrive.drive(
+                -MathUtil.applyDeadband(m_driverController.getLeftY() * 0.5, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX() * 0.5, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX() * 0.5, OperatorConstants.kDriveDeadband),
+                true, true),
+            m_robotDrive));
   }
 
   /**
