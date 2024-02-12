@@ -1,0 +1,135 @@
+package frc.robot.subsystems;
+
+import javax.swing.undo.AbstractUndoableEdit;
+
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Servo;
+
+public class Claw extends SubsystemBase {
+    public interface ClawComponents {
+        CANSparkMax getMotor();
+        AbsoluteEncoder getClawEncoder();
+        SparkMaxPIDController getCurrentPidController();
+    }
+    private final ClawComponents components;
+
+    public Claw(ClawComponents components) {
+        this.components = components;
+    }
+
+
+    private static Claw instance;
+
+    public void setSpeed(double speed) {
+        components.getMotor().set(speed);
+    }
+
+    public void calibrateSystem() {
+        components.getClawEncoder().set(0);
+    }
+
+    public void stop() {
+        setSpeed(0);
+    }
+
+    public ClawComponents getComponents() {
+        return components;
+    }
+
+
+    public void setPidController(PIDController terms) {
+        components.getCurrentPidController().setP(terms.getP());
+        components.getCurrentPidController().setI(terms.getI());
+        components.getCurrentPidController().setD(terms.getD());
+        components.getCurrentPidController().setFF(terms.getKf());
+    }
+
+    public void setCurrent(double current) {
+        components.getCurrentPidController().setReference(current, CANSparkMax.ControlType.kCurrent, 0);
+    }
+
+    public void setMotorPosition(double distance) {
+        components.getCurrentPidController().setReference(distance, CANSparkMax.ControlType.kPosition);
+    }
+
+    public boolean isOnTarget(double distance) {
+        return distance < getPosition();
+    }
+
+    public double getPosition() {
+        return components.getClawEncoder().getPosition();
+    }
+
+    public double getCurrent() {
+        return components.getMotor().getOutputCurrent();
+    }
+
+    public double getTemp() {
+        return components.getMotor().getMotorTemperature();
+    }
+
+    public double getAppliedOutput() {
+        return components.getMotor().getAppliedOutput();
+    }
+
+    public static void init(ClawComponents components) {
+        instance = new Claw(components);
+    }
+
+    public static Claw getInstance() {
+        return instance;
+    }
+    public class ClawComponentsImpl implements ClawComponents {
+
+        private final CANSparkMax motor;
+        private final AbsoluteEncoder encoder;
+    
+        private final SparkMaxPIDController currentPid;
+    
+        public ClawComponentsImpl() {
+            motor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID, Constants.ClawConstants.MOTOR_TYPE);
+            motor.restoreFactoryDefaults();
+            motor.setSmartCurrentLimit(Constants.ClawConstants.CLAW_CURRENT_LIMIT);
+            motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            motor.setInverted(true);
+            encoder = motor.getAbsoluteEncoder();
+            encoder.setPositionConversionFactor(Constants.ClawConstants.CONVERT_RATE);
+    
+            currentPid = motor.getPIDController();
+            currentPid.setFeedbackDevice(motor.getEncoder());
+            currentPid.setP(Constants.ClawConstants.CURRENT_PID.getP());
+            currentPid.setI(Constants.ClawConstants.CURRENT_PID.getI());
+            currentPid.setD(Constants.ClawConstants.CURRENT_PID.getD());
+            currentPid.setFF(Constants.ClawConstants.CURRENT_PID.getKf());
+            currentPid.setIZone(Constants.ClawConstants.I_ZONE);
+            currentPid.setOutputRange(Constants.ClawConstants.MIN_VALUE, Constants.ClawConstants.MAX_VALUE);
+        }
+    
+        @Override
+        public CANSparkMax getMotor() {
+            return motor;
+        }
+    
+        @Override
+        public AbsoluteEncoder getClawEncoder() {
+            return encoder;
+        }
+    
+      /*  @Override
+        public RevSmartMotionController getPidController() {
+            return pidController;
+        }*/
+    
+        @Override
+        public SparkMaxPIDController getCurrentPidController() {
+            return currentPid;
+        }
+    }
+}
