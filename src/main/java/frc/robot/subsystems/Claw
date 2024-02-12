@@ -1,49 +1,52 @@
 package frc.robot.subsystems;
 
-import javax.swing.undo.AbstractUndoableEdit;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Claw extends SubsystemBase {
+    // Abstract class for claw components - motors, encoder, and PID controller
     public interface ClawComponents {
         CANSparkMax getMotor();
         AbsoluteEncoder getClawEncoder();
-        SparkMaxPIDController getCurrentPidController();
+        SparkPIDController getCurrentPidController();
     }
+    
     private final ClawComponents components;
 
     public Claw(ClawComponents components) {
         this.components = components;
     }
 
-
     private static Claw instance;
 
+    // Set the speed of the claw motor
     public void setSpeed(double speed) {
         components.getMotor().set(speed);
     }
 
+    // Calibrate the claw system by setting the encoder position to 0
     public void calibrateSystem() {
         components.getClawEncoder().set(0);
     }
 
+    // Stop the claw motor by setting the speed to 0
     public void stop() {
         setSpeed(0);
     }
 
+    // Get the claw components
     public ClawComponents getComponents() {
         return components;
     }
 
-
+    // Set the PID controller gains for the claw
     public void setPidController(PIDController terms) {
         components.getCurrentPidController().setP(terms.getP());
         components.getCurrentPidController().setI(terms.getI());
@@ -51,57 +54,71 @@ public class Claw extends SubsystemBase {
         components.getCurrentPidController().setFF(terms.getKf());
     }
 
+    // Set the current for the claw motor
     public void setCurrent(double current) {
         components.getCurrentPidController().setReference(current, CANSparkMax.ControlType.kCurrent, 0);
     }
 
+    // Set the position for the claw motor
     public void setMotorPosition(double distance) {
         components.getCurrentPidController().setReference(distance, CANSparkMax.ControlType.kPosition);
     }
 
+    // Check if the claw motor is on target position
     public boolean isOnTarget(double distance) {
         return distance < getPosition();
     }
 
+    // Get the current position of the claw motor
     public double getPosition() {
         return components.getClawEncoder().getPosition();
     }
 
+    // Get the current of the claw motor
     public double getCurrent() {
         return components.getMotor().getOutputCurrent();
     }
 
+    // Get the temperature of the claw motor
     public double getTemp() {
         return components.getMotor().getMotorTemperature();
     }
 
+    // Get the applied output of the claw motor
     public double getAppliedOutput() {
         return components.getMotor().getAppliedOutput();
     }
 
+    // Initialize the Claw instance with the provided ClawComponents
     public static void init(ClawComponents components) {
         instance = new Claw(components);
     }
 
+    // Get the Claw instance
     public static Claw getInstance() {
         return instance;
     }
+
+    // Implementation of the ClawComponents interface
     public class ClawComponentsImpl implements ClawComponents {
 
         private final CANSparkMax motor;
         private final AbsoluteEncoder encoder;
-    
-        private final SparkMaxPIDController currentPid;
-    
+        private final SparkPIDController currentPid;
+
         public ClawComponentsImpl() {
+            // Initialize the claw motor
             motor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID, Constants.ClawConstants.MOTOR_TYPE);
             motor.restoreFactoryDefaults();
             motor.setSmartCurrentLimit(Constants.ClawConstants.CLAW_CURRENT_LIMIT);
             motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
             motor.setInverted(true);
+
+            // Initialize the claw encoder
             encoder = motor.getAbsoluteEncoder();
             encoder.setPositionConversionFactor(Constants.ClawConstants.CONVERT_RATE);
-    
+
+            // Initialize the PID controller for claw current control
             currentPid = motor.getPIDController();
             currentPid.setFeedbackDevice(motor.getEncoder());
             currentPid.setP(Constants.ClawConstants.CURRENT_PID.getP());
@@ -111,24 +128,19 @@ public class Claw extends SubsystemBase {
             currentPid.setIZone(Constants.ClawConstants.I_ZONE);
             currentPid.setOutputRange(Constants.ClawConstants.MIN_VALUE, Constants.ClawConstants.MAX_VALUE);
         }
-    
+
         @Override
         public CANSparkMax getMotor() {
             return motor;
         }
-    
+
         @Override
         public AbsoluteEncoder getClawEncoder() {
             return encoder;
         }
-    
-      /*  @Override
-        public RevSmartMotionController getPidController() {
-            return pidController;
-        }*/
-    
+
         @Override
-        public SparkMaxPIDController getCurrentPidController() {
+        public SparkPIDController getCurrentPidController() {
             return currentPid;
         }
     }
