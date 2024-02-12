@@ -36,7 +36,7 @@ public final class Constants {
     public static final int COLLECTOR_PORT = 15;
     public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
 
-    public static final double COLLECTOR_SPEED = 0.2;
+    public static final double COLLECTOR_SPEED = 0.7;
   }
 
   public static class ModuleConstants

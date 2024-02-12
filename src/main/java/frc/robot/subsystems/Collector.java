@@ -20,6 +20,8 @@ public class Collector extends SubsystemBase {
   public Collector() {
     this.m_main = new TalonSRX(Constants.CollectorConstants.COLLECTOR_PORT);
     this.m_limitSwitch = new DigitalInput(Constants.CollectorConstants.LIMIT_SWITCH_CHANNEL);
+
+    m_main.setInverted(true);
   }
 
   public static Collector getInstance() {

@@ -64,12 +64,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
+    JoystickButton collectBtn = new JoystickButton(m_driverController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector));
-    JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
+    JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
-    JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
-    ejectBtn.whileTrue(new Shoot(shooter));
+    JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
+    shooterBtn.whileTrue(new Shoot(shooter));
   }
 
   /**
