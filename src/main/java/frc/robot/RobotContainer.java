@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ClawConstants.OperatorConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
 import frc.robot.commands.Shoot;

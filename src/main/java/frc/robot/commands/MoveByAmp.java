@@ -8,13 +8,13 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.ClawConstants.CURRENT_PID;
 
-public class MoveClawByAmp extends CommandBase {
+public class MoveByAmp extends CommandBase {
 
     private final Claw claw;
     private final DoubleSupplier currentSupplier;
 
 
-    public MoveClawByAmp(DoubleSupplier currentSupplier) {
+    public MoveByAmp(DoubleSupplier currentSupplier) {
         claw = Claw.getInstance();
         this.currentSupplier = currentSupplier;
         addRequirements(claw);

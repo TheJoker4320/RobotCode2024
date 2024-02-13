@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
@@ -106,6 +107,7 @@ public class Claw extends SubsystemBase {
             // Initialize the claw motor
             OwnerMotor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID, Constants.ClawConstants.MOTOR_TYPE);
             SlaveMotor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID, Constants.ClawConstants.MOTOR_TYPE);
+            OwnerMotor.setInverted(true);
             SlaveMotor.follow(OwnerMotor);
             OwnerMotor.restoreFactoryDefaults();
             OwnerMotor.setSmartCurrentLimit(Constants.ClawConstants.CLAW_CURRENT_LIMIT);
@@ -113,7 +115,7 @@ public class Claw extends SubsystemBase {
             OwnerMotor.setInverted(true);
 
             // Initialize the claw encoder
-            encoder = OwnerMotor.getAbsoluteEncoder();
+            encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
             encoder.setPositionConversionFactor(Constants.ClawConstants.CONVERT_RATE);
 
             // Initialize the PID controller for claw current control

@@ -174,8 +174,15 @@ public final class Constants {
     public static int DEGREES_TO_ENCODER(int degrees) {
         return degrees * (DEADAXIS_ENCODER_MAX_COUNT / MAX_DEGREES);
     }
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static class OperatorConstants {
+      public static final int kDriverControllerPort = 0;
+      public static final int kOperatorControllerPort = 1;
+
+      public static final double kDriveDeadband = 0.05;
+
+      public static final int kCollectBtn = XboxController.Button.kA.value;
+      public static final int kEjectBtn = XboxController.Button.kB.value;
+      public static final int kShootBtn = XboxController.Button.kY.value;
+    }
   }
-}
 }
