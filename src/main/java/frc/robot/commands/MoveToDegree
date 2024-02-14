@@ -1,0 +1,49 @@
+package frc.robot.commands;
+
+import static frc.robot.Constants.ClawConstants.CURRENT_PID;
+
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.Constants.ClawConstants;
+import frc.robot.subsystems.Arm;
+
+public class MoveToDegree extends Command {
+  private Arm arm;
+  private AbsoluteEncoder encoder;
+  private CANSparkMax OwnerMotor;
+  public MoveToDegree(Arm arm, boolean isReversed) {
+    this.arm = arm;
+    this.encoder = arm.getClawEncoder();
+    this.OwnerMotor = arm.getOwnerMotor();
+    addRequirements(arm);
+}
+
+  
+  @Override
+  public void initialize() {
+    Constants.ClawConstants.CURRENT_PID.setSetpoint(Constants.ClawConstants.DESIRED_DEGREE);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    double output = Constants.ClawConstants.CURRENT_PID.calculate(Constants.ClawConstants.DESIRED_DEGREE);
+    OwnerMotor.setSpeed(output);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    OwnerMotor.stopMotor();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return encoder.GetDegrees() == Constants.ClawConstants.DESIRED_DEGREE;
+  }
+}
+
