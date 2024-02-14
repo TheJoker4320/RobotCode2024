@@ -8,11 +8,13 @@ import java.util.Map;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -259,5 +261,22 @@ public static final class FieldConstants {
                               FIELD_CENTER_Y + -0.392049,
                               1.3208,
                               new Rotation3d(0, 0, -Math.PI * 2 / 3))));
+  }
+
+  public static final class TrapezoidProfileConstants{
+
+        public static final int X_MAX_VELOCITY = 3;
+        public static final int X_MAX_ACC = 2;
+        public static final int Y_MAX_VELOCITY = 3;
+        public static final int Y_MAX_ACC = 2;
+        public static final int OMEGA_MAX_VELOCITY = 8;
+        public static final int OMEGA_MAX_ACC = 8;
+        
+        //constraints from video
+
+
+
+
+
   }
 }
