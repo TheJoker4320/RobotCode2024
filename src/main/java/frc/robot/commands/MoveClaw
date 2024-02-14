@@ -1,34 +1,42 @@
 package frc.robot.commands;
 
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Arm;
 
-import java.util.function.DoubleSupplier;
-
-import static frc.robot.Constants.ClawConstants.CURRENT_PID;
+import static frc.robot.Constants.ClawConstants.MAX_DEGREES;
+import static frc.robot.Constants.ClawConstants.MIN_DEGREES;
 import static frc.robot.Constants.ClawConstants.OPEN_SPEED;
 
-public class MoveClaw extends CommandBase {
+import com.revrobotics.AbsoluteEncoder;
 
-    private final Claw claw;
-    public MoveClaw() {
-        claw = Claw.getInstance();
-        addRequirements(claw);
+public class MoveClaw extends CommandBase {
+    private boolean isReversed;
+    private Arm arm;
+    private AbsoluteEncoder encoder;
+    public MoveClaw(Arm arm, boolean isReversed) {
+        this.arm = arm;
+        this.encoder = arm.getClawEncoder();
+        this.isReversed = isReversed;
+        addRequirements(arm);
     }
 
     @Override
-    public void initialize() {
-        
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
-        claw.setSpeed(OPEN_SPEED);
+        int reversed = isReversed ? -1 : 1;
+        // if (isReversed && arm.getPosition() < 0.01)
+        //     return;
+        // if (!isReversed && arm.getPosition() > )
+        //     return;
+        arm.setSpeed(OPEN_SPEED * reversed);
+        if (encoder.getDegrees() >= MAX_DEGREES - 1 || encoder.getDegrees() <= MIN_DEGREES + 1);
+            arm.stop();
     }
 
     @Override
     public void end(boolean interrupted) {
-        claw.stop();
+        arm.stop();
     }
 }
