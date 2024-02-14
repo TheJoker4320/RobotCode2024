@@ -124,7 +124,7 @@ public final class Constants {
 
   public final class ClawConstants {
 
-    public static final double CONVERT_RATE = 15.74;
+    public static final double CONVERT_RATE = 1/288 * 360;
     public static final double TOLERANCE = 2;
     public static final double CALIBRATION_SPEED = -0.3;
     public static final double CALIBRATE_THRESHOLD = 0.2;
@@ -134,7 +134,8 @@ public final class Constants {
 
 
     public static final int CLAW_CURRENT_LIMIT = 20;
-    public static final int MOTOR_ID = 42;
+    public static final int MOTOR_ID1 = 9;
+    public static final int MOTOR_ID2 = 10;
     public static int MAX_COUNT = 2048;
     public static int DEAD_AXIS_TOLERANCE = 0;
     public static double OPEN_CLAW_POSITION = 34;//27.5
@@ -142,7 +143,7 @@ public final class Constants {
     public static int POSITIVE_RANGE = MAX_COUNT / 4 + DEAD_AXIS_TOLERANCE;
     public static int NEGATIVE_RANGE = MAX_COUNT / 4 - DEAD_AXIS_TOLERANCE;
     public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
-    public static final PIDController POSITION_PID = new PIDController(0.01, 0, 0, 0);
+    public static final PIDController POSITION_PID = new PIDController(0.01, 0, 0, 2);
     public static final double MIN_VALUE = -1;
     public static final double MAX_VALUE = 1;  
     public static final double I_ZONE = 1.5;
@@ -154,13 +155,15 @@ public final class Constants {
     public static final double CLOSE_POSITION = 0.5;
     public static final double CALIBRATE_TIME = 1.5;
     public static final double CLOSE_CURRENT_CONE = -15;
-    public static final double OPEN_SPEED = 0.4;
+    public static final double OPEN_SPEED = 0.1;
 
     public static final double CURRENT_THRESHOLD_CLOSE = 8;
     public static final double MEASURING_TIME = 0.3;
     public static final double QUICK_OPEN_TIME = 1.2;
     public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
-    public static int MAX_DEGREES = 360;
+    public static int MAX_DEGREES = 90;
+    public static int MIN_DEGREES = 0;
+    public static int DESIRED_DEGREE;
 
     public static double MIN_NOT_SAVE_DEGREES = -5;
     public static double MAX_NOT_SAVE_DEGREES = 35;
@@ -174,8 +177,16 @@ public final class Constants {
     public static int DEGREES_TO_ENCODER(int degrees) {
         return degrees * (DEADAXIS_ENCODER_MAX_COUNT / MAX_DEGREES);
     }
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static class OperatorConstants {
+      public static final int kDriverControllerPort = 0;
+      public static final int kOperatorControllerPort = 1;
+
+      public static final double kDriveDeadband = 0.05;
+
+      public static final int kCollectBtn = XboxController.Button.kA.value;
+      public static final int kEjectBtn = XboxController.Button.kB.value;
+      public static final int kShootBtn = XboxController.Button.kY.value;
+      public static final int kCollectToShootBtn = XboxController.Button.kX.value;
+    }
   }
-}
 }
