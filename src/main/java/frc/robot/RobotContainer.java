@@ -85,10 +85,8 @@ public class RobotContainer {
     RaiseButton.whileTrue(new MoveArm(arm, false));
     JoystickButton LowerButton = new JoystickButton(m_operatorController, PS4Controller.Button.kL1.value);
     LowerButton.whileTrue(new MoveArm(arm, true));
-    JoystickButton SwitchButton = new JoystickButton(m_operatorController, PS4Controller.Button.kTriangle.value);
-    SwitchButton.whileTrue(new Stay(arm));
     JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
-    MoveToDegreeBtn.onTrue(new MoveToDegree(arm, false));
+    MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
   }
 
   /**

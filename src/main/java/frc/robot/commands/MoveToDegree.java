@@ -13,21 +13,25 @@ import frc.robot.subsystems.Arm;
 public class MoveToDegree extends Command {
   private Arm arm;
   private PIDController pidController;
-  public MoveToDegree(Arm arm, boolean isReversed) {
+  private double degree;
+  public MoveToDegree(Arm arm, double degree) {
     this.arm = arm;
-    pidController = new PIDController(0.2, 0, 0);
+    this.degree = degree;
+    pidController = new PIDController(0.1, 0, 0);
     addRequirements(arm);
 }
   
   @Override
   public void initialize() {
-    pidController.setSetpoint(Constants.ClawConstants.DESIRED_DEGREE);
+    pidController.setSetpoint(degree);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double output = pidController.calculate(arm.getPosition());
+    output = 0.1 < output ? 0.1 : output;
+    output = -0.1 > output ? -0.1 : output;
     arm.setSpeed(output);
   }
 
@@ -40,6 +44,6 @@ public class MoveToDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getPosition() > Constants.ClawConstants.DESIRED_DEGREE;
+    return arm.getPosition() > degree;
   }
 }

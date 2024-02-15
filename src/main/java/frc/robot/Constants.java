@@ -123,7 +123,7 @@ public final class Constants {
 
   public final class ClawConstants {
 
-    public static final double CONVERT_RATE = 56.25;
+    public static final double CONVERT_RATE = 360;
     public static final double TOLERANCE = 2;
     public static final double CALIBRATION_SPEED = -0.3;
     public static final double CALIBRATE_THRESHOLD = 0.2;
@@ -156,16 +156,16 @@ public final class Constants {
     public static final double CLOSE_POSITION = 0.5;
     public static final double CALIBRATE_TIME = 1.5;
     public static final double CLOSE_CURRENT_CONE = -15;
-    public static final double OPEN_SPEED = 0.1;
+    public static final double OPEN_SPEED = 0.2;
 
     public static final double CURRENT_THRESHOLD_CLOSE = 8;
     public static final double MEASURING_TIME = 0.3;
     public static final double QUICK_OPEN_TIME = 1.2;
     public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
-    public static int MAX_DEGREES = 90;
-    public static int MIN_DEGREES = 0;
+    public static int MAX_DEGREES = 80;
+    public static int MIN_DEGREES = 5;
     public static double DESIRED_DEGREE = 35;
-
+    public static final double ENCODER_OFFSET = 40;
 
     public static double MIN_NOT_SAVE_DEGREES = -5;
     public static double MAX_NOT_SAVE_DEGREES = 35;

@@ -21,7 +21,7 @@ public class Stay extends Command {
 
   public Stay(Arm arm) {
     this.arm = arm;
-    CURRENT_PID = new PIDController(6, 0, 0);
+    CURRENT_PID = new PIDController(0.075, 0, 0);
     addRequirements(arm);
   }
 
@@ -37,8 +37,9 @@ public class Stay extends Command {
   public void execute() {
     double ArmPosition = arm.getPosition();
     double output = CURRENT_PID.calculate(ArmPosition);
+    output = output > 0.1 ? 0.1 : output;
+    output = -0.1 > output ? -0.1 : output;
     arm.setSpeed(output);
-    SmartDashboard.putNumber("output", output);
   }
 
   // Called once the command ends or is interrupted.

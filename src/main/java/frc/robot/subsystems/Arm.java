@@ -35,6 +35,8 @@ public class Arm extends SubsystemBase {
     // Initialize the claw encoder
     encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
     encoder.setPositionConversionFactor(Constants.ClawConstants.CONVERT_RATE);
+    encoder.setZeroOffset(Constants.ClawConstants.ENCODER_OFFSET + 2);
+    encoder.setInverted(true);
 
     // Initialize the PID controller for claw current control
     currentPid = OwnerMotor.getPIDController();
@@ -51,16 +53,6 @@ public class Arm extends SubsystemBase {
       if (instance == null)
         instance = new Arm();
       return instance;
-    }
-    public CANSparkMax getOwnerMotor() {
-        return OwnerMotor;
-    }
-    public CANSparkMax getSlaveMotor() {
-        return SlaveMotor;
-    }
-
-    public AbsoluteEncoder getClawEncoder() {
-        return encoder;
     }
 
     public SparkPIDController getCurrentPidController() {
@@ -114,22 +106,22 @@ public class Arm extends SubsystemBase {
 
     // Get the current position of the claw motor
     public double getPosition() {
-        return getClawEncoder().getPosition();
+        return encoder.getPosition();
     }
 
     // Get the current of the claw motor
     public double getCurrent() {
-        return getOwnerMotor().getOutputCurrent();
+        return OwnerMotor.getOutputCurrent();
     }
 
     // Get the temperature of the claw motor
     public double getTemp() {
-        return getOwnerMotor().getMotorTemperature();
+        return OwnerMotor.getMotorTemperature();
     }
 
     // Get the applied output of the claw motor
     public double getAppliedOutput() {
-        return getOwnerMotor().getAppliedOutput();
+        return OwnerMotor.getAppliedOutput();
     }
 }
 
