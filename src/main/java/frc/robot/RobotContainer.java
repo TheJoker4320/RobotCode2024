@@ -7,14 +7,17 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootMaintainSpeed;
+import frc.robot.commands.ShootReachSpeed;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -69,7 +72,9 @@ public class RobotContainer {
     JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
     JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    shooterBtn.whileTrue(new Shoot(shooter));
+    shooterBtn.whileTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 100),
+        new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 100), new Collect(collector))));
+    // FIXME: do the speed calculation somewhere
   }
 
   /**

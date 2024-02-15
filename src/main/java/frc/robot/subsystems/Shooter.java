@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -14,12 +16,17 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private TalonSRX master;
   private TalonSRX slave;
+  private Encoder encoder;
+
+  private PIDController pidController = new PIDController(Constants.ShooterConstants.kP, Constants.ShooterConstants.kI,
+      Constants.ShooterConstants.kD);
   private static Shooter shooter;
 
   public Shooter() {
     this.master = new TalonSRX(Constants.ShooterConstants.SHOOTER_MASTER_PORT);
     this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);
-
+    this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
+        Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B);
     slave.follow(master);
   }
 
@@ -31,7 +38,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void Shoot(double speed){
-    master.set(TalonSRXControlMode.PercentOutput,speed);
+    master.set(TalonSRXControlMode.PercentOutput, pidController.calculate(getSpeed(), speed));
+  }
+
+  public double getSpeed() {
+    return encoder.getRate();
   }
 
   @Override
