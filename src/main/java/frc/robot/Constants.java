@@ -124,6 +124,7 @@ public final class Constants {
   public final class ClawConstants {
 
     public static final double CONVERT_RATE = 56.25;
+    public static final double TOLERANCE = 2;
     public static final double CALIBRATION_SPEED = -0.3;
     public static final double CALIBRATE_THRESHOLD = 0.2;
     public static final double CALIBRATE_ENCODER_DIFF = 0.5;
@@ -140,8 +141,10 @@ public final class Constants {
     public static final double VALUES_MULTIPLAYER = 1;
     public static int POSITIVE_RANGE = MAX_COUNT / 4 + DEAD_AXIS_TOLERANCE;
     public static int NEGATIVE_RANGE = MAX_COUNT / 4 - DEAD_AXIS_TOLERANCE;
-    public static PIDController CURRENT_PID = new PIDController(0.001, 0, 0, 0.0077);
-    public static final PIDController POSITION_PID = new PIDController(0.5, 0, 0, 2);
+
+
+    public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
+    public static final PIDController POSITION_PID = new PIDController(0.01, 0, 0, 2);
     public static final double MIN_VALUE = -1;
     public static final double MAX_VALUE = 1;  
     public static final double I_ZONE = 1.5;
@@ -162,6 +165,7 @@ public final class Constants {
     public static int MAX_DEGREES = 90;
     public static int MIN_DEGREES = 0;
     public static double DESIRED_DEGREE = 35;
+
 
     public static double MIN_NOT_SAVE_DEGREES = -5;
     public static double MAX_NOT_SAVE_DEGREES = 35;
@@ -188,3 +192,4 @@ public final class Constants {
     }
   }
 }
+
