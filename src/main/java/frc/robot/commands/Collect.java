@@ -11,9 +11,10 @@ import frc.robot.subsystems.Collector;
 public class Collect extends Command {
   /** Creates a new Collect. */
   private Collector m_Collector;
-
-  public Collect(Collector m_collector) {
+  private Boolean m_isShoot;
+  public Collect(Collector m_collector, boolean m_isShoot) {
     this.m_Collector = m_collector;
+    this.m_isShoot = m_isShoot;
     addRequirements(m_collector);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -38,6 +39,8 @@ public class Collect extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(m_isShoot)
+      return false;
     return m_Collector.getLimitSwitch();
   }
 }

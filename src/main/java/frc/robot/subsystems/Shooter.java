@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,8 +20,7 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {
     this.master = new TalonSRX(Constants.ShooterConstants.SHOOTER_MASTER_PORT);
-    this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);
-
+    this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);    
     slave.follow(master);
   }
 
