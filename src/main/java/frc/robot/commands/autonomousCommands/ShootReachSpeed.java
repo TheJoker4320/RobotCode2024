@@ -27,7 +27,7 @@ public class ShootReachSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.shoot(speed);
+    //shooter.shoot(speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -38,6 +38,7 @@ public class ShootReachSpeed extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.getSpeed() >= speed;
+    //return shooter.getSpeed() >= speed;
+    return true;
   }
 }

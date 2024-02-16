@@ -4,7 +4,9 @@
 
 package frc.robot.commands.autonomousCommands;
 
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
@@ -28,7 +30,6 @@ public class CollectForTime extends Command {
     this.time = time;
 
     timer = new Timer();
-
     addRequirements(collector);
   }
 
@@ -50,6 +51,7 @@ public class CollectForTime extends Command {
   public void execute() 
   {
     collector.setSpeed(CollectorConstants.COLLECTOR_SPEED);
+    SmartDashboard.putNumber("collector timer", timer.get());
   }
 
   /**
@@ -60,6 +62,8 @@ public class CollectForTime extends Command {
    */
   public void end(boolean interrupted) 
   {
+    timer.stop();
+    timer.reset();
     collector.setSpeed(0);
   }
 

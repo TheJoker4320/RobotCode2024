@@ -11,6 +11,7 @@ import frc.robot.commands.autonomousCommands.CollectForTime;
 import frc.robot.commands.autonomousCommands.ShootForTime;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
+import frc.robot.commands.autonomousCommands.StopShooting;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
@@ -75,7 +76,7 @@ public class RobotContainer {
     JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
     JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    shooterBtn.onTrue(new SequentialCommandGroup(new ShootForTime(shooter, 2), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1))));
+    shooterBtn.onTrue(new SequentialCommandGroup(new ShootForTime(shooter, 2), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1)), new StopShooting(shooter)));
   }
 
   /**

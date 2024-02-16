@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomousCommands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
@@ -28,7 +29,6 @@ public class ShootForTime extends Command {
     this.time = time;
 
     timer = new Timer();
-    
     addRequirements(shooter);
   }
 
@@ -49,7 +49,8 @@ public class ShootForTime extends Command {
   @Override
   public void execute() 
   {
-    shooter.shoot(ShooterConstants.SHOOT_SPEED);
+    shooter.setOutput(ShooterConstants.SHOOT_SPEED);
+    SmartDashboard.putNumber("shooter timer", timer.get());
   }
 
   /**
@@ -61,9 +62,10 @@ public class ShootForTime extends Command {
   @Override
   public void end(boolean interrupted) 
   {
+    timer.stop();
+    timer.reset();
     // TODO: In certain situations the end function should not set speed to 0, and instead do nothing.
     // TODO: maybe needed to have the command recieve wether to 0 at the end or not
-    shooter.shoot(0);
   }
 
   /**
