@@ -30,14 +30,14 @@ public class Shooter extends SubsystemBase {
     slave.follow(master);
   }
 
-  public static Shooter GetInstance(){
+  public static Shooter getInstance(){
     if(shooter == null){
       shooter = new Shooter();
     }
     return shooter;
   }
 
-  public void Shoot(double speed){
+  public void shoot(double speed){
     master.set(TalonSRXControlMode.PercentOutput, pidController.calculate(getSpeed(), speed));
   }
 

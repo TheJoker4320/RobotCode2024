@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Collector collector = Collector.getInstance();
-  private final Shooter shooter = Shooter.GetInstance();
+  private final Shooter shooter = Shooter.getInstance();
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
