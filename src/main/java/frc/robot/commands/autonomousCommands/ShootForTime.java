@@ -15,7 +15,13 @@ public class ShootForTime extends Command {
 
   private final Timer timer;
   
-  /** Creates a new ShootForTime. */
+  /**
+   * This constructor creates a command of shoot for time
+   * this command shoots for a set time at a set output value
+   * 
+   * @param shooter The shooter subsystem
+   * @param time The time which the shooter will shoot for
+   */
   public ShootForTime(Shooter shooter, int time) 
   {
     this.shooter = shooter;
@@ -26,21 +32,32 @@ public class ShootForTime extends Command {
     addRequirements(shooter);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * This method will be called once at the start of the command
+   * this function will start the timer
+   */
   @Override
   public void initialize() 
   {
     timer.start();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * This method is called once per schedueler run, it will set the shooter output
+   * to a given value in the ShooterConstants class
+   */
   @Override
   public void execute() 
   {
     shooter.shoot(ShooterConstants.SHOOT_SPEED);
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * This method will be called once the command is either stopped or interrupted
+   * Pls read further notes in the method.
+   * 
+   * @param interrupted Whether this command was interrupted or stopped naturaly
+   */
   @Override
   public void end(boolean interrupted) 
   {
@@ -49,7 +66,11 @@ public class ShootForTime extends Command {
     shooter.shoot(0);
   }
 
-  // Returns true when the command should end.
+  /**
+   * This method returns true when the command should
+   * stop. Meaning the moment the timer ran out.
+   * @return Whether this command should end or not
+   */
   @Override
   public boolean isFinished() {
     return (timer.get() >= time);
