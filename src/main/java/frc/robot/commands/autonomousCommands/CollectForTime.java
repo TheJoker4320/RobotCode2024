@@ -15,7 +15,13 @@ public class CollectForTime extends Command {
 
   private final Timer timer;
   
-  /** Creates a new CollectForTime. */
+  /**
+   * This constructor creates a command of collect for time
+   * this command collects for a set time at a set output value
+   * 
+   * @param collector The collector subsystem
+   * @param time The time which the collector will collect for
+   */
   public CollectForTime(Collector collector, int time) 
   {
     this.collector = collector;
@@ -26,28 +32,42 @@ public class CollectForTime extends Command {
     addRequirements(collector);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * This method will be called once at the start of the command
+   * this function will start the timer
+   */
   @Override
   public void initialize() 
   {
     timer.start();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * This method is called once per schedueler run, it will set the collectors output
+   * to a given value in the CollectorConstants class
+   */
   @Override
   public void execute() 
   {
     collector.setSpeed(CollectorConstants.COLLECTOR_SPEED);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
+  /**
+   * This method will be called once the command is either stopped or interrupted
+   * This method will set the collector's speed to 0
+   * 
+   * @param interrupted Whether this command was interrupted or stopped naturaly
+   */
   public void end(boolean interrupted) 
   {
     collector.setSpeed(0);
   }
 
-  // Returns true when the command should end.
+  /**
+   * This method returns true when the command should
+   * stop. Meaning the moment the timer ran out.
+   * @return Whether this command should end or not
+   */
   @Override
   public boolean isFinished() {
     return (timer.get() >= time);
