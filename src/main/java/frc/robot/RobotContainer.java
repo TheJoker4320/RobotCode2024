@@ -14,6 +14,7 @@ import frc.robot.commands.autonomousCommands.ShootReachSpeed;
 import frc.robot.commands.autonomousCommands.StopShooting;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.MathUtil;
@@ -59,6 +60,10 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX() * 0.5, OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
+    SmartDashboard.putNumber("Robot Container Left X: ", m_driverController.getLeftX() * 0.5);
+    SmartDashboard.putNumber("Robot Container Left Y: ", m_driverController.getLeftY() * 0.5);
+    SmartDashboard.putNumber("Robot Container Right x: ", m_driverController.getRightX() * 0.5);
+
   }
 
   /**
@@ -76,7 +81,8 @@ public class RobotContainer {
     JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
     JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    shooterBtn.onTrue(new SequentialCommandGroup(new ShootForTime(shooter, 2), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1)), new StopShooting(shooter)));
+    shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootMaintainSpeed(shooter, 1), new CollectForTime(collector, 1))));
+    
   }
 
   /**
