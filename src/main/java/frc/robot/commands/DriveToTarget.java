@@ -27,16 +27,14 @@ public class DriveToTarget extends Command {
   private TrapezoidProfile.Constraints m_yConstraints;
   private TrapezoidProfile.Constraints m_omegaConstraints;
   private DriveSubsystem m_driveSubsystem;
-  private LimeLight limeLight;
-  private Pose3d goalPose;
+  private Pose2d goalPose;
   
 
   /** Creates a new DriveToTarget. */
-  public DriveToTarget(DriveSubsystem m_driveSubsystem, PoseEstimatorUtils m_PoseEstimator, LimeLight limeLight) {
+  public DriveToTarget(DriveSubsystem m_driveSubsystem, PoseEstimatorUtils m_PoseEstimator, Pose2d goalPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_driveSubsystem = m_driveSubsystem;
     this.m_poseEstimator = m_PoseEstimator;
-    this.limeLight = limeLight;
 
     m_pidControllerProfiledX = new ProfiledPIDController(0, 0, 0, m_xConstraints);
     m_pidControllerProfiledY = new ProfiledPIDController(0, 0, 0, m_yConstraints);
@@ -59,18 +57,16 @@ public class DriveToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    goalPose = Constants.FieldConstants.APRILTAGS.get(limeLight.GetId());
+    
     m_pidControllerProfiledX.setGoal(goalPose.getX());
     m_pidControllerProfiledY.setGoal(goalPose.getY());
-    m_pidControllerProfiledOmega.setGoal(goalPose.getRotation().getZ());
+    m_pidControllerProfiledOmega.setGoal(goalPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // FIXME: move the setPoint half of the robot length towards the field so it'll
-    // be where the robot center should be
-
+    
     double xSpeed = m_pidControllerProfiledX.calculate(m_poseEstimator.GetPosition().getX());
     double ySpeed = m_pidControllerProfiledY.calculate(m_poseEstimator.GetPosition().getY());
     double omega = m_pidControllerProfiledOmega.calculate(m_poseEstimator.GetPosition().getRotation().getRadians());
