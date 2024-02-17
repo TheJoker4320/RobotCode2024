@@ -4,8 +4,10 @@
 
 package frc.utils;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +28,9 @@ public class PoseEstimatorUtils extends SubsystemBase {
       Constants.DriveConstants.kDriveKinematics,
       m_DriveSubsystem.getPose().getRotation(),
     m_DriveSubsystem.getModulePosition(), 
-    limelight.getLimeLightBotPose().toPose2d());
+    limelight.getLimeLightBotPose().toPose2d(),
+    VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(5)),
+    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10)));
   }
 
   public Pose2d GetPosition(){
@@ -36,7 +40,7 @@ public class PoseEstimatorUtils extends SubsystemBase {
   @Override
   public void periodic() {
     poseEstimator.update(m_DriveSubsystem.getPose().getRotation(), m_DriveSubsystem.getModulePosition());
-    poseEstimator.addVisionMeasurement(limelight.getLimeLightObjectToRobotPose().toPose2d(),
+    poseEstimator.addVisionMeasurement(limelight.getLimeLightBotPose().toPose2d(),
     Timer.getFPGATimestamp() - limelight.getLimeLightTLValue() / 1000 - limelight.getLimeLightCLValue() / 1000); 
     
     
