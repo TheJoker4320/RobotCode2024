@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,7 +17,7 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   private TalonSRX master;
   private TalonSRX slave;
-  //private Encoder encoder;
+  private Encoder encoder;
 
   private PIDController pidController = new PIDController(Constants.ShooterConstants.kP, Constants.ShooterConstants.kI,
       Constants.ShooterConstants.kD);
@@ -25,8 +26,9 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     this.master = new TalonSRX(Constants.ShooterConstants.SHOOTER_MASTER_PORT);
     this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);
-    //this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
-    //    Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B);
+    this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
+        Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B);
+    encoder.setDistancePerPulse(Constants.ShooterConstants.SHOOTER_DISTANCE_PER_PULSE);
     slave.follow(master);
   }
 
@@ -42,13 +44,14 @@ public class Shooter extends SubsystemBase {
     master.set(TalonSRXControlMode.PercentOutput, output);
   }
 
-  //public void shoot(double speed){
-  //  master.set(TalonSRXControlMode.PercentOutput, pidController.calculate(getSpeed(), speed));
-  //}
+  public void shoot(double speed){
+   master.set(TalonSRXControlMode.PercentOutput, pidController.calculate(getSpeed(), speed));
+  }
 
-  //public double getSpeed() {
-  //  return encoder.getRate();
-  //}
+  public double getSpeed() {
+    SmartDashboard.putNumber("Rate of shooter", getSpeed());
+   return encoder.getRate();
+  }
 
   @Override
   public void periodic() {
