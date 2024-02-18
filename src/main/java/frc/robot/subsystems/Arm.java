@@ -8,7 +8,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,25 +23,45 @@ public class Arm extends SubsystemBase {
   private final SparkPIDController currentPid;
   private static Arm instance;
   public Arm() {
-    // Initialize the claw motor
-    OwnerMotor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID2, Constants.ClawConstants.MOTOR_TYPE);
-    SlaveMotor = new CANSparkMax(Constants.ClawConstants.MOTOR_ID1, Constants.ClawConstants.MOTOR_TYPE);
+    // Initialize the Arm motor
+    OwnerMotor = new CANSparkMax(Constants.ArmConstants.MOTOR_ID2, Constants.ArmConstants.MOTOR_TYPE);
+    SlaveMotor = new CANSparkMax(Constants.ArmConstants.MOTOR_ID1, Constants.ArmConstants.MOTOR_TYPE);
     OwnerMotor.restoreFactoryDefaults();
     SlaveMotor.restoreFactoryDefaults();
     SlaveMotor.follow(OwnerMotor, true);
-    OwnerMotor.setSmartCurrentLimit(Constants.ClawConstants.CLAW_CURRENT_LIMIT);
+    OwnerMotor.setSmartCurrentLimit(Constants.ArmConstants.CLAW_CURRENT_LIMIT);
     OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    // Initialize the claw encoder
+    // Initialize the Arm encoder
     encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    encoder.setPositionConversionFactor(Constants.ClawConstants.CONVERT_RATE);
-    encoder.setZeroOffset(Constants.ClawConstants.ENCODER_OFFSET + 2);
+    encoder.setPositionConversionFactor(Constants.ArmConstants.CONVERT_RATE);
+    encoder.setZeroOffset(Constants.ArmConstants.ENCODER_OFFSET + 2);
     encoder.setInverted(true);
 
-    // Initialize the PID controller for claw current control
+    // Initialize the PID controller for Arm current control
     currentPid = OwnerMotor.getPIDController();
     currentPid.setFeedbackDevice(OwnerMotor.getEncoder());
-    setPidController(Constants.ClawConstants.CURRENT_PID);
+
+    currentPid.setP(Constants.ArmConstants.CURRENTPID_P);
+    currentPid.setI(Constants.ArmConstants.CURRENTPID_I);
+    currentPid.setD(Constants.ArmConstants.CURRENTPID_D);
+    setPidController(Constants.ArmConstants.CURRENT_PID);
+    }
+    
+    /**
+     * the angle that the arm needs to be in in order to shoot to speaker
+     * @param distance distance from robot to apriltag
+     * @return the angle that the arm needs to be
+     */
+    public double getArmAngle(double distance){
+        return Constants.ArmConstants.DistanceToAngle.m * distance + Constants.ArmConstants.DistanceToAngle.constant;
+    }
+    public void reachArmPosition(double distance){
+        double degreesToTarget = getArmAngle(distance);
+        currentPid.setReference(degreesToTarget, ControlType.kPosition); 
+    }
+    public boolean isDegreesReached(double degrees){
+       return Math.abs(encoder.getPosition() - degrees) < Constants.ArmConstants.CUREENTPID_TOLORANCE;
     }
 
     public void periodic() {
@@ -63,19 +83,19 @@ public class Arm extends SubsystemBase {
         OwnerMotor.set(speed);
     }
 
-    // Stop the claw motor by setting the speed to 0
+    // Stop the Arm motor by setting the speed to 0
     public void stop() {
         setSpeed(0);
     }
 
-    // Get the claw components
+    // Get the Arm components
     
     // public void setIdleMode(IdleMode idleMode){
     //   OwnerMotor.setIdleMode(idleMode);
     //   SlaveMotor.setIdleMode(idleMode);
     // }
 
-    // Set the PID controller gains for the claw
+    // Set the PID controller gains for the Arm
     public void setPidController(PIDController terms) {
         getCurrentPidController().setP(terms.getP());
         getCurrentPidController().setI(terms.getI());
@@ -86,40 +106,40 @@ public class Arm extends SubsystemBase {
 
     }
 
-    // Set the current for the claw motor
+    // Set the current for the Arm motor
     // public void setCurrent(double current) {
     //     OwnerMotor.getPIDController().setReference(current, CANSparkMax.ControlType.kCurrent);
     //     OwnerMotor.getPIDController().setReference(current, CANSparkMax.ControlType.kCurrent);
     // }
 
 
-    // Set the position for the claw motor
+    // Set the position for the Arm motor
     public void setMotorPosition(double distance) {
         getCurrentPidController().setReference(distance, CANSparkMax.ControlType.kPosition);
         SlaveMotor.getPIDController().setReference(distance, CANSparkMax.ControlType.kPosition);
     }
 
-    // Check if the claw motor is on target position
+    // Check if the Arm motor is on target position
     public boolean isOnTarget(double distance) {
         return distance < getPosition();
     }
 
-    // Get the current position of the claw motor
+    // Get the current position of the Arm motor
     public double getPosition() {
         return encoder.getPosition();
     }
 
-    // Get the current of the claw motor
+    // Get the current of the Arm motor
     public double getCurrent() {
         return OwnerMotor.getOutputCurrent();
     }
 
-    // Get the temperature of the claw motor
+    // Get the temperature of the Arm motor
     public double getTemp() {
         return OwnerMotor.getMotorTemperature();
     }
 
-    // Get the applied output of the claw motor
+    // Get the applied output of the Arm motor
     public double getAppliedOutput() {
         return OwnerMotor.getAppliedOutput();
     }

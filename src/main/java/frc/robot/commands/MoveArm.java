@@ -2,9 +2,9 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
 
-import static frc.robot.Constants.ClawConstants.MAX_DEGREES;
-import static frc.robot.Constants.ClawConstants.MIN_DEGREES;
-import static frc.robot.Constants.ClawConstants.OPEN_SPEED;
+import static frc.robot.Constants.ArmConstants.MAX_DEGREES;
+import static frc.robot.Constants.ArmConstants.MIN_DEGREES;
+import static frc.robot.Constants.ArmConstants.OPEN_SPEED;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;

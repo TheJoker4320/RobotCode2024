@@ -2,47 +2,43 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.autonomous_commands;
 
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimeLight;
 import frc.robot.subsystems.Arm;
 
-public class MoveToDegree extends Command {
+public class AimShooterToSpeaker extends Command {
+  /** Creates a new AimShooterToSpeaker. */
   private Arm arm;
-  private PIDController pidController;
-  private double degree;
-  public MoveToDegree(Arm arm, double degree) {
+  private LimeLight limelight;
+  public AimShooterToSpeaker(Arm arm, LimeLight limelight) {
+    // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
-    this.degree = degree;
-    pidController = new PIDController(0.1, 0, 0);
+    this.limelight = limelight;
     addRequirements(arm);
-}
-  
-  @Override
-  public void initialize() {
-    pidController.setSetpoint(degree);
+
   }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pidController.calculate(arm.getPosition());
-    output = 0.1 < output ? 0.1 : output;
-    output = -0.1 > output ? -0.1 : output;
-    arm.setSpeed(output);
+    arm.reachArmPosition(limelight.getTrueDistance());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    arm.stop();
+    arm.setSpeed(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getPosition() > degree;
+    return arm.isDegreesReached(arm.getArmAngle(limelight.getTrueDistance()));
   }
 }

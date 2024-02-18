@@ -109,6 +109,10 @@ public class DriveSubsystem extends SubsystemBase
   {
     return m_odometry.getPoseMeters();
   }
+  public SwerveModulePosition[] getModulePosition(){
+    SwerveModulePosition[] swerveModuleStates =  {m_frontLeft.getPosition(), m_frontRight.getPosition(), m_rearLeft.getPosition(), m_rearRight.getPosition()};
+    return swerveModuleStates;
+  }
 
   /**
    * Resets the odometry to the specified pose.
