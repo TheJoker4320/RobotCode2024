@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.autonomousCommands.CollectForTime;
 import frc.robot.commands.autonomousCommands.ShootForTime;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
@@ -80,9 +82,11 @@ public class RobotContainer {
     collectBtn.toggleOnTrue(new Collect(collector));
     JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
+    JoystickButton shootButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+    shootButton.whileTrue(new Shoot(shooter));
     JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootMaintainSpeed(shooter, 1), new CollectForTime(collector, 1))));
-    
+    //shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1))));
+    shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
   }
 
   /**

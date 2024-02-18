@@ -19,6 +19,7 @@ public class Shooter extends SubsystemBase {
   private TalonSRX slave;
   private Encoder encoder;
 
+  private double output;
   private PIDController pidController = new PIDController(Constants.ShooterConstants.kP, Constants.ShooterConstants.kI,
       Constants.ShooterConstants.kD);
   private static Shooter shooter;
@@ -27,8 +28,9 @@ public class Shooter extends SubsystemBase {
     this.master = new TalonSRX(Constants.ShooterConstants.SHOOTER_MASTER_PORT);
     this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);
     this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
-        Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B);
+        Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B, false);
     encoder.setDistancePerPulse(Constants.ShooterConstants.SHOOTER_DISTANCE_PER_PULSE);
+    encoder.reset();
     slave.follow(master);
   }
 
@@ -45,16 +47,21 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot(double speed){
-   master.set(TalonSRXControlMode.PercentOutput, pidController.calculate(getSpeed(), speed));
+    pidController.setSetpoint(speed);
+    output = pidController.calculate(getSpeed());
+    master.set(TalonSRXControlMode.PercentOutput, output);
   }
-
+  
   public double getSpeed() {
-    SmartDashboard.putNumber("Rate of shooter", getSpeed());
-   return encoder.getRate();
+    return encoder.getRate();
   }
-
+  
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("shooter speed", output);
+    SmartDashboard.putNumber("Encoder Distance", encoder.getDistance());
+    SmartDashboard.putNumber("Rate of shooter", encoder.getRate());
+    SmartDashboard.putNumber("Encoding", encoder.getEncodingScale());
+    SmartDashboard.putBoolean("isStopped", encoder.getStopped());
   }
 }

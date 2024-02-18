@@ -64,6 +64,7 @@ public class ShootForTime extends Command {
   {
     timer.stop();
     timer.reset();
+    shooter.setOutput(0);
     // TODO: In certain situations the end function should not set speed to 0, and instead do nothing.
     // TODO: maybe needed to have the command recieve wether to 0 at the end or not
   }
