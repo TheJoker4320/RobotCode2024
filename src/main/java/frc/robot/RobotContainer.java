@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -113,7 +114,23 @@ public class RobotContainer {
       new GoalEndState(0, Rotation2d.fromDegrees(0))
     );
 
-    return new FollowPathHolonomic(
+    List<Translation2d> bezierPoints2 = PathPlannerPath.bezierFromPoses(
+      new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0))
+    );
+
+    //This will create the path that the robot will follow using the constrants we give to him
+    PathPlannerPath path2 = new PathPlannerPath(
+      bezierPoints2, 
+      new PathConstraints(
+        AutoConstants.kMaxSpeedMetersPerSecond, 
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared, 
+        AutoConstants.kMaxAngularSpeedRadiansPerSecond, 
+        AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared),
+      new GoalEndState(0, Rotation2d.fromDegrees(0))
+    );
+
+    FollowPathHolonomic firstPath = new FollowPathHolonomic(
       path,
       m_robotDrive::getPose,
       m_robotDrive::getChassisSpeeds,
@@ -128,5 +145,23 @@ public class RobotContainer {
       this::getCurrentAlliance,
       m_robotDrive
     );
+
+    FollowPathHolonomic secondPath = new FollowPathHolonomic(
+      path2,
+      m_robotDrive::getPose,
+      m_robotDrive::getChassisSpeeds,
+      m_robotDrive::setChassisSpeeds,
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(AutoConstants.kPXController),
+        new PIDConstants(AutoConstants.kPThetaController),
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kSwerveDriveRadius,
+        new ReplanningConfig()
+      ),
+      this::getCurrentAlliance,
+      m_robotDrive
+    );
+
+    return firstPath.andThen(() -> m_robotDrive.setX()).andThen(new WaitCommand(3)).andThen(secondPath);
   }
 }

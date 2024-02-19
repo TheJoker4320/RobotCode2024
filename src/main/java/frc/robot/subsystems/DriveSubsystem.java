@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -61,6 +63,9 @@ public class DriveSubsystem extends SubsystemBase
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  private final StructArrayPublisher<SwerveModuleState> publisher;
+
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -78,6 +83,8 @@ public class DriveSubsystem extends SubsystemBase
     //Zeroes heading.
     //TODO: This constructor might require changing since its not guranteed we zero the angle here.
     zeroHeading();
+    publisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
   }
 
   @Override
@@ -91,7 +98,12 @@ public class DriveSubsystem extends SubsystemBase
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-
+    publisher.set(new SwerveModuleState[] {
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
+    });
     SmartDashboard.putNumber("Robot heading", m_gyro.getYaw());
   }
 
