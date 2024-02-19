@@ -140,9 +140,9 @@ public final class Constants {
     public static final int SHOOTER_ENCODER_PORT_B = 2; //FIXME: correct value
     public static final double SHOOTER_DISTANCE_PER_PULSE = 1.0/2048;
 
-    public static final double kP = 0.08;// FIXME: correct the value
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kP = 0.34  ;// FIXME: correct the value
+    public static final double kI = 0.05;
+    public static final double kD = 0.0;
     public static final double SHOOT_SPEED = 1;
     public static final double READY_SPEED = 0; // FIXME: correct the value
   }

@@ -43,12 +43,15 @@ public class Shooter extends SubsystemBase {
 
   public void setOutput(double output)
   {
-    master.set(TalonSRXControlMode.PercentOutput, output);
+    this.output = output;
+    master.set(TalonSRXControlMode.PercentOutput, this.output);
   }
 
   public void shoot(double speed){
     pidController.setSetpoint(speed);
     output = pidController.calculate(getSpeed());
+    output = output > 1 ? 1 : output;
+    output = output < 0 ? 0 : output;
     master.set(TalonSRXControlMode.PercentOutput, output);
   }
   

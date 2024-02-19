@@ -86,7 +86,7 @@ public class RobotContainer {
     shootButton.whileTrue(new Shoot(shooter));
     JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
     //shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1))));
-    shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
+    shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 60));
   }
 
   /**
