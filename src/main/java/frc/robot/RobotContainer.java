@@ -8,14 +8,12 @@ import frc.robot.Constants.ArmConstants.OperatorConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimToTarget;
 import frc.robot.commands.Collect;
-import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.Eject;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Stay;
-import frc.robot.commands.autonomous_commands.AimShooterToSpeaker;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,8 +22,6 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
-import frc.utils.FieldPosUtils;
-import frc.utils.PoseEstimatorUtils;
 
 import java.util.List;
 
@@ -57,16 +53,13 @@ public class RobotContainer {
   private final Collector collector = Collector.getInstance();
   private final Shooter shooter = Shooter.GetInstance();
   private final Arm arm = Arm.getInstance();
-  private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils();
   private final LimeLight limeLight = new LimeLight();
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
-  private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, null);
-  private final AimShooterToSpeaker aimShooterToSpeaker = new AimShooterToSpeaker(arm, limeLight);
+  private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   private final Shoot shoot = new Shoot(shooter);
-private final Stay stay = new Stay(arm);
+  private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
@@ -115,11 +108,9 @@ private final Stay stay = new Stay(arm);
     // LowerButton.whileTrue(new MoveArm(arm, true));
     // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
-    JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, 2);
-    btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
+    JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
-    JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
-    btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
+    
   }
 
   /**
