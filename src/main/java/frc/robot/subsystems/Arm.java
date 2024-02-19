@@ -53,16 +53,6 @@ public class Arm extends SubsystemBase {
      * @param distance distance from robot to apriltag
      * @return the angle that the arm needs to be
      */
-    public double getArmAngle(double distance){
-        return Constants.ArmConstants.DistanceToAngle.m * distance + Constants.ArmConstants.DistanceToAngle.constant;
-    }
-    public void reachArmPosition(double distance){
-        double degreesToTarget = getArmAngle(distance);
-        currentPid.setReference(degreesToTarget, ControlType.kPosition); 
-    }
-    public boolean isDegreesReached(double degrees){
-       return Math.abs(encoder.getPosition() - degrees) < Constants.ArmConstants.CUREENTPID_TOLORANCE;
-    } 
 
     public void periodic() {
     // This method will be called once per scheduler run
@@ -77,6 +67,11 @@ public class Arm extends SubsystemBase {
 
     public SparkPIDController getCurrentPidController() {
         return currentPid;
+    }
+
+    public double getAngleByDistanceSpeaker(double distance){
+        distance = distance * 10;
+        return -4.28 + 8.27E-3 * distance + 2.53E-5 * Math.pow(distance, 2) - 2.02E-8 * Math.pow(distance, 3) + 6.2E-12 * Math.pow(distance, 4) - 6.0E-16 * Math.pow(distance, 5);
     }
 
     public void setSpeed(double speed) {
@@ -126,7 +121,7 @@ public class Arm extends SubsystemBase {
 
     // Get the current position of the Arm motor
     public double getPosition() {
-        return encoder.getPosition();
+        return encoder.getPosition() > 350 ? 0 : encoder.getPosition();
     }
 
     // Get the current of the Arm motor
