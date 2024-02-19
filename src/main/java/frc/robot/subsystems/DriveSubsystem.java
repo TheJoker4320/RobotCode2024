@@ -24,6 +24,8 @@ import frc.utils.SwerveUtils;
 
 public class DriveSubsystem extends SubsystemBase 
 {
+  private static DriveSubsystem driveSubsystem;
+
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -119,6 +121,15 @@ public class DriveSubsystem extends SubsystemBase
    *
    * @param pose The pose to which to set the odometry.
    */
+
+  public static DriveSubsystem getInstance(){
+    if(driveSubsystem == null){
+      driveSubsystem = new DriveSubsystem();
+    }
+
+    return driveSubsystem;
+  }
+
   public void resetOdometry(Pose2d pose) 
   {
     m_odometry.resetPosition(
