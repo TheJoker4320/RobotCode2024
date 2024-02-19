@@ -6,11 +6,10 @@ package frc.robot;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimToTarget;
-import frc.robot.commands.DriveToTarget;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.Stay;
-import frc.robot.commands.autonomous_commands.AimShooterToSpeaker;
+import frc.robot.commands.autonomousCommands.AimShooterToSpeaker;
+import frc.robot.commands.autonomousCommands.AimToTarget;
+import frc.robot.commands.autonomousCommands.DriveToTarget;
+import frc.robot.commands.autonomousCommands.Stay;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
@@ -61,7 +60,6 @@ public class RobotContainer {
 private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, null);
   private final AimShooterToSpeaker aimShooterToSpeaker = new AimShooterToSpeaker(arm, limeLight);
-  private final Shoot shoot = new Shoot(shooter);
 private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
@@ -105,8 +103,6 @@ private final Stay stay = new Stay(arm);
     // collectBtn.toggleOnTrue(new Collect(collector, false));
     // JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     // ejectBtn.whileTrue(new Eject(collector));
-    JoystickButton shootButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
-    shootButton.whileTrue(new Shoot(shooter));
     // JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
     //shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1))));
     // shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
@@ -119,7 +115,7 @@ private final Stay stay = new Stay(arm);
     // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
     JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, 2);
-    btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
+    //btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
 
     JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
     btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
