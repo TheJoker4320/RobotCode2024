@@ -11,7 +11,7 @@ import frc.robot.subsystems.Arm;
 public class AimShooterToSpeaker extends Command {
   /** Creates a new AimShooterToSpeaker. */
   private Arm arm;
-  private LimeLight limelight;
+  private LimeLight limelight; //TODO: calculate distance with pose estimator
   public AimShooterToSpeaker(Arm arm, LimeLight limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;

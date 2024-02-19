@@ -62,7 +62,7 @@ public class Arm extends SubsystemBase {
     }
     public boolean isDegreesReached(double degrees){
        return Math.abs(encoder.getPosition() - degrees) < Constants.ArmConstants.CUREENTPID_TOLORANCE;
-    }
+    } 
 
     public void periodic() {
     // This method will be called once per scheduler run

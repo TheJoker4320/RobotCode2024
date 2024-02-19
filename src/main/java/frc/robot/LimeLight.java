@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class LimeLight {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     
+    public boolean doesLimeLightHaveTargets(){
+        return table.getEntry("tv").getInteger(0) == 1;
+    }
 
     public double getLimeLightXValue() {
         double x = table.getEntry("tx").getDouble(0.0);
@@ -39,6 +42,7 @@ public class LimeLight {
         return table.getEntry("ta").getDouble(0.0);
     }
 
+    
     public int GetId(){
         return (int) table.getEntry("tid").getInteger(0);
     }

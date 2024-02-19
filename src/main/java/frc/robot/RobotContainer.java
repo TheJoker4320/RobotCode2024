@@ -15,6 +15,7 @@ import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Stay;
+import frc.robot.commands.autonomous_commands.AimShooterToSpeaker;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -63,6 +64,9 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, null);
+  private final AimShooterToSpeaker aimShooterToSpeaker = new AimShooterToSpeaker(arm, limeLight);
+  private final Shoot shoot = new Shoot(shooter);
+private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
@@ -95,24 +99,24 @@ private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight)
    * joysticks}.
    */
   private void configureBindings() {
-    JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
-    resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
-    JoystickButton collectBtn = new JoystickButton(m_driverController, OperatorConstants.kCollectBtn);
-    collectBtn.toggleOnTrue(new Collect(collector, false));
-    JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
-    ejectBtn.whileTrue(new Eject(collector));
-    JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    shooterBtn.whileTrue(new Shoot(shooter));
-    JoystickButton collectToShoot = new JoystickButton(m_driverController, OperatorConstants.kCollectToShootBtn);
-    collectToShoot.whileTrue(new Collect(collector,true));
-    JoystickButton RaiseButton = new JoystickButton(m_operatorController, PS4Controller.Button.kR1.value);
-    RaiseButton.whileTrue(new MoveArm(arm, false));
-    JoystickButton LowerButton = new JoystickButton(m_operatorController, PS4Controller.Button.kL1.value);
-    LowerButton.whileTrue(new MoveArm(arm, true));
-    JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
-    MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
-        JoystickButton btnAimToTarget = new JoystickButton(m_driverController, 2);
-    btnAimToTarget.onTrue(aimToTarget);
+    // JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
+    // resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
+    // JoystickButton collectBtn = new JoystickButton(m_driverController, OperatorConstants.kCollectBtn);
+    // collectBtn.toggleOnTrue(new Collect(collector, false));
+    // JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
+    // ejectBtn.whileTrue(new Eject(collector));
+    // JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
+    // shooterBtn.whileTrue(new Shoot(shooter));
+    // JoystickButton collectToShoot = new JoystickButton(m_driverController, OperatorConstants.kCollectToShootBtn);
+    // collectToShoot.whileTrue(new Collect(collector,true));
+    // JoystickButton RaiseButton = new JoystickButton(m_operatorController, PS4Controller.Button.kR1.value);
+    // RaiseButton.whileTrue(new MoveArm(arm, false));
+    // JoystickButton LowerButton = new JoystickButton(m_operatorController, PS4Controller.Button.kL1.value);
+    // LowerButton.whileTrue(new MoveArm(arm, true));
+    // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
+    // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
+    JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, 2);
+    btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
 
     JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
     btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
