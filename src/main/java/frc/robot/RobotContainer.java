@@ -4,26 +4,22 @@
 
 package frc.robot;
 
-import frc.robot.Constants.ArmConstants.OperatorConstants;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimToTarget;
-import frc.robot.commands.Collect;
 import frc.robot.commands.DriveToTarget;
-import frc.robot.commands.Eject;
-import frc.robot.commands.MoveArm;
-import frc.robot.commands.MoveToDegree;
-import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Stay;
 import frc.robot.commands.autonomous_commands.AimShooterToSpeaker;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Shooter;
 import frc.utils.FieldPosUtils;
 import frc.utils.PoseEstimatorUtils;
 
@@ -55,7 +51,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final Collector collector = Collector.getInstance();
-  private final Shooter shooter = Shooter.GetInstance();
+  private final Shooter shooter = Shooter.getInstance();
   private final Arm arm = Arm.getInstance();
   private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils();
   private final LimeLight limeLight = new LimeLight();
@@ -87,6 +83,10 @@ private final Stay stay = new Stay(arm);
                 -MathUtil.applyDeadband(m_driverController.getRightX() * 1, OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
+    SmartDashboard.putNumber("Robot Container Left X: ", m_driverController.getLeftX() * 0.5);
+    SmartDashboard.putNumber("Robot Container Left Y: ", m_driverController.getLeftY() * 0.5);
+    SmartDashboard.putNumber("Robot Container Right x: ", m_driverController.getRightX() * 0.5);
+
   }
 
   /**
@@ -105,8 +105,11 @@ private final Stay stay = new Stay(arm);
     // collectBtn.toggleOnTrue(new Collect(collector, false));
     // JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
     // ejectBtn.whileTrue(new Eject(collector));
+    JoystickButton shootButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+    shootButton.whileTrue(new Shoot(shooter));
     // JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
-    // shooterBtn.whileTrue(new Shoot(shooter));
+    //shooterBtn.onTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 1), new ParallelRaceGroup(new ShootForTime(shooter, 1), new CollectForTime(collector, 1))));
+    // shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
     // JoystickButton collectToShoot = new JoystickButton(m_driverController, OperatorConstants.kCollectToShootBtn);
     // collectToShoot.whileTrue(new Collect(collector,true));
     // JoystickButton RaiseButton = new JoystickButton(m_operatorController, PS4Controller.Button.kR1.value);

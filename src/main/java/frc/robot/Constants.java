@@ -17,15 +17,15 @@ import edu.wpi.first.math.controller.PIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
-
+  /**
+   * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+   * constants. This class should not be used for any other purpose. All constants should be declared
+   * globally (i.e. public static). Do not put anything functional in this class.
+   *
+   * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+   * constants are needed, to reduce verbosity.
+   */
 public final class Constants {
-  public static final class CollectorConstants {
-    public static final int COLLECTOR_PORT = 15;
-    public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
-
-    public static final double COLLECTOR_SPEED = 0.7;
-  }
-
   public static class ModuleConstants
   {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
@@ -124,7 +124,12 @@ public final class Constants {
   public static final class ShooterConstants{
     public static final int SHOOTER_MASTER_PORT = 14;
     public static final int SHOOTER_SLAVE_PORT = 13;
-    public static final double SHOOT_SPEED = 1;
+    public static final int SHOOTER_ENCODER_PORT_A = 1;
+    public static final int SHOOTER_ENCODER_PORT_B = 2;
+    public static final double SHOOTER_DISTANCE_PER_PULSE = 1.0/2048;
+	public static final double kP = 0.08;// FIXME: correct the value
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 
   public final class ArmConstants {
@@ -188,100 +193,28 @@ public final class Constants {
     public static int DEGREES_TO_ENCODER(int degrees) {
         return degrees * (DEADAXIS_ENCODER_MAX_COUNT / MAX_DEGREES);
     }
-    public static class DistanceToAngle{
-      public static final double m = 2.169;
-      public static final double constant = 19.347;
-    }
-    public static class OperatorConstants {
-      public static final int kDriverControllerPort = 0;
-      public static final int kOperatorControllerPort = 1;
+}
+public static class DistanceToAngle{
+  public static final double m = 2.169;
+  public static final double constant = 19.347;
+}
+public static class OperatorConstants {
+  public static final int kDriverControllerPort = 0;
+  public static final int kOperatorControllerPort = 1;
 
-      public static final double kDriveDeadband = 0.05;
+  public static final double kDriveDeadband = 0.05;
 
-      public static final int kCollectBtn = XboxController.Button.kA.value;
-      public static final int kEjectBtn = XboxController.Button.kB.value;
-      public static final int kShootBtn = XboxController.Button.kY.value;
-      public static final int kCollectToShootBtn = XboxController.Button.kX.value;
-    }
-    public static final class CollectorConstants {
-    public static final int COLLECTOR_PORT = 15;
-    public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
+  public static final int kCollectBtn = XboxController.Button.kA.value;
+  public static final int kEjectBtn = XboxController.Button.kB.value;
+  public static final int kShootBtn = XboxController.Button.kY.value;
+  public static final int kCollectToShootBtn = XboxController.Button.kX.value;
+}
+public static final class CollectorConstants {
+public static final int COLLECTOR_PORT = 15;
+public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
 
-    public static final double COLLECTOR_SPEED = 0.7;
-  }
-
-  public static class ModuleConstants
-  {
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
-    // This changes the drive speed of the module (a pinion gear with more teeth will result in a
-    // robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 14;
-
-    // Invert the turning encoder, since the output shaft rotates in the opposite direction of
-    // the steering motor in the MAXSwerve Module.
-    public static final boolean kTurningEncoderInverted = true;
-
-    // Calculations required for driving motor conversion factors and feed forward
-    public static final double kFreeSpeedRpm = 5676;
-    public static final double kDrivingMotorFreeSpeedRps = kFreeSpeedRpm / 60; 
-    public static final double kWheelDiameterMeters = 0.0762;
-    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
-
-    public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
-        / kDrivingMotorReduction; // meters
-    public static final double kDrivingEncoderVelocityFactor = ((kWheelDiameterMeters * Math.PI)
-        / kDrivingMotorReduction) / 60.0; // meters per second
-
-    public static final double kTurningEncoderPositionFactor = (2 * Math.PI); // radians
-    public static final double kTurningEncoderVelocityFactor = (2 * Math.PI) / 60.0; // radians per second
-
-    public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
-    public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
-
-    public static final double kDrivingP = 0.04;
-    public static final double kDrivingI = 0;
-    public static final double kDrivingD = 0;
-    public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
-    public static final double kDrivingMinOutput = -1;
-    public static final double kDrivingMaxOutput = 1;
-
-    public static final double kTurningP = 1;
-    public static final double kTurningI = 0;
-    public static final double kTurningD = 0;
-    public static final double kTurningFF = 0;
-    public static final double kTurningMinOutput = -1;
-    public static final double kTurningMaxOutput = 1;
-
-    public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
-    public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
-
-    public static final int kDrivingMotorCurrentLimit = 50; // amps 
-    public static final int kTurningMotorCurrentLimit = 20; // amps
-  }
-
-
-    
-
-  public static final class ShooterConstants{
-    public static final int SHOOTER_MASTER_PORT = 14;
-    public static final int SHOOTER_SLAVE_PORT = 13;
-    public static final double SHOOT_SPEED = 1;
-  }
-   
-  }
-
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
+public static final double COLLECTOR_SPEED = 0.7;
+}
 
   public static final class AutoConstants {
       public static final double kMaxSpeedMetersPerSecond = 2; // Can go up to 3, for safety and accuracy only 2 at the

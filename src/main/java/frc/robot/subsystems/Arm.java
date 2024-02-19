@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
      * @return the angle that the arm needs to be
      */
     public double getArmAngle(double distance){
-        return Constants.ArmConstants.DistanceToAngle.m * distance + Constants.ArmConstants.DistanceToAngle.constant;
+        return Constants.DistanceToAngle.m * distance + Constants.DistanceToAngle.constant;
     }
     public void reachArmPosition(double distance){
         double degreesToTarget = getArmAngle(distance);
