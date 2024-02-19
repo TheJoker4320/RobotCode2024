@@ -323,4 +323,15 @@ public class DriveSubsystem extends SubsystemBase
     return DriveConstants.kDriveKinematics.toChassisSpeeds(currentStates);
   }
 
+  public void setModulesDirection(Double angle)
+  {
+    SwerveModuleState[] desiredStates = new SwerveModuleState[4];
+    desiredStates[0] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[1] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[2] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[3] = new SwerveModuleState(0, new Rotation2d(angle));
+
+    setModuleStates(desiredStates);
+  }
+
 }
