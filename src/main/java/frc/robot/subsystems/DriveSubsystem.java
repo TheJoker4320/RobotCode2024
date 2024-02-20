@@ -25,83 +25,86 @@ import frc.utils.SwerveUtils;
 public class DriveSubsystem extends SubsystemBase 
 {
   private static DriveSubsystem driveSubsystem;
-
+  private double inputMultiplier = 1;
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
-      DriveConstants.kFrontLeftDrivingCanId,
-      DriveConstants.kFrontLeftTurningCanId,
-      DriveConstants.kFrontLeftChassisAngularOffset,
-      false);
+    DriveConstants.kFrontLeftDrivingCanId,
+    DriveConstants.kFrontLeftTurningCanId,
+    DriveConstants.kFrontLeftChassisAngularOffset,
+    false);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
-      DriveConstants.kFrontRightDrivingCanId,
-      DriveConstants.kFrontRightTurningCanId,
-      DriveConstants.kFrontRightChassisAngularOffset,
-      false);
-
-  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    DriveConstants.kFrontRightDrivingCanId,
+    DriveConstants.kFrontRightTurningCanId,
+    DriveConstants.kFrontRightChassisAngularOffset,
+    false);
+    
+    private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
       DriveConstants.kBackLeftChassisAngularOffset,
       false);
-
-  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-      DriveConstants.kRearRightDrivingCanId,
-      DriveConstants.kRearRightTurningCanId,
-      DriveConstants.kBackRightChassisAngularOffset,
-      false);
+      
+      private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+        DriveConstants.kRearRightDrivingCanId,
+        DriveConstants.kRearRightTurningCanId,
+        DriveConstants.kBackRightChassisAngularOffset,
+        false);
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-
+  
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
-
+  
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-      DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(0),
-      new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
+    DriveConstants.kDriveKinematics,
+    Rotation2d.fromDegrees(0),
+    new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      });
-
-  /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() 
-  {
-    //Zeroes heading.
-    //TODO: This constructor might require changing since its not guranteed we zero the angle here.
-    zeroHeading();
-  }
-
-  @Override
-  public void periodic() {
-    // Update the odometry in the periodic block
-    m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getYaw()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
+        });
+        
+        /** Creates a new DriveSubsystem. */
+        public DriveSubsystem() 
+        {
+          //Zeroes heading.
+          //TODO: This constructor might require changing since its not guranteed we zero the angle here.
+          zeroHeading();
+        }
+        
+        @Override
+        public void periodic() {
+          // Update the odometry in the periodic block
+          m_odometry.update(
+            Rotation2d.fromDegrees(m_gyro.getYaw()),
+            new SwerveModulePosition[] {
+              m_frontLeft.getPosition(),
+              m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-        });
-
+          });
+          
     SmartDashboard.putNumber("Robot heading", m_gyro.getYaw());
   }
-
+  
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.zeroYaw();
   }
-
+  public void setInputMultiplier(double inputMultiplier){
+    this.inputMultiplier = inputMultiplier;
+  }
+  
   /**
    * Returns the currently-estimated pose of the robot.
    *
@@ -156,6 +159,10 @@ public class DriveSubsystem extends SubsystemBase
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) 
   {
+    xSpeed = xSpeed * inputMultiplier;
+    ySpeed = ySpeed * inputMultiplier;
+    rot = rot * inputMultiplier;
+
     double xSpeedCommanded;
     double ySpeedCommanded;
 
