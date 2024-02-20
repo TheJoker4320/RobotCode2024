@@ -13,11 +13,12 @@ public class MoveArmToLimelightDegree extends Command {
   private Arm arm;
   private LimeLight limeLight;
   private PIDController pidController;
+  double output;
   public MoveArmToLimelightDegree(Arm arm, LimeLight limeLight) {
     this.arm = arm;
     this.limeLight = limeLight;
     pidController = new PIDController(0.1, 0, 0);
-    pidController.setTolerance(0.5);
+    pidController.setTolerance(1);
     addRequirements(arm);
   }
 
@@ -30,7 +31,7 @@ public class MoveArmToLimelightDegree extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pidController.calculate(arm.getPosition());
+    output = pidController.calculate(arm.getPosition());
     output = output > 0.2 ? 0.2 : output;
     output = output < -0.2 ? -0.2 : output;
     arm.setSpeed(output);
@@ -43,6 +44,6 @@ public class MoveArmToLimelightDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return pidController.atSetpoint() || (output < 0 && arm.getPosition() > 350);
   }
 }

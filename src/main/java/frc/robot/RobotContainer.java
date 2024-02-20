@@ -10,6 +10,7 @@ import frc.robot.commands.AimToTarget;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
 import frc.robot.commands.MoveArm;
+import frc.robot.commands.MoveArmToLimelightDegree;
 import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
@@ -108,8 +109,10 @@ public class RobotContainer {
     // LowerButton.whileTrue(new MoveArm(arm, true));
     // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
-    JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, XboxController.Button.kA.value);
-
+    JoystickButton btnAim = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+    btnAim.onTrue(new MoveArmToLimelightDegree(arm, limeLight));
+    JoystickButton StayBtn = new JoystickButton(m_driverController, XboxController.Button.kB.value);
+    StayBtn.whileTrue(stay);
     
   }
 
