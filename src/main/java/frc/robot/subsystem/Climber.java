@@ -16,10 +16,11 @@ public class Climber extends SubsystemBase {
   private RelativeEncoder encoder;
   private static Climber climberInstance;
   public Climber() {
-    masterMotor = new CANSparkMax(9, MotorType.kBrushless);
-    slaveMotor = new CANSparkMax(10, MotorType.kBrushless);
+    masterMotor = new CANSparkMax(11, MotorType.kBrushless);
+    slaveMotor = new CANSparkMax(12, MotorType.kBrushless);
+    masterMotor.setInverted(true);
     encoder = masterMotor.getEncoder();
-    slaveMotor.follow(masterMotor);
+    slaveMotor.follow(masterMotor, true);
   }
   public void elevate(double speed){
     masterMotor.set(speed);
