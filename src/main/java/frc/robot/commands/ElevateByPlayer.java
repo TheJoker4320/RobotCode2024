@@ -9,8 +9,9 @@ import frc.robot.subsystem.Climber;
 
 public class ElevateByPlayer extends Command {
   private Climber climber;
-  public ElevateByPlayer() {
-    climber = Climber.getClimberInstance();
+  public ElevateByPlayer(Climber climber) {
+    this.climber = climber;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
