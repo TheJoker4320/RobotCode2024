@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 
 import java.util.Map;
@@ -176,8 +177,8 @@ public final class Constants {
     public static final double MEASURING_TIME = 0.3;
     public static final double QUICK_OPEN_TIME = 1.2;
     public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
-    public static int MAX_DEGREES = 80;
-    public static int MIN_DEGREES = 5;
+    public static int MAX_DEGREES = 90;
+    public static int MIN_DEGREES = 3;
     public static double DESIRED_DEGREE = 35;
     public static final double ENCODER_OFFSET = 40;
 
@@ -204,10 +205,13 @@ public static class OperatorConstants {
 
   public static final double kDriveDeadband = 0.05;
 
-  public static final int kCollectBtn = XboxController.Button.kA.value;
-  public static final int kEjectBtn = XboxController.Button.kB.value;
-  public static final int kShootBtn = XboxController.Button.kY.value;
-  public static final int kCollectToShootBtn = XboxController.Button.kX.value;
+  public static final int kCollectBtn = PS4Controller.Button.kCross.value;
+  public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
+  public static final int kShootBtn = PS4Controller.Button.kR1.value;
+  public static final int kRaiseBtn = PS4Controller.Button.kR2.value;
+  public static final int kLowerBtn = PS4Controller.Button.kL2.value;
+  public static final int kAimArmToSpeaker = PS4Controller.Button.kL1.value;
+  
 }
 public static final class CollectorConstants {
 public static final int COLLECTOR_PORT = 15;
