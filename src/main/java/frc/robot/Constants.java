@@ -128,8 +128,8 @@ public final class Constants {
     public static final int SHOOTER_ENCODER_PORT_A = 1;
     public static final int SHOOTER_ENCODER_PORT_B = 2;
     public static final double SHOOTER_DISTANCE_PER_PULSE = 1.0/2048;
-	public static final double kP = 0.08;// FIXME: correct the value
-    public static final double kI = 0;
+	public static final double kP = 0.34;// FIXME: correct the value
+    public static final double kI = 0.05;
     public static final double kD = 0;
   }
 
@@ -186,7 +186,15 @@ public final class Constants {
     public static double MAX_NOT_SAVE_DEGREES = 35;
 
     public static final double CLAW_TOUCH_OBJECT_SECONDS = 0.2;
-
+	public static double getArmAngle(double distance)
+	{
+		return -4.18+
+		0.0842 * distance+
+		2.56 * Math.pow(10,-3) * Math.pow(distance, 2) +
+		-2.03 * Math.pow(10, -5) * Math.pow(distance, 3) +
+		6.24 * Math.pow(10, -8) * Math.pow(distance, 4) +
+		-6.95 * Math.pow(10, -11) * Math.pow(distance, 5);
+	}
     public static int ENCODER_TO_DEGREES(int encoderCount) {
         return encoderCount * (MAX_DEGREES / DEADAXIS_ENCODER_MAX_COUNT);
     }
@@ -204,7 +212,10 @@ public static class OperatorConstants {
   public static final int kOperatorControllerPort = 1;
 
   public static final double kDriveDeadband = 0.05;
-
+	public static final int kZeroHeading = XboxController.Button.kLeftBumper.value; //LB
+	public static final int kSlow = XboxController.Button.kBack.value; //RT
+	public static final int kModerate = XboxController.Button.kStart.value; //LT
+	
   public static final int kCollectBtn = PS4Controller.Button.kCross.value;
   public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
   public static final int kShootBtn = PS4Controller.Button.kR1.value;
@@ -244,14 +255,14 @@ public static final double COLLECTOR_SPEED = 0.7;
       public static final double AIMING_KP = 0.004;
       public static final double AIMING_KI = 0.003;
       public static final double AIMING_KD = 0;
-      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0; // how many degrees back is your limelight rotated
+      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 30.2; // how many degrees back is your limelight rotated
                                                                     // from perfectly vertical
-      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 27; // distance from the center of the Limelight lens to
+      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 37.5; // distance from the center of the Limelight lens to
                                                                  // the floor
-      public static final double GOAL_HEIGHT_CM = 74.6; // distance from the target to the floor
+      public static final double GOAL_HEIGHT_CM = 145.7; // distance from the target to the floor
 
-    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 16.2;
-    public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; // distance from target in to calibrate
+    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 30.5;
+    public static final double distanceFromRobotToGoalCentimetersPreset = 92; // distance from target in to calibrate
                                                                                  // the LimeLight mount angle
 
 }

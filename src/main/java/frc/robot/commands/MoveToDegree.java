@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
@@ -32,6 +33,7 @@ public class MoveToDegree extends Command {
     output = 0.1 < output ? 0.1 : output;
     output = -0.1 > output ? -0.1 : output;
     arm.setSpeed(output);
+    SmartDashboard.putNumber("desired angle", degree);
   }
 
   // Called once the command ends or is interrupted.

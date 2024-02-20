@@ -56,9 +56,8 @@ public class Arm extends SubsystemBase {
     public double getArmAngle(double distance){
         return Constants.DistanceToAngle.m * distance + Constants.DistanceToAngle.constant;
     }
-    public void reachArmPosition(double distance){
-        double degreesToTarget = getArmAngle(distance);
-        currentPid.setReference(degreesToTarget, ControlType.kPosition); 
+    public void setSetpoint(double setPoint){
+        currentPid.setReference(setPoint, ControlType.kPosition); 
     }
     public boolean isDegreesReached(double degrees){
        return Math.abs(encoder.getPosition() - degrees) < Constants.ArmConstants.CUREENTPID_TOLORANCE;

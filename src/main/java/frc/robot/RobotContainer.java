@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
@@ -11,6 +12,7 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
+import frc.robot.commands.SlowMode;
 import frc.robot.commands.autonomousCommands.AimShooterToSpeaker;
 import frc.robot.commands.autonomousCommands.AimToTarget;
 import frc.robot.commands.autonomousCommands.DriveToTarget;
@@ -66,10 +68,10 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
+  private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, null);
   private final AimShooterToSpeaker aimShooterToSpeaker = new AimShooterToSpeaker(arm, limeLight);
-private final Stay stay = new Stay(arm);
+  private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
@@ -85,9 +87,9 @@ private final Stay stay = new Stay(arm);
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY() * 1, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX() * 1, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX() * 1, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
     SmartDashboard.putNumber("Robot Container Left X: ", m_driverController.getLeftX() * 0.5);
@@ -106,14 +108,19 @@ private final Stay stay = new Stay(arm);
    * joysticks}.
    */
   private void configureBindings() {
-    JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
+    JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeading);
     resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
+    JoystickButton slowSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kSlow);
+    slowSpeedBtn.whileTrue(new SlowMode(m_robotDrive, 0.3));
+    JoystickButton moderateSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kModerate);
+    moderateSpeedBtn.whileTrue(new SlowMode(m_robotDrive, 0.7));
+
     JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector, false));
     JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Eject(collector));
     JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
-    shooterBtn.toggleOnTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true)));
+    shooterBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true))));
     JoystickButton prepareShooter = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     prepareShooter.whileTrue(new ShootMaintainSpeed(shooter, 60));
     // shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
@@ -124,7 +131,10 @@ private final Stay stay = new Stay(arm);
     JoystickButton LowerButton = new JoystickButton(m_operatorController, OperatorConstants.kLowerBtn);
     LowerButton.whileTrue(new MoveArm(arm, true));
     JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, OperatorConstants.kAimArmToSpeaker);
-    MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 10).andThen(new Stay(arm)));
+    MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, ArmConstants.getArmAngle(limeLight.getTrueDistance())).andThen(new Stay(arm)));
+    JoystickButton stayBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kShare.value);
+    stayBtn.toggleOnTrue(new Stay(arm));
+
     JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, 2);
     //btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
 
