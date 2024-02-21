@@ -5,29 +5,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Climber;
+import frc.robot.Constants.CollectorConstants;
+import frc.robot.subsystems.Collector;
 
-public class ElevateByPlayer extends Command {
-  private Climber climber;
-  public ElevateByPlayer(Climber climber) {
-    this.climber = climber;
-    addRequirements(climber);
+public class Eject extends Command {
+  /** Creates a new Collect. */
+  private Collector m_Collector;
+
+  public Eject(Collector m_collector) {
+    this.m_Collector = m_collector;
+    addRequirements(m_collector);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.elevate(0.5);
+    m_Collector.setSpeed(-CollectorConstants.COLLECTOR_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climber.elevate(0);
+    m_Collector.setSpeed(0);
   }
 
   // Returns true when the command should end.
