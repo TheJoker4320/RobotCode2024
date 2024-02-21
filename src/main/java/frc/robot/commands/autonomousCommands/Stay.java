@@ -11,12 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
 public class Stay extends Command {
-  private final PIDController CURRENT_PID;
   private final Arm arm;
-
+  private double desiredAngle;
   public Stay(Arm arm) {
     this.arm = arm;
-    CURRENT_PID = new PIDController(0.075, 0, 0);
     addRequirements(arm);
   }
 
@@ -24,23 +22,25 @@ public class Stay extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    CURRENT_PID.setSetpoint(arm.getPosition());
+    desiredAngle = arm.getPosition();
+    arm.setSetpoint(arm.getPosition());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ArmPosition = arm.getPosition();
-    double output = CURRENT_PID.calculate(ArmPosition);
-    output = output > 0.1 ? 0.1 : output;
-    output = -0.1 > output ? -0.1 : output;
-    arm.setSpeed(output);
+    arm.setSetpoint(desiredAngle);
+    // double ArmPosition = arm.getPosition();
+    // double output = CURRENT_PID.calculate(ArmPosition);
+    // output = output > 0.1 ? 0.1 : output;
+    // output = -0.1 > output ? -0.1 : output;
+    // arm.setSpeed(output);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    arm.setSpeed(0);
+    arm.stop();
   }
 
   // Returns true when the command should end.

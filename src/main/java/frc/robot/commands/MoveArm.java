@@ -2,9 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
 
-import static frc.robot.Constants.ArmConstants.MAX_DEGREES;
-import static frc.robot.Constants.ArmConstants.MIN_DEGREES;
-import static frc.robot.Constants.ArmConstants.OPEN_SPEED;
+import frc.robot.Constants.ArmConstants;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,22 +24,27 @@ public class MoveArm extends Command {
     @Override
     public void execute() {
         int reversed = isReversed ? -1 : 1;
-        if (!((arm.getPosition() > MAX_DEGREES && !isReversed && arm.getPosition() < 350) || (arm.getPosition() < MIN_DEGREES && isReversed)));
-            arm.setSpeed(OPEN_SPEED * reversed);
-        SmartDashboard.putNumber("speed", OPEN_SPEED * reversed);
+        if (!((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
+                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed)))
+            ;
+        arm.setSpeed(ArmConstants.SPEED * reversed);
+        SmartDashboard.putNumber("speed", ArmConstants.SPEED * reversed);
         SmartDashboard.putBoolean("isReversed", isReversed);        
-        SmartDashboard.putBoolean("Stopped", (arm.getPosition() > MAX_DEGREES && !isReversed && arm.getPosition() < 350));
-        SmartDashboard.putBoolean("Stopped1", (arm.getPosition() < MIN_DEGREES && isReversed));
+        SmartDashboard.putBoolean("Stopped",
+                (arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350));
+        SmartDashboard.putBoolean("Stopped1", (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
 
-    }
-
-    @Override
-    public boolean isFinished(){
-        return ((arm.getPosition() > MAX_DEGREES && !isReversed && arm.getPosition() < 350) || (arm.getPosition() < MIN_DEGREES && isReversed));
     }
 
     @Override
     public void end(boolean interrupted) {
         arm.stop();
     }
+
+    @Override
+    public boolean isFinished() {
+        return ((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
+                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
+    }
+
 }

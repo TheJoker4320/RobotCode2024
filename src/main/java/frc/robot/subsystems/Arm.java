@@ -14,133 +14,115 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
-  /** Creates a new Arm. */
-  private final CANSparkMax OwnerMotor;
-  private final CANSparkMax SlaveMotor;
-  private final AbsoluteEncoder encoder;
-  private final SparkPIDController currentPid;
-  private static Arm instance;
-  public Arm() {
-    // Initialize the Arm motor
-    OwnerMotor = new CANSparkMax(Constants.ArmConstants.MOTOR_ID2, Constants.ArmConstants.MOTOR_TYPE);
-    SlaveMotor = new CANSparkMax(Constants.ArmConstants.MOTOR_ID1, Constants.ArmConstants.MOTOR_TYPE);
-    OwnerMotor.restoreFactoryDefaults();
-    SlaveMotor.restoreFactoryDefaults();
-    SlaveMotor.follow(OwnerMotor, true);
-    OwnerMotor.setSmartCurrentLimit(Constants.ArmConstants.CLAW_CURRENT_LIMIT);
-    OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+	/** Creates a new Arm. */
+	private final CANSparkMax OwnerMotor;
+	private final CANSparkMax SlaveMotor;
+	private final AbsoluteEncoder encoder;
+	private final SparkPIDController pidController;
+	private static Arm instance;
 
-    // Initialize the Arm encoder
-    encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    encoder.setPositionConversionFactor(Constants.ArmConstants.CONVERT_RATE);
-    encoder.setZeroOffset(Constants.ArmConstants.ENCODER_OFFSET + 2);
-    encoder.setInverted(true);
+	public Arm() {
+		// Initialize the Arm motor
+		OwnerMotor = new CANSparkMax(ArmConstants.MOTOR_ID2, ArmConstants.MOTOR_TYPE);
+		SlaveMotor = new CANSparkMax(ArmConstants.MOTOR_ID1, ArmConstants.MOTOR_TYPE);
+		OwnerMotor.restoreFactoryDefaults();
+		SlaveMotor.restoreFactoryDefaults();
+		SlaveMotor.follow(OwnerMotor, true);
+		OwnerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
+		OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    // Initialize the PID controller for Arm current control
-    currentPid = OwnerMotor.getPIDController();
-    currentPid.setFeedbackDevice(OwnerMotor.getEncoder());
+		// Initialize the Arm encoder
+		encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
+		encoder.setPositionConversionFactor(ArmConstants.CONVERT_RATE);
+		encoder.setZeroOffset(ArmConstants.ENCODER_OFFSET);
+		encoder.setInverted(true);
 
-    currentPid.setP(Constants.ArmConstants.CURRENTPID_P);
-    currentPid.setI(Constants.ArmConstants.CURRENTPID_I);
-    currentPid.setD(Constants.ArmConstants.CURRENTPID_D);
-    setPidController(Constants.ArmConstants.CURRENT_PID);
-    }
-    
-    /**
-     * the angle that the arm needs to be in in order to shoot to speaker
-     * @param distance distance from robot to apriltag
-     * @return the angle that the arm needs to be
-     */
-    public double getArmAngle(double distance){
-        return Constants.DistanceToAngle.m * distance + Constants.DistanceToAngle.constant;
-    }
-    public void setSetpoint(double setPoint){
-        currentPid.setReference(setPoint, ControlType.kPosition); 
-    }
-    public boolean isDegreesReached(double degrees){
-       return Math.abs(encoder.getPosition() - degrees) < Constants.ArmConstants.CUREENTPID_TOLORANCE;
-    } 
+		// Initialize the PID controller for Arm current control
+		pidController = OwnerMotor.getPIDController();
+		pidController.setFeedbackDevice(OwnerMotor.getEncoder());
 
-    public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("encoder", encoder.getPosition());
-    }
+		pidController.setI(ArmConstants.CURRENTPID_I);
+		pidController.setD(ArmConstants.CURRENTPID_D);
+		pidController.setP(ArmConstants.CURRENTPID_P);
+		pidController.setSmartMotionAllowedClosedLoopError(ArmConstants.CUREENTPID_TOLORANCE, 0);
+		// setPidController(Constants.ArmConstants.CURRENT_PID);
+	}
 
-    public static Arm getInstance(){
-      if (instance == null)
-        instance = new Arm();
-      return instance;
-    }
+	public static Arm getInstance() {
+		if (instance == null)
+			instance = new Arm();
+		return instance;
+	}
 
-    public SparkPIDController getCurrentPidController() {
-        return currentPid;
-    }
+	public boolean atSetpoint(double desiredAngle) {
+		return desiredAngle <= getPosition() + pidController.getSmartMotionAllowedClosedLoopError(0)
+				&& desiredAngle >= getPosition() - pidController.getSmartMotionAllowedClosedLoopError(0);
+	}
 
-    public void setSpeed(double speed) {
-        OwnerMotor.set(speed);
-    }
+	public void setSetpoint(double setPoint) {
+		pidController.setReference(setPoint, ControlType.kPosition);
+	}
 
-    // Stop the Arm motor by setting the speed to 0
-    public void stop() {
-        setSpeed(0);
-    }
+	public SparkPIDController getPidController() {
+		return pidController;
+	}
 
-    // Get the Arm components
-    
-    // public void setIdleMode(IdleMode idleMode){
-    //   OwnerMotor.setIdleMode(idleMode);
-    //   SlaveMotor.setIdleMode(idleMode);
-    // }
+	public void setSpeed(double speed) {
+		OwnerMotor.set(speed);
+	}
 
-    // Set the PID controller gains for the Arm
-    public void setPidController(PIDController terms) {
-        getCurrentPidController().setP(terms.getP());
-        getCurrentPidController().setI(terms.getI());
-        getCurrentPidController().setD(terms.getD());
-        SlaveMotor.getPIDController().setP(terms.getP());
-        SlaveMotor.getPIDController().setI(terms.getI());
-        SlaveMotor.getPIDController().setD(terms.getD());
+	// Stop the Arm motor by setting the speed to 0
+	public void stop() {
+		setSpeed(0);
+	}
 
-    }
+	// Set the PID controller gains for the Arm
+	public void setPidController(PIDController terms) {
+		getPidController().setP(terms.getP());
+		getPidController().setI(terms.getI());
+		getPidController().setD(terms.getD());
 
-    // Set the current for the Arm motor
-    // public void setCurrent(double current) {
-    //     OwnerMotor.getPIDController().setReference(current, CANSparkMax.ControlType.kCurrent);
-    //     OwnerMotor.getPIDController().setReference(current, CANSparkMax.ControlType.kCurrent);
-    // }
+		// TODO: check if it's possible to set PID only for master motor
+		// SlaveMotor.getPIDController().setP(terms.getP());
+		// SlaveMotor.getPIDController().setI(terms.getI());
+		// SlaveMotor.getPIDController().setD(terms.getD());
 
+	}
+	// Set the position for the Arm motor
+	// public void setMotorPosition(double distance) {
+	// getPidController().setReference(distance, ControlType.kPosition);
 
-    // Set the position for the Arm motor
-    public void setMotorPosition(double distance) {
-        getCurrentPidController().setReference(distance, CANSparkMax.ControlType.kPosition);
-        SlaveMotor.getPIDController().setReference(distance, CANSparkMax.ControlType.kPosition);
-    }
+	// // TODO: check if it's possible to setreference only for master motor
+	// //SlaveMotor.getPIDController().setReference(distance,
+	// ControlType.kPosition);
+	// }
 
-    // Check if the Arm motor is on target position
-    public boolean isOnTarget(double distance) {
-        return distance < getPosition();
-    }
+	// Get the current position of the Arm motor
+	public double getPosition() {
+		return encoder.getPosition();
+	}
 
-    // Get the current position of the Arm motor
-    public double getPosition() {
-        return encoder.getPosition();
-    }
+	// Get the current of the Arm motor
+	public double getCurrent() {
+		return OwnerMotor.getOutputCurrent();
+	}
 
-    // Get the current of the Arm motor
-    public double getCurrent() {
-        return OwnerMotor.getOutputCurrent();
-    }
+	// Get the temperature of the Arm motor
+	public double getTemp() {
+		return OwnerMotor.getMotorTemperature();
+	}
 
-    // Get the temperature of the Arm motor
-    public double getTemp() {
-        return OwnerMotor.getMotorTemperature();
-    }
+	// Get the applied output of the Arm motor
+	public double getAppliedOutput() {
+		return OwnerMotor.getAppliedOutput();
+	}
 
-    // Get the applied output of the Arm motor
-    public double getAppliedOutput() {
-        return OwnerMotor.getAppliedOutput();
-    }
+	public void periodic() {
+		// This method will be called once per scheduler run
+		SmartDashboard.putNumber("encoder", encoder.getPosition());
+	}
 }
 
