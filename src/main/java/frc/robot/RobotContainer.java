@@ -14,8 +14,6 @@ import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.SlowMode;
-import frc.robot.commands.autonomousCommands.AimToTarget;
-import frc.robot.commands.autonomousCommands.DriveToTarget;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
 import frc.robot.commands.autonomousCommands.Stay;
@@ -29,7 +27,6 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.utils.FieldPosUtils;
 import frc.utils.PoseEstimatorUtils;
 
 import java.util.List;
@@ -61,6 +58,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Climber climber= Climber.getClimberInstance();
   private final Collector collector = Collector.getInstance();
   private final Shooter shooter = Shooter.getInstance();
@@ -69,10 +67,6 @@ public class RobotContainer {
   private final LimeLight limeLight = new LimeLight();
 
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
-  private final DriveToTarget driveToTarget = new DriveToTarget(m_robotDrive, m_poseEstimator, null);
-  private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
@@ -147,7 +141,7 @@ public class RobotContainer {
 
   /**
    * Returns the current alliance as a boolean,
-   * True reprsents the red alliance
+   * True represents the red alliance
    * False represents either not present or blue
    * 
    * @return Wether current alliance is red
