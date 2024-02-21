@@ -30,7 +30,6 @@ public class Shooter extends SubsystemBase {
     this.slave = new TalonSRX(Constants.ShooterConstants.SHOOTER_SLAVE_PORT);
     this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
         Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B, false);
-    encoder.setDistancePerPulse(Constants.ShooterConstants.SHOOTER_DISTANCE_PER_PULSE);
     encoder.reset();
     slave.follow(master);
   }

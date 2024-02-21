@@ -13,13 +13,11 @@ public class Collect extends Command {
   /** Creates a new Collect. */
   private Collector m_Collector;
   private Boolean m_isShoot;
-  private Timer m_timer;
   public Collect(Collector m_collector, boolean m_isShoot) {
     this.m_Collector = m_collector;
     this.m_isShoot = m_isShoot;
     addRequirements(m_collector);
-    m_timer = new Timer();
-    // Use addRequirements() here to declare subsystem dependencies.
+    new Timer();
   }
 
   // Called when the command is initially scheduled.
