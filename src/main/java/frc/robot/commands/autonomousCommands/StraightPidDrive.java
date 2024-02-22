@@ -55,8 +55,8 @@ public class StraightPidDrive extends Command {
   public void execute() 
   {
     Pose2d currentPose2d = m_DriveSubsystem.getPose();
-    m_DriveSubsystem.drive(/*xAxis.calculate(currentPose2d.getX(), goal.getX()) / DriveConstants.kMaxSpeedMetersPerSecond*/0,
-                           yAxis.calculate(currentPose2d.getY(), goal.getY()) / DriveConstants.kMaxSpeedMetersPerSecond,
+    m_DriveSubsystem.drive(xAxis.calculate(currentPose2d.getX(), goal.getX()) / DriveConstants.kMaxSpeedMetersPerSecond,
+                           /*yAxis.calculate(currentPose2d.getY(), goal.getY()) / DriveConstants.kMaxSpeedMetersPerSecond*/0,
                            /*thetaAxis.calculate(currentPose2d.getRotation().getRadians(), goal.getRotation().getRadians()) / DriveConstants.kMaxAngularSpeed*/0,
                            true,
                            false);
@@ -82,6 +82,6 @@ public class StraightPidDrive extends Command {
     boolean timeRanOut = timer.get() >= this.timeout;
     SmartDashboard.putBoolean("Ran out of time - [" + id + "]", timeRanOut);
 
-    return (xAtSetpoint && yAtSetpoint && thetaAtSetpoint) || (timeRanOut);
+    return (xAtSetpoint/*&& yAtSetpoint && thetaAtSetpoint*/) || (timeRanOut);
   }
 }

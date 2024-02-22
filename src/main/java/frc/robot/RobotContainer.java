@@ -180,59 +180,17 @@ public class RobotContainer {
     //-----------------------
     //-----------------------
 
-    /*PIDController xPidController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController, AutoConstants.kDXController);
+    PIDController xPidController = new PIDController(AutoConstants.kPXController, AutoConstants.kIXController, AutoConstants.kDXController);
     PIDController yPidController = new PIDController(AutoConstants.kPYController, AutoConstants.kIYController, AutoConstants.kDYController);
     PIDController thetaPidController = new PIDController(AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController);
 
     return new ParallelRaceGroup(new WaitCommand(15), (
-           new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(0, 1, new Rotation2d(0)), 1)).andThen(
+           new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(0, 2, new Rotation2d(0)), 1)).andThen(
            new WaitCommand(1)).andThen(
            new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(0, 0, new Rotation2d(0)), 2))
-           );*/
+           );
 
     //-----------------------
     //-----------------------
-
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    //This trajectory is unneccesary right now - because we can create one instead using path planner
-    //----------------------------------------------------------------------------
-    //----------------------------------------------------------------------------
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(2, 0, new Rotation2d(0)),
-        config);
-    //----------------------------------------------------------------------------
-    //----------------------------------------------------------------------------
-
-    ProfiledPIDController thetaController = new ProfiledPIDController(/*AutoConstants.kPThetaController*/1, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(/*AutoConstants.kPXController*/1, 0, 0),
-        new PIDController(/*AutoConstants.kPYController*/1, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
   }
 }
