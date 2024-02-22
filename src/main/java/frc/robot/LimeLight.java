@@ -1,13 +1,18 @@
 package frc.robot;
 
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.LimeLightConstants;
 
 public class LimeLight {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -47,14 +52,30 @@ public class LimeLight {
         return (int) table.getEntry("tid").getInteger(0);
     }
 
-    public Pose3d getLimeLightBotPose(){
-        Double[] botpose = table.getEntry("botpose").getDoubleArray(new Double[6]);
-        Pose3d pose = new Pose3d(new Translation3d(botpose[0], botpose[1], botpose[2]),
-        new Rotation3d(botpose[3], botpose[4], botpose[5]));
-        return pose;
+    public Pose2d getLimeLightBotPose(){
+
+        double[] botpose;
+        if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+            botpose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[1]);
+        }
+        else{
+            botpose = table.getEntry("botpose_wpired").getDoubleArray(new double[1]);
+        }
+
+        double bot_x = botpose[0];
+        double bot_y = botpose[1];
+        double rotation_z = (botpose[5] + 360) % 360;
+        return new Pose2d(
+            new Translation2d(bot_x, bot_y), Rotation2d.fromDegrees(rotation_z)
+        );
+        //Pose3d pose = new Pose3d(new Translation3d(botpose[0], botpose[1], botpose[2]),
+        //new Rotation3d(botpose[3], botpose[4], botpose[5]));
+        //return pose;
     }
     public Pose3d getLimeLightObjectToRobotPose(){
-        Double[] targetposerobotspace = table.getEntry("targetpose_robotspace").getDoubleArray(new Double[6]);
+        if(!doesLimeLightHaveTargets())
+            return new Pose3d();
+        Double[] targetposerobotspace = table.getEntry("targetpose_robotspace").getDoubleArray(new Double[1]);
         Pose3d pose = new Pose3d(new Translation3d(targetposerobotspace[0], targetposerobotspace[1], targetposerobotspace[2]),
         new Rotation3d(targetposerobotspace[3], targetposerobotspace[4], targetposerobotspace[5]));
         return pose;
