@@ -13,7 +13,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
@@ -28,8 +27,6 @@ public class Arm extends SubsystemBase {
 		// Initialize the Arm motor
 		OwnerMotor = new CANSparkMax(ArmConstants.MOTOR_ID2, ArmConstants.MOTOR_TYPE);
 		SlaveMotor = new CANSparkMax(ArmConstants.MOTOR_ID1, ArmConstants.MOTOR_TYPE);
-		OwnerMotor.restoreFactoryDefaults();
-		SlaveMotor.restoreFactoryDefaults();
 		SlaveMotor.follow(OwnerMotor, true);
 		OwnerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
 		OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -42,13 +39,13 @@ public class Arm extends SubsystemBase {
 
 		// Initialize the PID controller for Arm current control
 		pidController = OwnerMotor.getPIDController();
-		pidController.setFeedbackDevice(OwnerMotor.getEncoder());
-
+		pidController.setFeedbackDevice(encoder);
+		
+		pidController.setP(ArmConstants.CURRENTPID_P);
 		pidController.setI(ArmConstants.CURRENTPID_I);
 		pidController.setD(ArmConstants.CURRENTPID_D);
-		pidController.setP(ArmConstants.CURRENTPID_P);
 		pidController.setSmartMotionAllowedClosedLoopError(ArmConstants.CUREENTPID_TOLORANCE, 0);
-		// setPidController(Constants.ArmConstants.CURRENT_PID);
+		//setPidController(ArmConstants.CURRENT_PID);
 	}
 
 	public static Arm getInstance() {
