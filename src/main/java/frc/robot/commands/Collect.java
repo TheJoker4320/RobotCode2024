@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
@@ -17,7 +16,6 @@ public class Collect extends Command {
     this.m_Collector = m_collector;
     this.m_isShoot = m_isShoot;
     addRequirements(m_collector);
-    new Timer();
   }
 
   // Called when the command is initially scheduled.
