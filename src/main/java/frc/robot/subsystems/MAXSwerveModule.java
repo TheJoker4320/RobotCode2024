@@ -89,7 +89,7 @@ public class MAXSwerveModule
         m_turningPIDController.setI(ModuleConstants.kTurningI);
         m_turningPIDController.setD(ModuleConstants.kTurningD);
         m_turningPIDController.setFF(ModuleConstants.kTurningFF);
-        m_turningPIDController.setIZone(0.06);
+        m_turningPIDController.setIZone(ModuleConstants.kIZone);
         m_turningPIDController.setOutputRange(ModuleConstants.kTurningMinOutput,ModuleConstants.kTurningMaxOutput); 
 
         // Set the idle modes and their smart current limiters
