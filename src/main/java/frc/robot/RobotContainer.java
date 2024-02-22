@@ -14,6 +14,7 @@ import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.SlowMode;
+import frc.robot.commands.autonomousCommands.AimToTarget;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
 import frc.robot.commands.autonomousCommands.Stay;
@@ -132,9 +133,9 @@ public class RobotContainer {
     JoystickButton stayBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kShare.value);
     stayBtn.toggleOnTrue(new Stay(arm));
 
-    JoystickButton btnAimAndShoot = new JoystickButton(m_driverController, 2);
+    JoystickButton btnAimAndShoot = new JoystickButton(m_operatorController, PS4Controller.Button.kL3.value);
     //btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
-
+    btnAimAndShoot.toggleOnTrue(new AimToTarget(m_robotDrive, limeLight));
     //JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
     //btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
   }
