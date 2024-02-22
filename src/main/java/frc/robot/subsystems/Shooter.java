@@ -31,6 +31,7 @@ public class Shooter extends SubsystemBase {
     this.encoder = new Encoder(Constants.ShooterConstants.SHOOTER_ENCODER_PORT_A,
         Constants.ShooterConstants.SHOOTER_ENCODER_PORT_B, false);
     encoder.reset();
+    encoder.setDistancePerPulse(1.0/2048);
     slave.follow(master);
   }
 
