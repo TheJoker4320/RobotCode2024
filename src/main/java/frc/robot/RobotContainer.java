@@ -185,7 +185,7 @@ public class RobotContainer {
     PIDController thetaPidController = new PIDController(AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController);
 
     return new ParallelRaceGroup(new WaitCommand(15), (
-           new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(0, 2, new Rotation2d(0)), 1)).andThen(
+           new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(2, 0, new Rotation2d(0)), 1)).andThen(
            new WaitCommand(1)).andThen(
            new StraightPidDrive(m_robotDrive, xPidController, yPidController, thetaPidController, new Pose2d(0, 0, new Rotation2d(0)), 2))
            );
