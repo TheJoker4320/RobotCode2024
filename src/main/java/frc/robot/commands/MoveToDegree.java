@@ -13,7 +13,6 @@ import frc.robot.subsystems.Arm;
 public class MoveToDegree extends Command {
   private Arm arm;
   private double desiredAngle;
-
   public MoveToDegree(Arm arm, double desiredAngle) {
     this.arm = arm;
     this.desiredAngle = desiredAngle;
