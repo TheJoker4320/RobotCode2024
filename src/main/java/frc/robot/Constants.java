@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.Map;
 
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -92,7 +94,7 @@ public final class Constants {
 		public static final double kDrivingMaxOutput = 1;
 
 		public static final double kTurningP = 1;
-		public static final double kTurningI = 0;
+		public static final double kTurningI = 0.002;
 		public static final double kTurningD = 0;
 		public static final double kTurningFF = 0;
 		public static final double kTurningMinOutput = -1;
@@ -157,7 +159,7 @@ public final class Constants {
 		public static final double kD = 0;
 	}
 
-	public final class ArmConstants {
+	public static class ArmConstants {
 
 		public static final double CONVERT_RATE = 360;
 		public static final double TOLERANCE = 2;
@@ -169,7 +171,7 @@ public final class Constants {
 		public static final int MOTOR_ID2 = 10;
 		public static final double VALUES_MULTIPLAYER = 1;
 
-		public static double CURRENTPID_P = 0.075;
+		public static double CURRENTPID_P = 0.03;
 		public static double CURRENTPID_I = 0;
 		public static double CURRENTPID_D = 0;
 		public static double CUREENTPID_TOLORANCE = 0.5;
@@ -180,17 +182,16 @@ public final class Constants {
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 42;
+		public static final double ENCODER_OFFSET = 316;
 
 
 		public static double getArmAngle(double distance) {
-			return 8;
-			// return -196 +
-			// 0.591 * distance +
-			// -6.65 * Math.pow(10,-4) * Math.pow(distance, 2) +
-			// +3.68 * Math.pow(10, -7) * Math.pow(distance, 3) +
-			// -9.82 * Math.pow(10, -11) * Math.pow(distance, 4) +
-			// 1.01 * Math.pow(10, -14) * Math.pow(distance, 5);
+			double angle = (-28.8 +
+			0.0707 * distance +
+			-4.56 * Math.pow(10,-5) * Math.pow(distance, 2) +
+			1.51 * Math.pow(10, -8) * Math.pow(distance, 3) +
+			-1.89 * Math.pow(10, -12) * Math.pow(distance, 4));
+			return angle;
 		}
 
 		public static int ENCODER_TO_DEGREES(int encoderCount) {
