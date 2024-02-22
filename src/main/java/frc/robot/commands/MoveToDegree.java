@@ -43,6 +43,6 @@ public class MoveToDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getPosition() > degree;
+    return arm.getPosition() > degree || arm.getPosition() < 3;
   }
 }

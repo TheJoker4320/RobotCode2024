@@ -10,8 +10,8 @@ import frc.robot.commands.AimToTarget;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
 import frc.robot.commands.MoveArm;
-import frc.robot.commands.MoveArmToLimelightDegree;
 import frc.robot.commands.MoveToDegree;
+import frc.robot.commands.MoveToLLDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Stay;
@@ -54,13 +54,10 @@ public class RobotContainer {
   private final Collector collector = Collector.getInstance();
   private final Shooter shooter = Shooter.GetInstance();
   private final Arm arm = Arm.getInstance();
-  private final LimeLight limeLight = new LimeLight();
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AimToTarget aimToTarget = new AimToTarget(m_robotDrive, limeLight);
   private final Shoot shoot = new Shoot(shooter);
-  private final Stay stay = new Stay(arm);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
@@ -76,9 +73,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY() * 1, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX() * 1, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX() * 1, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY() * 0.5, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX() * 0, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX() * 0, OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
   }
@@ -110,9 +107,7 @@ public class RobotContainer {
     // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
     JoystickButton btnAim = new JoystickButton(m_driverController, XboxController.Button.kA.value);
-    btnAim.onTrue(new MoveArmToLimelightDegree(arm, limeLight));
-    JoystickButton StayBtn = new JoystickButton(m_driverController, XboxController.Button.kB.value);
-    StayBtn.whileTrue(stay);
+    btnAim.whileTrue(new MoveToLLDegree(arm));
     
   }
 

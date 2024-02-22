@@ -307,13 +307,13 @@ public final class Constants {
       public static final double AIMING_KP = 0.004;
       public static final double AIMING_KI = 0.003;
       public static final double AIMING_KD = 0;
-      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 0; // how many degrees back is your limelight rotated
+      public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 30.2; // how many degrees back is your limelight rotated
                                                                     // from perfectly vertical
-      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 27; // distance from the center of the Limelight lens to
+      public static final double LIMELIGHT_LENSE_HEIGHT_CM = 37.5; // distance from the center of the Limelight lens to
                                                                  // the floor
-      public static final double GOAL_HEIGHT_CM = 74.6; // distance from the target to the floor
+      public static final double GOAL_HEIGHT_CM = 90; // distance from the target to the floor 145.7
 
-    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 16.2;
+    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 30.5;
     public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; // distance from target in to calibrate
                                                                                  // the LimeLight mount angle
 
