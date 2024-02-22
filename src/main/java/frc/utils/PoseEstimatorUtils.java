@@ -16,39 +16,47 @@ import frc.robot.LimeLight;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class PoseEstimatorUtils extends SubsystemBase {
+  private static PoseEstimatorUtils poseEstimatorUtils;
   private DriveSubsystem m_DriveSubsystem;
   private LimeLight limelight;
   private SwerveDrivePoseEstimator poseEstimator;
   private Pose2d position;
 
-  // public PoseEstimatorUtils() {
-  //   m_DriveSubsystem = new DriveSubsystem();
-  //   limelight = new LimeLight();
-  //   poseEstimator = new SwerveDrivePoseEstimator(
-  //     Constants.DriveConstants.kDriveKinematics,
-  //     m_DriveSubsystem.getPose().getRotation(),
-  //   m_DriveSubsystem.getModulePosition(), 
-  //   limelight.getLimeLightBotPose().toPose2d(),
-  //   VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(5)),
-  //   VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10)));
-  // }
+  public PoseEstimatorUtils(DriveSubsystem m_DriveSubsystem, LimeLight limeLight) {
+    this.m_DriveSubsystem = m_DriveSubsystem;
+    this.limelight = limeLight;
+    poseEstimator = new SwerveDrivePoseEstimator(
+      Constants.DriveConstants.kDriveKinematics,
+      m_DriveSubsystem.getPose().getRotation(),
+    m_DriveSubsystem.getModulePosition(), 
+    limelight.getLimeLightBotPose(),
+    VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(5)),
+    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10)));
+  }
 
   public Pose2d GetPosition(){
     return position;
   }
 
-  // @Override
-  // public void periodic() {
-  //   poseEstimator.update(m_DriveSubsystem.getPose().getRotation(), m_DriveSubsystem.getModulePosition());
-  //   poseEstimator.addVisionMeasurement(limelight.getLimeLightBotPose().toPose2d(),
-  //   Timer.getFPGATimestamp() - limelight.getLimeLightTLValue() / 1000 - limelight.getLimeLightCLValue() / 1000); 
+  @Override
+  public void periodic() {
+    poseEstimator.update(m_DriveSubsystem.getPose().getRotation(), m_DriveSubsystem.getModulePosition());
+    if(limelight.doesLimeLightHaveTargets()){
+       poseEstimator.addVisionMeasurement(limelight.getLimeLightBotPose(),
+       Timer.getFPGATimestamp() - limelight.getLimeLightTLValue() / 1000 - limelight.getLimeLightCLValue() / 1000); 
+    }
     
-    
-  //   position = poseEstimator.getEstimatedPosition();
-  //   SmartDashboard.putNumber("estimated x", position.getTranslation().getX());
-  //   SmartDashboard.putNumber("estimated y", position.getTranslation().getY());
-  //   SmartDashboard.putNumber("estimated degree", position.getRotation().getDegrees());
-  //   SmartDashboard.putNumber("estimated rotation", position.getRotation().getRotations());
-  // }
+    position = poseEstimator.getEstimatedPosition();
+    double[] pose = new double[3];
+    pose[0] = position.getTranslation().getX();
+    pose[1] = position.getTranslation().getY();
+    pose[2] = position.getRotation().getRadians() *-1;
+
+    SmartDashboard.putNumberArray("position", pose);
+    SmartDashboard.putNumber("estimated x", position.getTranslation().getX());
+    SmartDashboard.putNumber("estimated y", position.getTranslation().getY());
+    SmartDashboard.putNumber("estimated degree", position.getRotation().getDegrees());
+    SmartDashboard.putNumber("estimated rotation", position.getRotation().getRotations());
+  }
 
 }

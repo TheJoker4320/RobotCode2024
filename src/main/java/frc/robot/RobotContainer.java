@@ -63,9 +63,8 @@ public class RobotContainer {
   private final Collector collector = Collector.getInstance();
   private final Shooter shooter = Shooter.getInstance();
   private final Arm arm = Arm.getInstance();
-  private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils();
   private final LimeLight limeLight = new LimeLight();
-
+  private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils(m_robotDrive, limeLight);
   // The robot's subsystems
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
@@ -115,7 +114,7 @@ public class RobotContainer {
     JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector, false));
     JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
-    ejectBtn.whileTrue(new Eject(collector));
+    ejectBtn.whileTrue(new Collect(collector, true));
     JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
     shooterBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true))));
     JoystickButton prepareShooter = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
@@ -128,7 +127,8 @@ public class RobotContainer {
     JoystickButton LowerButton = new JoystickButton(m_operatorController, OperatorConstants.kLowerBtn);
     LowerButton.whileTrue(new MoveArm(arm, true));
     JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, OperatorConstants.kAimArmToSpeaker);
-    MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, ArmConstants.getArmAngle(limeLight.getTrueDistance())).andThen(new Stay(arm)));
+    MoveToDegreeBtn.whileTrue(new MoveToDegree(arm, 35/*ArmConstants.getArmAngle(limeLight.getTrueDistance() * 10)*/));
+                                //andThen(new Stay(arm)));
     JoystickButton stayBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kShare.value);
     stayBtn.toggleOnTrue(new Stay(arm));
 
