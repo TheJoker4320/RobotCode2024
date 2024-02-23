@@ -4,43 +4,30 @@
 
 package frc.robot.commands;
 
-
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 
-public class Stay extends Command {
-  private final PIDController CURRENT_PID;
-  private final Arm arm;
-
-  public Stay(Arm arm) {
-    this.arm = arm;
-    CURRENT_PID = new PIDController(0.075, 0, 0);
-    addRequirements(arm);
+public class ElevateByPlayer extends Command {
+  private Climber climber;
+  public ElevateByPlayer(Climber climber) {
+    this.climber = climber;
+    addRequirements(climber);
   }
-
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    CURRENT_PID.setSetpoint(arm.getPosition());
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ArmPosition = arm.getPosition();
-    double output = CURRENT_PID.calculate(ArmPosition);
-    output = output > 0.1 ? 0.1 : output;
-    output = -0.1 > output ? -0.1 : output;
-    arm.setSpeed(output);
+    climber.elevate(0.5);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    arm.setSpeed(0);
+    climber.elevate(0);
   }
 
   // Returns true when the command should end.

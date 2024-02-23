@@ -5,34 +5,32 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class Shoot extends Command {
-  private Shooter shooter;
-  /** Creates a new Shoot. */
-  public Shoot(Shooter shooter) {
+public class SlowMode extends Command {
+  /** Creates a new SlowMode. */
+  private DriveSubsystem driveSubsystem;
+  private double inputMultiplier;
+  public SlowMode(DriveSubsystem driveSubsystem, double inputMultiplier) {
+    this.driveSubsystem = driveSubsystem;
+    this.inputMultiplier = inputMultiplier;
+    addRequirements(driveSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooter = Shooter.GetInstance();
-
-
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    driveSubsystem.setInputMultiplier(inputMultiplier);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    shooter.Shoot(Constants.ShooterConstants.SHOOT_SPEED);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    shooter.Shoot(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

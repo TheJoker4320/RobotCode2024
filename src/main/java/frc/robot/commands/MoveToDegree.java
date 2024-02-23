@@ -6,11 +6,13 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
 public class MoveToDegree extends Command {
   private Arm arm;
+  private double desiredAngle;
   private PIDController pidController;
   private double degree;
   public MoveToDegree(Arm arm, double degree) {
@@ -22,7 +24,7 @@ public class MoveToDegree extends Command {
   
   @Override
   public void initialize() {
-    pidController.setSetpoint(degree);
+    arm.setSetpoint(desiredAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
