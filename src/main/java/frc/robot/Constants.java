@@ -223,13 +223,23 @@ public final class Constants {
 	  // The distance from the center of the robot to the farthers module
   	public static final double kSwerveDriveRadius = (DriveConstants.kTrackWidth * Math.sqrt(2)) / 2.0;
 
-	  public static final double kPXController = 1;
-	  public static final double kPYController = 1;
-	  public static final double kPThetaController = 1;
+
 
 	// Constraint for the motion profiled robot angle controller
 	  public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
 		  	kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    public static final double kPXController = 2.0;
+    public static final double kIXController = 0.6;
+    public static final double kDXController = 0.01;
+    public static final double kToleranceXController = 0.02;
+    public static final double kPYController = kPXController;
+    public static final double kIYController = kIXController;
+    public static final double kDYController = kDXController;
+    public static final double kToleranceYController = kToleranceXController;
+    public static final double kPThetaController = 0.3;
+    public static final double kIThetaController = 0;
+    public static final double kDThetaController = 0;
+    public static final double kToleranceThetaController = 0.1;
   }
 
   public static final class LimeLightConstants{
