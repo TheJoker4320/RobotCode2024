@@ -24,16 +24,7 @@ public class MoveArm extends Command {
     @Override
     public void execute() {
         int reversed = isReversed ? -1 : 1;
-        if (!((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
-                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed)))
-            ;
         arm.setSpeed(ArmConstants.SPEED * reversed);
-        SmartDashboard.putNumber("speed", ArmConstants.SPEED * reversed);
-        SmartDashboard.putBoolean("isReversed", isReversed);        
-        SmartDashboard.putBoolean("Stopped",
-                (arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350));
-        SmartDashboard.putBoolean("Stopped1", (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
-
     }
 
     @Override
