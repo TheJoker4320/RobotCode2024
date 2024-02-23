@@ -4,13 +4,44 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.ArmConstants.OperatorConstants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.commands.AimToTarget;
+import frc.robot.commands.Collect;
+import frc.robot.commands.Eject;
+import frc.robot.commands.MoveArm;
+import frc.robot.commands.MoveToDegree;
+import frc.robot.commands.MoveToLLDegree;
+import frc.robot.commands.ResetHeading;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.Stay;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Collector;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Shooter;
+
+import java.util.List;
+
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -20,12 +51,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final Collector collector = Collector.getInstance();
+  private final Shooter shooter = Shooter.GetInstance();
+  private final Arm arm = Arm.getInstance();
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
+  private final Shoot shoot = new Shoot(shooter);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
+  private final PS4Controller m_operatorController = new PS4Controller(OperatorConstants.kOperatorControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -39,8 +74,8 @@ public class RobotContainer {
         new RunCommand(
             () -> m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY() * 0.5, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX() * 0.5, OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX() * 0.5, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX() * 0, OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX() * 0, OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
   }
@@ -55,15 +90,80 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
+    // resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
+    // JoystickButton collectBtn = new JoystickButton(m_driverController, OperatorConstants.kCollectBtn);
+    // collectBtn.toggleOnTrue(new Collect(collector, false));
+    // JoystickButton ejectBtn = new JoystickButton(m_driverController, OperatorConstants.kEjectBtn);
+    // ejectBtn.whileTrue(new Eject(collector));
+    // JoystickButton shooterBtn = new JoystickButton(m_driverController, OperatorConstants.kShootBtn);
+    // shooterBtn.whileTrue(new Shoot(shooter));
+    // JoystickButton collectToShoot = new JoystickButton(m_driverController, OperatorConstants.kCollectToShootBtn);
+    // collectToShoot.whileTrue(new Collect(collector,true));
+    // JoystickButton RaiseButton = new JoystickButton(m_operatorController, PS4Controller.Button.kR1.value);
+    // RaiseButton.whileTrue(new MoveArm(arm, false));
+    // JoystickButton LowerButton = new JoystickButton(m_operatorController, PS4Controller.Button.kL1.value);
+    // LowerButton.whileTrue(new MoveArm(arm, true));
+    // JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
+    // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
+    JoystickButton btnAim = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+    btnAim.whileTrue(new MoveToLLDegree(arm));
+    
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
+   * Returns the current alliance as a boolean,
+   * True reprsents the red alliance
+   * False represents either not present or blue
+   * 
+   * @return Wether current alliance is red
+   */
+  private boolean getCurrentAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent())
+      return alliance.get() == Alliance.Red;
+    return false;
+  }
+
+  /**
+   * Use this to pass the autonomous Pcommand to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+       //This will hold the points on which the robots will need to go through.
+    //If im (YONY) not wrong the rotation 2d value is the angle in which the robot should get to that position
+    List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      new Pose2d(1, 0, Rotation2d.fromDegrees(0))
+    );
+
+    //This will create the path that the robot will follow using the constrants we give to him
+    PathPlannerPath path = new PathPlannerPath(
+      bezierPoints, 
+      new PathConstraints(
+        AutoConstants.kMaxSpeedMetersPerSecond, 
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared, 
+        AutoConstants.kMaxAngularSpeedRadiansPerSecond, 
+        AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared),
+      new GoalEndState(0, Rotation2d.fromDegrees(0))
+    );
+
+    return new FollowPathHolonomic(
+      path,
+      m_robotDrive::getPose,
+      m_robotDrive::getChassisSpeeds,
+      m_robotDrive::setChassisSpeeds,
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(AutoConstants.kPXController),
+        new PIDConstants(AutoConstants.kPThetaController),
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kSwerveDriveRadius,
+        new ReplanningConfig()
+      ),
+      this::getCurrentAlliance,
+      m_robotDrive
+    );
   }
 }
