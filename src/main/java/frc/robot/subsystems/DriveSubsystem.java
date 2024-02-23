@@ -33,26 +33,30 @@ public class DriveSubsystem extends SubsystemBase
     DriveConstants.kFrontLeftDrivingCanId,
     DriveConstants.kFrontLeftTurningCanId,
     DriveConstants.kFrontLeftChassisAngularOffset,
-    false);
+    false,
+    DriveConstants.kFrontLeftModuleId);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
     DriveConstants.kFrontRightDrivingCanId,
     DriveConstants.kFrontRightTurningCanId,
     DriveConstants.kFrontRightChassisAngularOffset,
-    false);
+    false,
+    DriveConstants.kFrontRightModuleId);
     
-    private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
-      DriveConstants.kRearLeftDrivingCanId,
-      DriveConstants.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset,
-      false);
+  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    DriveConstants.kRearLeftDrivingCanId,
+    DriveConstants.kRearLeftTurningCanId,
+    DriveConstants.kBackLeftChassisAngularOffset,
+    false,
+    DriveConstants.kRearLeftModuleId);
       
-      private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-        DriveConstants.kRearRightDrivingCanId,
-        DriveConstants.kRearRightTurningCanId,
-        DriveConstants.kBackRightChassisAngularOffset,
-        false);
-
+  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+    DriveConstants.kRearRightDrivingCanId,
+    DriveConstants.kRearRightTurningCanId,
+    DriveConstants.kBackRightChassisAngularOffset,
+    false,
+    DriveConstants.kRearRightModuleId);
+  
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
   
