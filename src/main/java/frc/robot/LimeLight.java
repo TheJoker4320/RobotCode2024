@@ -12,10 +12,10 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.LimeLightConstants;
+import frc.robot.subsystems.Arm;
 
 public class LimeLight {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     
     public boolean doesLimeLightHaveTargets(){
         return table.getEntry("tv").getInteger(0) == 1;
@@ -81,7 +81,7 @@ public class LimeLight {
         return pose;
     }
 
-    public double getTrueDistance() {
+    public static double getTrueDistance() {
         NetworkTableEntry ty = table.getEntry("ty");
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 
@@ -101,5 +101,9 @@ public class LimeLight {
                 + getLimeLightYValue();
         SmartDashboard.putNumber("LimeLight mount angle", LimeLightAngleDegrees);
         return LimeLightAngleDegrees;
+    }
+    public static double GetArmAngle(){
+        double distance = 10 * getTrueDistance();
+        return -28.8 + 0.0707 * distance - 4.56E-5 * Math.pow(distance, 2) + 1.51E-8 * Math.pow(distance, 3) - 1.89E-12 * Math.pow(distance, 4);
     }
 }

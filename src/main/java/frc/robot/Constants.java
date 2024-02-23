@@ -38,9 +38,10 @@ public final class Constants {
 		public static final double kDriveDeadband = 0.05;
 
 		public static final int kZeroHeading = XboxController.Button.kLeftBumper.value; // LB
-		public static final int kSlow = XboxController.Button.kBack.value; // RT
-		public static final int kModerate = XboxController.Button.kStart.value; // LT
-
+		public static final int kSlow = XboxController.Button.kA.value;
+		public static final int kModerate = XboxController.Button.kB.value;
+		public static final int kNormal = XboxController.Button.kY.value;
+		
 		public static final int kClimb = PS4Controller.Button.kPS.value;
 		public static final int kCollectBtn = PS4Controller.Button.kCross.value;
 		public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
@@ -187,11 +188,11 @@ public final class Constants {
 
 
 		public static double getArmAngle(double distance) {
-			double angle = (-28.8 +
-			0.0707 * distance +
-			-4.56 * Math.pow(10,-5) * Math.pow(distance, 2) +
-			1.51 * Math.pow(10, -8) * Math.pow(distance, 3) +
-			-1.89 * Math.pow(10, -12) * Math.pow(distance, 4));
+			double angle = (32927 +
+			-173 * distance +
+			+0.389 * Math.pow(distance, 2) +
+			-4.89 * Math.pow(10, -4) * Math.pow(distance, 3) +
+			+3.76 * Math.pow(10, -7) * Math.pow(distance, 4));
 			return angle;
 		}
 

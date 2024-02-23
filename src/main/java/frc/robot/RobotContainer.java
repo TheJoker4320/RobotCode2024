@@ -12,6 +12,7 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToDegree;
+import frc.robot.commands.MoveToLLDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.SlowMode;
 import frc.robot.commands.autonomousCommands.AimToTarget;
@@ -106,9 +107,11 @@ public class RobotContainer {
     JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeading);
     resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
     JoystickButton slowSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kSlow);
-    slowSpeedBtn.toggleOnTrue(new SlowMode(m_robotDrive, 0.3));
+    slowSpeedBtn.onTrue(new SlowMode(m_robotDrive, 0.3));
     JoystickButton moderateSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kModerate);
-    moderateSpeedBtn.toggleOnTrue(new SlowMode(m_robotDrive, 0.7));
+    moderateSpeedBtn.onTrue(new SlowMode(m_robotDrive, 0.7));
+    JoystickButton normalSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kNormal);
+    normalSpeedBtn.onTrue(new SlowMode(m_robotDrive, 1));
     
     JoystickButton climbBtn = new JoystickButton(m_operatorController, OperatorConstants.kClimb);
     climbBtn.whileTrue(new ElevateByPlayer(climber));
@@ -135,8 +138,9 @@ public class RobotContainer {
 
     JoystickButton btnAimAndShoot = new JoystickButton(m_operatorController, PS4Controller.Button.kL3.value);
     //btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
-    btnAimAndShoot.toggleOnTrue(new AimToTarget(m_robotDrive, limeLight));
-    //JoystickButton btnDriveToTarget = new JoystickButton(m_driverController, 3);
+    btnAimAndShoot.whileTrue(new MoveToLLDegree(arm).andThen(new Stay(arm)));
+    JoystickButton btnAimToTarget = new JoystickButton(m_operatorController, PS4Controller.Button.kR3.value);
+    btnAimToTarget.onTrue(new AimToTarget(m_robotDrive, limeLight));
     //btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
   }
 

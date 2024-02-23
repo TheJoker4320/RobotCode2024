@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
@@ -20,7 +21,7 @@ public class Arm extends SubsystemBase {
 	private final CANSparkMax OwnerMotor;
 	private final CANSparkMax SlaveMotor;
 	private final AbsoluteEncoder encoder;
-	private final SparkPIDController pidController;
+	private final SparkPIDController currentPid;
 	private static Arm instance;
 
 	public Arm() {
@@ -30,42 +31,52 @@ public class Arm extends SubsystemBase {
 		SlaveMotor.follow(OwnerMotor, true);
 		OwnerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
 		OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-
+		
 		// Initialize the Arm encoder
 		encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		encoder.setPositionConversionFactor(ArmConstants.CONVERT_RATE);
 		encoder.setZeroOffset(ArmConstants.ENCODER_OFFSET);
 		encoder.setInverted(true);
-
-		// Initialize the PID controller for Arm current control
-		pidController = OwnerMotor.getPIDController();
-		pidController.setFeedbackDevice(encoder);
 		
-		pidController.setP(ArmConstants.CURRENTPID_P);
-		pidController.setI(ArmConstants.CURRENTPID_I);
-		pidController.setD(ArmConstants.CURRENTPID_D);
-		pidController.setSmartMotionAllowedClosedLoopError(ArmConstants.CUREENTPID_TOLORANCE, 0);
-		//setPidController(ArmConstants.CURRENT_PID);
+		// Initialize the PID controller for Arm current control
+	currentPid = OwnerMotor.getPIDController();
+    currentPid.setFeedbackDevice(OwnerMotor.getEncoder());
+
+    currentPid.setP(Constants.ArmConstants.CURRENTPID_P);
+    currentPid.setI(Constants.ArmConstants.CURRENTPID_I);
+    currentPid.setD(Constants.ArmConstants.CURRENTPID_D);
+    setPidController(Constants.ArmConstants.CURRENT_PID);
+    }
+    
+    /**
+     * the angle that the arm needs to be in in order to shoot to speaker
+     * @param distance distance from robot to apriltag
+     * @return the angle that the arm needs to be
+     */
+	@Override
+    public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("encoder", encoder.getPosition());
+    }
+
+	public void setSetpoint(double setpoint){
+		currentPid.setReference(setpoint, ControlType.kPosition);
 	}
 
-	public static Arm getInstance() {
-		if (instance == null)
-			instance = new Arm();
-		return instance;
-	}
+    public static Arm getInstance(){
+      if (instance == null)
+        instance = new Arm();
+      return instance;
+    }
 
-	public boolean atSetpoint(double desiredAngle) {
-		return desiredAngle <= getPosition() + pidController.getSmartMotionAllowedClosedLoopError(0)
-				&& desiredAngle >= getPosition() - pidController.getSmartMotionAllowedClosedLoopError(0);
-	}
+    public SparkPIDController getCurrentPidController() {
+        return currentPid;
+    }
 
-	public void setSetpoint(double setPoint) {
-		pidController.setReference(setPoint, ControlType.kPosition);
-	}
-
-	public SparkPIDController getPidController() {
-		return pidController;
-	}
+    public double getAngleByDistanceSpeaker(double distance){
+        distance = distance * 10;
+        return -4.28 + 8.27E-3 * distance + 2.53E-5 * Math.pow(distance, 2) - 2.02E-8 * Math.pow(distance, 3) + 6.2E-12 * Math.pow(distance, 4) - 6.0E-16 * Math.pow(distance, 5);
+    }
 
 	public void setSpeed(double speed) {
 		OwnerMotor.set(speed);
@@ -78,9 +89,9 @@ public class Arm extends SubsystemBase {
 
 	// Set the PID controller gains for the Arm
 	public void setPidController(PIDController terms) {
-		getPidController().setP(terms.getP());
-		getPidController().setI(terms.getI());
-		getPidController().setD(terms.getD());
+		getCurrentPidController().setP(terms.getP());
+		getCurrentPidController().setI(terms.getI());
+		getCurrentPidController().setD(terms.getD());
 
 		// TODO: check if it's possible to set PID only for master motor
 		// SlaveMotor.getPIDController().setP(terms.getP());
@@ -97,10 +108,10 @@ public class Arm extends SubsystemBase {
 	// ControlType.kPosition);
 	// }
 
-	// Get the current position of the Arm motor
-	public double getPosition() {
-		return encoder.getPosition();
-	}
+    // Get the current position of the Arm motor
+    public double getPosition() {
+        return encoder.getPosition() > 350 ? 0 : encoder.getPosition();
+    }
 
 	// Get the current of the Arm motor
 	public double getCurrent() {
@@ -115,11 +126,6 @@ public class Arm extends SubsystemBase {
 	// Get the applied output of the Arm motor
 	public double getAppliedOutput() {
 		return OwnerMotor.getAppliedOutput();
-	}
-
-	public void periodic() {
-		// This method will be called once per scheduler run
-		SmartDashboard.putNumber("encoder", encoder.getPosition());
 	}
 }
 
