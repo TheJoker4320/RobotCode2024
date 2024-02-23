@@ -12,7 +12,7 @@ public class ElevateBySpeed extends Command {
   private Climber climber;
   private PIDController pidController;
   public ElevateBySpeed() {
-    climber = Climber.getClimberInstance();
+    climber = Climber.getInstance();
     pidController = new PIDController(0, 0, 0);
     pidController.setTolerance(0.5);
     pidController.setSetpoint(50);
