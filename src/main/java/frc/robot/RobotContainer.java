@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.utils.PoseEstimatorUtils;
 
@@ -88,9 +87,6 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
-    SmartDashboard.putNumber("Robot Container Left X: ", m_driverController.getLeftX() * 0.5);
-    SmartDashboard.putNumber("Robot Container Left Y: ", m_driverController.getLeftY() * 0.5);
-    SmartDashboard.putNumber("Robot Container Right x: ", m_driverController.getRightX() * 0.5);
 
   }
 
@@ -118,7 +114,7 @@ public class RobotContainer {
     JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector, false));
     JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
-    ejectBtn.whileTrue(new Collect(collector, true));
+    ejectBtn.whileTrue(new Eject(collector));
     JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
     shooterBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive, limeLight), new MoveToLLDegree(arm), new ParallelCommandGroup(new Stay(arm), new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true))))));
     JoystickButton prepareShooter = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
@@ -129,7 +125,8 @@ public class RobotContainer {
     LowerButton.whileTrue(new MoveArm(arm, true));
     JoystickButton stayBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kShare.value);
     stayBtn.toggleOnTrue(new Stay(arm));
-
+    JoystickButton ampBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kTriangle.value);
+    ampBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true)));
     JoystickButton btnAimToTarget = new JoystickButton(m_operatorController, PS4Controller.Button.kR3.value);
     btnAimToTarget.onTrue(new AimToTarget(m_robotDrive, limeLight));
   }
