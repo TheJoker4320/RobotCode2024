@@ -13,6 +13,7 @@ public class MoveToDegree extends Command {
   private Arm arm;
   private PIDController pidController;
   private double degree;
+  private double output;
   public MoveToDegree(Arm arm, double degree) {
     this.arm = arm;
     this.degree = degree;
@@ -28,9 +29,9 @@ public class MoveToDegree extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pidController.calculate(arm.getPosition());
-    output = 0.1 < output ? 0.1 : output;
-    output = -0.1 > output ? -0.1 : output;
+    output = pidController.calculate(arm.getPosition());
+    output = 0.4 < output ? 0.4 : output;
+    output = -0.4 > output ? -0.4 : output;
     arm.setSpeed(output);
   }
 
@@ -43,6 +44,6 @@ public class MoveToDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getPosition() > degree || arm.getPosition() < 3;
+    return arm.getPosition() > degree || (arm.getPosition() < 3 && output < 0) || (arm.getPosition() > 90 && output > 0);
   }
 }

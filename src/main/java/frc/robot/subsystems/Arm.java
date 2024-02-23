@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 	private final CANSparkMax OwnerMotor;
 	private final CANSparkMax SlaveMotor;
 	private final AbsoluteEncoder encoder;
-	private final SparkPIDController currentPid;
+	private final PIDController pidController;
 	private static Arm instance;
 
 	public Arm() {
@@ -38,14 +38,9 @@ public class Arm extends SubsystemBase {
 		encoder.setZeroOffset(ArmConstants.ENCODER_OFFSET);
 		encoder.setInverted(true);
 		
-		// Initialize the PID controller for Arm current control
-	currentPid = OwnerMotor.getPIDController();
-    currentPid.setFeedbackDevice(OwnerMotor.getEncoder());
-
-    currentPid.setP(Constants.ArmConstants.CURRENTPID_P);
-    currentPid.setI(Constants.ArmConstants.CURRENTPID_I);
-    currentPid.setD(Constants.ArmConstants.CURRENTPID_D);
-    setPidController(Constants.ArmConstants.CURRENT_PID);
+		// Initialize the PID controller for Arm pid control
+		pidController = new PIDController(ArmConstants.PID_P,ArmConstants.PID_I ,ArmConstants.PID_D);
+		pidController.setTolerance(0.5);
     }
     
     /**
@@ -60,7 +55,7 @@ public class Arm extends SubsystemBase {
     }
 
 	public void setSetpoint(double setpoint){
-		currentPid.setReference(setpoint, ControlType.kPosition);
+		pidController.setSetpoint(setpoint);
 	}
 
     public static Arm getInstance(){
@@ -69,8 +64,8 @@ public class Arm extends SubsystemBase {
       return instance;
     }
 
-    public SparkPIDController getCurrentPidController() {
-        return currentPid;
+    public PIDController getCurrentPidController() {
+        return pidController;
     }
 
     public double getAngleByDistanceSpeaker(double distance){
@@ -82,9 +77,24 @@ public class Arm extends SubsystemBase {
 		OwnerMotor.set(speed);
 	}
 
+	public void setSpeedByMeasurement(double measurement){
+		double output = pidController.calculate(measurement);
+		output = output > 0.4 ? 0.4 : output;
+		output = output < -0.4 ? -0.4 : output;
+		OwnerMotor.set(output);
+	}
+
 	// Stop the Arm motor by setting the speed to 0
 	public void stop() {
 		setSpeed(0);
+	}
+
+	public boolean atSetpoint(){
+		return pidController.atSetpoint();
+	}
+
+	public PIDController getArmPidController(){
+		return pidController;
 	}
 
 	// Set the PID controller gains for the Arm
