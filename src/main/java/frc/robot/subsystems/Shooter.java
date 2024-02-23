@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase {
     return shooter;
   }
 
+  //Set Shooter motor speed
   public void Shoot(double speed){
     master.set(TalonSRXControlMode.PercentOutput,speed);
   }

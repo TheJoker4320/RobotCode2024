@@ -108,7 +108,7 @@ public class RobotContainer {
     // MoveToDegreeBtn.toggleOnTrue(new MoveToDegree(arm, 35).andThen(new Stay(arm)));
     JoystickButton btnAim = new JoystickButton(m_driverController, XboxController.Button.kA.value);
     btnAim.whileTrue(new MoveToLLDegree(arm));
-    
+    //TODO: Fix bindings
   }
 
   /**

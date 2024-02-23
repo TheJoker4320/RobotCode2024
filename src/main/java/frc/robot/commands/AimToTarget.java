@@ -46,8 +46,6 @@ public class AimToTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //if(limelight.getLimeLightXValue() < 5 && limelight.getLimeLightXValue() >= -5)
-      //return true;
     SmartDashboard.putNumber("position error", pidController.getPositionError());
     SmartDashboard.putNumber("position tolerance", pidController.getPositionTolerance());
     SmartDashboard.putBoolean("isFinished", pidController.getPositionError() <= pidController.getPositionTolerance());
