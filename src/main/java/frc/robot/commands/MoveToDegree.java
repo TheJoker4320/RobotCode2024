@@ -24,7 +24,7 @@ public class MoveToDegree extends Command {
   
   @Override
   public void initialize() {
-    arm.setSetpoint(desiredAngle);
+    pidController.setSetpoint(desiredAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

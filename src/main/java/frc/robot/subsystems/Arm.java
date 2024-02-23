@@ -114,10 +114,5 @@ public class Arm extends SubsystemBase {
     public double getAppliedOutput() {
         return OwnerMotor.getAppliedOutput();
     }
-
-    public void setSetpoint(double desiredAngle) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSetpoint'");
-    }
 }
 
