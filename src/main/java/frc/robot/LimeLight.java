@@ -12,7 +12,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Arm;
 
 public class LimeLight {
     static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -47,7 +46,6 @@ public class LimeLight {
         return table.getEntry("ta").getDouble(0.0);
     }
 
-    
     public int GetId(){
         return (int) table.getEntry("tid").getInteger(0);
     }

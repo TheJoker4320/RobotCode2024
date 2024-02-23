@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -59,10 +58,5 @@ public class Shooter extends SubsystemBase {
   
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("shooter speed", output);
-    SmartDashboard.putNumber("Encoder Distance", encoder.getDistance());
-    SmartDashboard.putNumber("Rate of shooter", encoder.getRate());
-    SmartDashboard.putNumber("Encoding", encoder.getEncodingScale());
-    SmartDashboard.putBoolean("isStopped", encoder.getStopped());
   }
 }
