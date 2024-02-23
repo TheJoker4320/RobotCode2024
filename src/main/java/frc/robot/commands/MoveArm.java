@@ -4,7 +4,6 @@ import frc.robot.subsystems.Arm;
 
 import frc.robot.Constants.ArmConstants;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -12,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class MoveArm extends Command {
     private boolean isReversed;
     private Arm arm;
+    private boolean constrain;
     public MoveArm(Arm arm, boolean isReversed) {
         this.arm = arm;
         this.isReversed = isReversed;
@@ -25,14 +25,18 @@ public class MoveArm extends Command {
     public void execute() {
         int reversed = isReversed ? -1 : 1;
         if (!((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
-                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed)))
-            ;
-        arm.setSpeed(ArmConstants.SPEED * reversed);
-        SmartDashboard.putNumber("speed", ArmConstants.SPEED * reversed);
-        SmartDashboard.putBoolean("isReversed", isReversed);        
-        SmartDashboard.putBoolean("Stopped",
-                (arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350));
-        SmartDashboard.putBoolean("Stopped1", (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
+                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed))){
+
+            if(arm.getPosition() < 10){
+                arm.setSpeed(ArmConstants.SLOW_SPEED * reversed);
+            }
+            else{
+                arm.setSpeed(ArmConstants.SPEED * reversed);
+            }
+
+            arm.setSpeed(ArmConstants.SPEED * reversed);
+        }
+
 
     }
 
@@ -44,7 +48,7 @@ public class MoveArm extends Command {
     @Override
     public boolean isFinished() {
         return ((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
-                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
+                || ((arm.getPosition() < ArmConstants.MIN_DEGREES || arm.getPosition() > 350) && isReversed ));
     }
 
 }
