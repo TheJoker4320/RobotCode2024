@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.Map;
 
@@ -173,27 +172,39 @@ public final class Constants {
 		public static final int MOTOR_ID2 = 10;
 		public static final double VALUES_MULTIPLAYER = 1;
 
-		public static double CURRENTPID_P = 0.03;
-		public static double CURRENTPID_I = 0;
-		public static double CURRENTPID_D = 0;
-		public static double CUREENTPID_TOLORANCE = 0.5;
+		public static double PID_P = 0.04;
+		public static double PID_I = 0.000;
+		public static double PID_D = 0;
+		public static double PID_TOLORANCE = 0.5;
 
 		public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
-		public static final double SPEED = 0.4;
+		public static final double SPEED = 0.75;
+		public static final double SLOW_SPEED = 0.4;
 
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 320.6;
+		public static final double ENCODER_OFFSET = 321.6;
 
 
 		public static double getArmAngle(double distance) {
-			double angle = (32927 +
-			-173 * distance +
-			+0.389 * Math.pow(distance, 2) +
-			-4.89 * Math.pow(10, -4) * Math.pow(distance, 3) +
-			+3.76 * Math.pow(10, -7) * Math.pow(distance, 4));
+			double x = 205 / distance;
+			// double angle = (32927 +
+			// -173 * distance +
+			// +0.389 * Math.pow(distance, 2) +
+			// -4.89 * Math.pow(10, -4) * Math.pow(distance, 3) +
+			// +3.76 * Math.pow(10, -7) * Math.pow(distance, 4));
+			double angle = 21.2 +
+			2798 * x +
+			-112314 * Math.pow(x, 2) +
+			1.86 * Math.pow(10, 6) * Math.pow(x, 3) +
+			-1.51 * Math.pow(10, 7) * Math.pow(x, 4) +
+			5.08 * Math.pow(10, 7) * Math.pow(x, 5) +
+			4.36 * Math.pow(10, 7) * Math.pow(x, 6) +
+			-7.19 * Math.pow(10, 8) * Math.pow(x, 7) +
+			1.3 * Math.pow(10, 9) * Math.pow(x, 8);
 			return angle;
+
 		}
 
 		public static int ENCODER_TO_DEGREES(int encoderCount) {
@@ -203,10 +214,6 @@ public final class Constants {
 		public static int DEGREES_TO_ENCODER(int degrees) {
 			return degrees * (DEADAXIS_ENCODER_MAX_COUNT / MAX_DEGREES);
 		}
-}
-public static class DistanceToAngle{
-	public static final double m = 2.169;
-	public static final double constant = 19.347;
 }
 
 public static final class CollectorConstants {
@@ -237,16 +244,16 @@ public static final class AutoConstants {
 }
 
 public static final class LimeLightConstants {
-	public static final double AIMING_KP = 0.004;
-	public static final double AIMING_KI = 0.003;
-	public static final double AIMING_KD = 0;
-	public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 30.2; // how many degrees back is your limelight rotated
+	public static final double AIMING_KP = 0.006;
+	public static final double AIMING_KI = 0.0017;
+	public static final double AIMING_KD = 0.001;
+	public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 31.7; // how many degrees back is your limelight rotated 30.3
 	// from perfectly vertical
 	public static final double LIMELIGHT_LENSE_HEIGHT_CM = 37.5; // distance from the center of the Limelight lens to
 	// the floor
-	public static final double GOAL_HEIGHT_CM = 145.7; // distance from the target to the floor
+	public static final double GOAL_HEIGHT_CM = 144; // distance from the target to the floor
 
-	public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 30.5;
+	public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 28; //30.5
 	public static final double distanceFromRobotToGoalCentimetersPreset = 92; // distance from target in to calibrate
 	// the LimeLight mount angle
 
