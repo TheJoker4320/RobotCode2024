@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,6 +65,9 @@ public class DriveSubsystem extends SubsystemBase
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  private final StructArrayPublisher<SwerveModuleState> publisher;
+
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics,
@@ -73,27 +78,33 @@ public class DriveSubsystem extends SubsystemBase
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
-        
-        /** Creates a new DriveSubsystem. */
-        public DriveSubsystem() 
-        {
-          //Zeroes heading.
-          //TODO: This constructor might require changing since its not guranteed we zero the angle here.
-          zeroHeading();
-        }
-        
-        @Override
-        public void periodic() {
-          // Update the odometry in the periodic block
-          m_odometry.update(
-            Rotation2d.fromDegrees(m_gyro.getYaw()),
-            new SwerveModulePosition[] {
-              m_frontLeft.getPosition(),
-              m_frontRight.getPosition(),
+  /** Creates a new DriveSubsystem. */
+  public DriveSubsystem() 
+  {
+    //Zeroes heading.
+    //TODO: This constructor might require changing since its not guranteed we zero the angle here.
+    zeroHeading();
+    publisher = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
+  }
+
+  @Override
+  public void periodic() {
+    // Update the odometry in the periodic block
+    m_odometry.update(
+        Rotation2d.fromDegrees(m_gyro.getYaw()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-          });
-          
+        });
+    publisher.set(new SwerveModuleState[] {
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
+    });
     SmartDashboard.putNumber("Robot heading", m_gyro.getYaw());
   }
   
@@ -344,6 +355,17 @@ public class DriveSubsystem extends SubsystemBase
     currentStates[3] = m_rearRight.getState();
 
     return DriveConstants.kDriveKinematics.toChassisSpeeds(currentStates);
+  }
+
+  public void setModulesDirection(Double angle)
+  {
+    SwerveModuleState[] desiredStates = new SwerveModuleState[4];
+    desiredStates[0] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[1] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[2] = new SwerveModuleState(0, new Rotation2d(angle));
+    desiredStates[3] = new SwerveModuleState(0, new Rotation2d(angle));
+
+    setModuleStates(desiredStates);
   }
 
 }
