@@ -120,28 +120,18 @@ public class RobotContainer {
     JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
     ejectBtn.whileTrue(new Collect(collector, true));
     JoystickButton shooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootBtn);
-    shooterBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true))));
+    shooterBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive, limeLight), new MoveToLLDegree(arm), new ParallelCommandGroup(new Stay(arm), new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60), new Collect(collector, true))))));
     JoystickButton prepareShooter = new JoystickButton(m_operatorController, PS4Controller.Button.kCircle.value);
     prepareShooter.whileTrue(new ShootMaintainSpeed(shooter, 60));
-    //shooterBtn.toggleOnTrue(new ShootMaintainSpeed(shooter, 65));
-    // JoystickButton collectToShoot = new JoystickButton(m_driverController, OperatorConstants.kCollectToShootBtn);
-    // collectToShoot.whileTrue(new Collect(collector,true));
     JoystickButton RaiseButton = new JoystickButton(m_operatorController, OperatorConstants.kRaiseBtn);
     RaiseButton.whileTrue(new MoveArm(arm, false));
     JoystickButton LowerButton = new JoystickButton(m_operatorController, OperatorConstants.kLowerBtn);
     LowerButton.whileTrue(new MoveArm(arm, true));
-    JoystickButton MoveToDegreeBtn = new JoystickButton(m_operatorController, OperatorConstants.kAimArmToSpeaker);
-    MoveToDegreeBtn.whileTrue(new MoveToDegree(arm, 35/*ArmConstants.getArmAngle(limeLight.getTrueDistance() * 10)*/));
-                                //andThen(new Stay(arm)));
     JoystickButton stayBtn = new JoystickButton(m_operatorController, PS4Controller.Button.kShare.value);
     stayBtn.toggleOnTrue(new Stay(arm));
 
-    JoystickButton btnAimAndShoot = new JoystickButton(m_operatorController, PS4Controller.Button.kL3.value);
-    //btnAimAndShoot.onTrue(aimToTarget.andThen(stay.alongWith(aimShooterToSpeaker.andThen(shoot))));
-    btnAimAndShoot.whileTrue(new MoveToLLDegree(arm).andThen(new Stay(arm)));
     JoystickButton btnAimToTarget = new JoystickButton(m_operatorController, PS4Controller.Button.kR3.value);
     btnAimToTarget.onTrue(new AimToTarget(m_robotDrive, limeLight));
-    //btnDriveToTarget.onTrue(new DriveToTarget(m_robotDrive, m_poseEstimator,FieldPosUtils.RobotToAmp()));
   }
 
   /**
