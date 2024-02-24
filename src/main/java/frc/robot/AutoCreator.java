@@ -1288,7 +1288,7 @@ public class AutoCreator
       config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
       config.setReversed(true));
@@ -1378,7 +1378,7 @@ public class AutoCreator
       config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
       config.setReversed(true));
@@ -1468,7 +1468,7 @@ public class AutoCreator
       config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
       config.setReversed(true));
