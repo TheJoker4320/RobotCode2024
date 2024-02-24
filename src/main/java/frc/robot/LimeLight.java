@@ -103,6 +103,6 @@ public class LimeLight {
     }
     public static double GetArmAngle(){
         double distance = 10 * getTrueDistance();
-        return -28.8 + 0.0707 * distance - 4.56E-5 * Math.pow(distance, 2) + 1.51E-8 * Math.pow(distance, 3) - 1.89E-12 * Math.pow(distance, 4);
+        return -26.8 + 0.0707 * distance - 4.56E-5 * Math.pow(distance, 2) + 1.51E-8 * Math.pow(distance, 3) - 1.89E-12 * Math.pow(distance, 4); //c used to be 28.8
     }
 }
