@@ -189,7 +189,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     m_robotDrive.resetEncoders();
-    
+    m_robotDrive.zeroHeading();
     return autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm);
   }
 }
