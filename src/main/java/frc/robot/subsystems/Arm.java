@@ -7,33 +7,30 @@ package frc.robot.subsystems;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
 	/** Creates a new Arm. */
-	private final CANSparkMax OwnerMotor;
+	private final CANSparkMax ownerMotor;
 	private final CANSparkMax SlaveMotor;
 	private final AbsoluteEncoder encoder;
 	private final PIDController pidController;
+	private boolean constrain;
 	private static Arm instance;
 
 	public Arm() {
 		// Initialize the Arm motor
-		OwnerMotor = new CANSparkMax(ArmConstants.MOTOR_ID2, ArmConstants.MOTOR_TYPE);
+		ownerMotor = new CANSparkMax(ArmConstants.MOTOR_ID2, ArmConstants.MOTOR_TYPE);
 		SlaveMotor = new CANSparkMax(ArmConstants.MOTOR_ID1, ArmConstants.MOTOR_TYPE);
-		SlaveMotor.follow(OwnerMotor, true);
-		OwnerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
-		OwnerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-		
+		SlaveMotor.follow(ownerMotor, true);
+		ownerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
+		ownerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+		constrain = true;
 		// Initialize the Arm encoder
-		encoder = OwnerMotor.getAbsoluteEncoder(Type.kDutyCycle);
+		encoder = ownerMotor.getAbsoluteEncoder(Type.kDutyCycle);
 		encoder.setPositionConversionFactor(ArmConstants.CONVERT_RATE);
 		encoder.setZeroOffset(ArmConstants.ENCODER_OFFSET);
 		encoder.setInverted(true);
@@ -48,12 +45,9 @@ public class Arm extends SubsystemBase {
      * @param distance distance from robot to apriltag
      * @return the angle that the arm needs to be
      */
-	@Override
-    public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("encoder", encoder.getPosition());
-    }
-
+	public void swtichArmConstrain(){
+		this.constrain = !this.constrain;
+	}
 	public void setSetpoint(double setpoint){
 		pidController.setSetpoint(setpoint);
 	}
@@ -74,14 +68,30 @@ public class Arm extends SubsystemBase {
     }
 
 	public void setSpeed(double speed) {
-		OwnerMotor.set(speed);
-	}
+		if(constrain){
+			if(!((getPosition() > ArmConstants.MAX_DEGREES && speed > 0 && getPosition() < 350)
+				|| ((getPosition() < ArmConstants.MIN_DEGREES || getPosition() > 350) && speed < 0 ))){ //software stop
+					if((getPosition() < 15 && speed < 0) || (getPosition() > 85 && speed > 0)){ //Slowmode near edge
+						ownerMotor.set(speed * ArmConstants.SLOW_SPEED);
+					}
+					else{
+						ownerMotor.set(speed * ArmConstants.SPEED);
+					}	
+			}
+			else{
+				ownerMotor.set(0);
+			}
+		}
+		else{
+			ownerMotor.set(speed * ArmConstants.SLOW_SPEED);
+		}
+		}
 
 	public void setSpeedByMeasurement(double measurement){
 		double output = pidController.calculate(measurement);
 		output = output > 0.4 ? 0.4 : output;
 		output = output < -0.4 ? -0.4 : output;
-		OwnerMotor.set(output);
+		ownerMotor.set(output);
 	}
 
 	// Stop the Arm motor by setting the speed to 0
@@ -93,49 +103,20 @@ public class Arm extends SubsystemBase {
 		return pidController.atSetpoint();
 	}
 
-	public PIDController getArmPidController(){
-		return pidController;
-	}
-
-	// Set the PID controller gains for the Arm
-	public void setPidController(PIDController terms) {
-		getCurrentPidController().setP(terms.getP());
-		getCurrentPidController().setI(terms.getI());
-		getCurrentPidController().setD(terms.getD());
-
-		// TODO: check if it's possible to set PID only for master motor
-		// SlaveMotor.getPIDController().setP(terms.getP());
-		// SlaveMotor.getPIDController().setI(terms.getI());
-		// SlaveMotor.getPIDController().setD(terms.getD());
-
-	}
-	// Set the position for the Arm motor
-	// public void setMotorPosition(double distance) {
-	// getPidController().setReference(distance, ControlType.kPosition);
-
-	// // TODO: check if it's possible to setreference only for master motor
-	// //SlaveMotor.getPIDController().setReference(distance,
-	// ControlType.kPosition);
-	// }
-
     // Get the current position of the Arm motor
     public double getPosition() {
-        return encoder.getPosition() > 350 ? 0 : encoder.getPosition();
+        return encoder.getPosition();
     }
 
-	// Get the current of the Arm motor
-	public double getCurrent() {
-		return OwnerMotor.getOutputCurrent();
-	}
-
-	// Get the temperature of the Arm motor
-	public double getTemp() {
-		return OwnerMotor.getMotorTemperature();
-	}
 
 	// Get the applied output of the Arm motor
 	public double getAppliedOutput() {
-		return OwnerMotor.getAppliedOutput();
+		return ownerMotor.getAppliedOutput();
+	}
+	@Override
+	public void periodic() {
+	// This method will be called once per scheduler run
+	SmartDashboard.putNumber("encoder", encoder.getPosition());
 	}
 }
 

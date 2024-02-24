@@ -5,22 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Arm;
 
-public class SlowMode extends InstantCommand {
-  /** Creates a new SlowMode. */
-  private DriveSubsystem driveSubsystem;
-  private double inputMultiplier;
-  public SlowMode(DriveSubsystem driveSubsystem, double inputMultiplier) {
-    this.driveSubsystem = driveSubsystem;
-    this.inputMultiplier = inputMultiplier;
-    addRequirements(driveSubsystem);
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class SwitchArmConstrain extends InstantCommand {
+  private final Arm arm;
+  public SwitchArmConstrain(Arm arm) {
+    this.arm = arm;
+    addRequirements(this.arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.setInputMultiplier(inputMultiplier);
+    arm.swtichArmConstrain();
   }
 }
