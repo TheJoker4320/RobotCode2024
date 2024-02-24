@@ -36,18 +36,21 @@ public final class Constants {
 		public static final int kOperatorControllerPort = 1;
 		public static final double kDriveDeadband = 0.05;
 
-		public static final int kZeroHeading = XboxController.Button.kLeftBumper.value; // LB
-		public static final int kSlow = XboxController.Button.kA.value;
-		public static final int kModerate = XboxController.Button.kB.value;
-		public static final int kNormal = XboxController.Button.kY.value;
+		public static final int kZeroHeadingBtn = XboxController.Button.kLeftBumper.value; // LB
+		public static final int kSlowBtn = XboxController.Button.kA.value;
+		public static final int kModerateBtn = XboxController.Button.kB.value;
+		public static final int kNormalBtn = XboxController.Button.kY.value;
 		
-		public static final int kClimb = PS4Controller.Button.kPS.value;
+		public static final int kClimbBtn = PS4Controller.Button.kOptions.value;
 		public static final int kCollectBtn = PS4Controller.Button.kCross.value;
 		public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
-		public static final int kShootBtn = PS4Controller.Button.kR1.value;
+		public static final int kShootSpeakerBtn = PS4Controller.Button.kR1.value;
+		public static final int kshootAmpBtn = PS4Controller.Button.kCircle.value;
 		public static final int kRaiseBtn = PS4Controller.Button.kR2.value;
 		public static final int kLowerBtn = PS4Controller.Button.kL2.value;
-		public static final int kAimArmToSpeaker = PS4Controller.Button.kL1.value;
+		public static final int kAimArmToSpeakerBtn = PS4Controller.Button.kL1.value;
+		public static final int kSwitchArmConstrainBtn = PS4Controller.Button.kPS.value;
+		public static final int kStayBtn = PS4Controller.Button.kShare.value;
 
 	}
 
@@ -179,12 +182,12 @@ public final class Constants {
 
 		public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
 		public static final double SPEED = 0.75;
-		public static final double SLOW_SPEED = 0.4;
+		public static final double SLOW_SPEED = 0.1;
 
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 321.6;
+		public static final double ENCODER_OFFSET = 319.6;
 
 
 		public static double getArmAngle(double distance) {
@@ -218,7 +221,7 @@ public final class Constants {
 
 public static final class CollectorConstants {
 public static final int COLLECTOR_PORT = 15;
-public static final int LIMIT_SWITCH_CHANNEL = 0;// TODO: correct the channel
+public static final int LIMIT_SWITCH_CHANNEL = 0;
 
 public static final double COLLECTOR_SPEED = 0.7;
 }
