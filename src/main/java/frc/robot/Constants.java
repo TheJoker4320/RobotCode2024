@@ -175,7 +175,7 @@ public final class Constants {
 		public static final int MOTOR_ID2 = 10;
 		public static final double VALUES_MULTIPLAYER = 1;
 
-		public static double PID_P = 0.04;
+		public static double PID_P = 0.05;
 		public static double PID_I = 0.000;
 		public static double PID_D = 0;
 		public static double PID_TOLORANCE = 0.5;
