@@ -83,7 +83,7 @@ public class Arm extends SubsystemBase {
 			}
 		}
 		else{
-			ownerMotor.set(speed * ArmConstants.SLOW_SPEED);
+			ownerMotor.set(speed * ArmConstants.NO_CONSTRAIN_SPEED);
 		}
 		}
 
@@ -116,7 +116,8 @@ public class Arm extends SubsystemBase {
 	@Override
 	public void periodic() {
 	// This method will be called once per scheduler run
-	SmartDashboard.putNumber("encoder", encoder.getPosition());
+	SmartDashboard.putNumber("Arm encoder", encoder.getPosition());
+	SmartDashboard.putBoolean("is constrain", constrain);
 	}
 }
 

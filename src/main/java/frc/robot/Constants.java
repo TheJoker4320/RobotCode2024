@@ -192,6 +192,8 @@ public final class Constants {
 		public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
 		public static final double SPEED = 0.75;
 		public static final double SLOW_SPEED = 0.1;
+		public static final double NO_CONSTRAIN_SPEED = 0.4;
+
 
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
