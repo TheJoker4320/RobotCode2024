@@ -17,41 +17,41 @@ import frc.robot.Constants.LimeLightConstants;
 public class LimeLight {
     static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     
-    public boolean doesLimeLightHaveTargets(){
+    public static boolean doesLimeLightHaveTargets(){
         return table.getEntry("tv").getInteger(0) == 1;
     }
 
-    public double getLimeLightXValue() {
+    public static double getLimeLightXValue() {
         double x = table.getEntry("tx").getDouble(0.0);
         SmartDashboard.putNumber("tx", x);
         return x;
     }
 
-    public double getLimeLightYValue() {
+    public static double getLimeLightYValue() {
         double y = table.getEntry("ty").getDouble(0.0);
         SmartDashboard.putNumber("ty", y);
         return y;
     }
-    public double getLimeLightTLValue(){
+    public static double getLimeLightTLValue(){
         double tl = table.getEntry("tl").getDouble(0.0);
         SmartDashboard.putNumber("tl", tl);
         return tl;
     }
-    public double getLimeLightCLValue(){
+    public static double getLimeLightCLValue(){
         double cl = table.getEntry("cl").getDouble(0.0);
         SmartDashboard.putNumber("cl", cl);
         return cl;
     }
 
-    public double getLimeLightAreaValue() {
+    public static double getLimeLightAreaValue() {
         return table.getEntry("ta").getDouble(0.0);
     }
 
-    public int GetId(){
+    public static int GetId(){
         return (int) table.getEntry("tid").getInteger(0);
     }
 
-    public Pose2d getLimeLightBotPose(){
+    public static Pose2d getLimeLightBotPose(){
 
         double[] botpose;
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
@@ -71,7 +71,7 @@ public class LimeLight {
         //new Rotation3d(botpose[3], botpose[4], botpose[5]));
         //return pose;
     }
-    public Pose3d getLimeLightObjectToRobotPose(){
+    public static Pose3d getLimeLightObjectToRobotPose(){
         if(!doesLimeLightHaveTargets())
             return new Pose3d();
         Double[] targetposerobotspace = table.getEntry("targetpose_robotspace").getDoubleArray(new Double[1]);
@@ -94,7 +94,7 @@ public class LimeLight {
         return distanceFromRobotToGoalCentimeters ;
     }
 
-    public double getLimeLightMountAngle() {
+    public static double getLimeLightMountAngle() {
         double LimeLightAngleDegrees = Math
                 .atan((Constants.LimeLightConstants.GOAL_HEIGHT_CM - Constants.LimeLightConstants.LIMELIGHT_LENSE_HEIGHT_CM) / (Constants.LimeLightConstants.distanceFromRobotToGoalCentimetersPreset + Constants.LimeLightConstants.LL_DISTANCE_FROM_ROBOT_EDGE  ))
                 + getLimeLightYValue();

@@ -150,7 +150,7 @@ public class RobotContainer {
 
     //R1
     JoystickButton shootSpeakerBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootSpeakerBtn);
-    shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive, limeLight),
+    shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive),
                             new ParallelDeadlineGroup(new MoveToLLDegree(arm),
                             new ShootReachSpeed(shooter, 60)),
                             new ParallelCommandGroup(new Stay(arm),

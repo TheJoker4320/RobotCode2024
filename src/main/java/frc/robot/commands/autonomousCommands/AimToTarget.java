@@ -14,14 +14,12 @@ import frc.robot.LimeLight;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class AimToTarget extends Command {
-  private final LimeLight limelight;
   private final PIDController pidController;
   private final DriveSubsystem driveSubsystem;
   private double lastMeasure;
   private Timer timer;
-  public AimToTarget(final DriveSubsystem driveSubsystem,final LimeLight limelight) {
+  public AimToTarget(final DriveSubsystem driveSubsystem) {
 
-    this.limelight = limelight;
     pidController = new PIDController(Constants.LimeLightConstants.AIMING_KP, Constants.LimeLightConstants.AIMING_KI, Constants.LimeLightConstants.AIMING_KD);
     this.driveSubsystem = driveSubsystem;
     pidController.setTolerance(1);
@@ -41,8 +39,8 @@ public class AimToTarget extends Command {
   @Override
   public void execute() {
     double rotValue;
-    if(limelight.doesLimeLightHaveTargets())
-      lastMeasure = limelight.getLimeLightXValue();
+    if(LimeLight.doesLimeLightHaveTargets())
+      lastMeasure = LimeLight.getLimeLightXValue();
     rotValue = pidController.calculate(lastMeasure);
     driveSubsystem.drive(0,0,rotValue,true,true);
   }

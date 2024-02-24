@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,11 +26,13 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.MoveToDegree;
+import frc.robot.commands.MoveToLLDegree;
 import frc.robot.commands.autonomousCommands.AimToTarget;
 import frc.robot.commands.autonomousCommands.CollectOnTime;
 import frc.robot.commands.autonomousCommands.RotateDegrees;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
+import frc.robot.commands.autonomousCommands.Stay;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.DriveSubsystem;
@@ -38,15 +41,15 @@ import frc.robot.subsystems.Shooter;
 /** Add your docs here. */
 public class AutoCreator 
 {
-    private Command getShootSequenceCommand(Shooter shooter, Collector collector)
+    private Command getShootSequenceCommand(DriveSubsystem robotDrive, Shooter shooter, Collector collector, Arm arm)
     { 
-        return new SequentialCommandGroup(
-            new ShootReachSpeed(shooter, 60), 
-            new ParallelRaceGroup(
-                new ShootMaintainSpeed(shooter,60), 
-                new CollectOnTime(collector, true, 2)
-            )
-        );
+        return new SequentialCommandGroup(new AimToTarget(robotDrive),
+                            new ParallelDeadlineGroup(new MoveToLLDegree(arm),
+                            new ShootReachSpeed(shooter, 60)),
+                            new ParallelCommandGroup(new Stay(arm),
+                            new SequentialCommandGroup(new ShootReachSpeed(shooter, 60),
+                            new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60),
+                            new Collect(collector, true)))));
     }
     
     private TrajectoryConfig config =
@@ -142,7 +145,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollect.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -154,7 +157,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToLeave
     );
@@ -247,7 +250,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollect.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -259,7 +262,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToLeave
     );
@@ -384,7 +387,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollectMid.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -396,7 +399,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       new RotateDegrees(m_robotDrive, 90),
       commandDriveToCollectSecond,
@@ -529,7 +532,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollectMid.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -541,7 +544,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       new RotateDegrees(m_robotDrive, -90),
       commandDriveToCollectSecond,
@@ -642,7 +645,7 @@ public class AutoCreator
 
     m_robotDrive.resetOdometry(driveToCollectTop.getInitialPose());
     return new SequentialCommandGroup(
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -653,7 +656,7 @@ public class AutoCreator
       new WaitCommand(0.5),
       commandDriveToShoot,
       new WaitCommand(0.5),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToLeave
     );
@@ -748,7 +751,7 @@ public class AutoCreator
 
     m_robotDrive.resetOdometry(driveToCollectTop.getInitialPose());
     return new SequentialCommandGroup(
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -759,7 +762,7 @@ public class AutoCreator
       new WaitCommand(0.5),
       commandDriveToShoot,
       new WaitCommand(0.5),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToLeave
     );
@@ -852,7 +855,7 @@ public class AutoCreator
 
     m_robotDrive.resetOdometry(driveToCollectBot.getInitialPose());
     return new SequentialCommandGroup(
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -863,7 +866,7 @@ public class AutoCreator
       new WaitCommand(0.5),
       commandDriveToShoot,
       new WaitCommand(0.5),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToLeave
     );
@@ -956,7 +959,7 @@ public class AutoCreator
 
     m_robotDrive.resetOdometry(driveToCollectBot.getInitialPose());
     return new SequentialCommandGroup(
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -967,7 +970,7 @@ public class AutoCreator
       new WaitCommand(0.5),
       commandDriveToShoot,
       new WaitCommand(0.5),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0).alongWith(new RotateDegrees(m_robotDrive, 0)),
       commandDriveToLeave
     );
@@ -1092,7 +1095,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollectMid.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -1104,7 +1107,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       new RotateDegrees(m_robotDrive, -90),
       commandDriveToCollectSecond,
@@ -1237,7 +1240,7 @@ public class AutoCreator
     m_robotDrive.resetOdometry(driveToCollectMid.getInitialPose());
     return new SequentialCommandGroup(
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       commandDriveToCollect,
       new WaitCommand(0.5),
@@ -1249,7 +1252,7 @@ public class AutoCreator
       commandDriveToShoot,
       new WaitCommand(0.5),
       new MoveToDegree(arm, 8),
-      getShootSequenceCommand(shooter, collector),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
       new MoveToDegree(arm, 0),
       new RotateDegrees(m_robotDrive, -90),
       commandDriveToCollectSecond,
