@@ -57,6 +57,6 @@ public class AimToTarget extends Command {
   public boolean isFinished() {
     //if(limelight.getLimeLightXValue() < 5 && limelight.getLimeLightXValue() >= -5)
       //return true;
-    return pidController.atSetpoint() || timer.get() >= 3;
+    return pidController.atSetpoint() || timer.get() >= 1.5;
   }
 }
