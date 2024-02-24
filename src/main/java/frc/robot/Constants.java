@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.Map;
 
@@ -37,17 +36,21 @@ public final class Constants {
 		public static final int kOperatorControllerPort = 1;
 		public static final double kDriveDeadband = 0.05;
 
-		public static final int kZeroHeading = XboxController.Button.kLeftBumper.value; // LB
-		public static final int kSlow = XboxController.Button.kBack.value; // RT
-		public static final int kModerate = XboxController.Button.kStart.value; // LT
-
-		public static final int kClimb = PS4Controller.Button.kPS.value;
+		public static final int kZeroHeadingBtn = XboxController.Button.kLeftBumper.value; // LB
+		public static final int kSlowBtn = XboxController.Button.kA.value;
+		public static final int kModerateBtn = XboxController.Button.kB.value;
+		public static final int kNormalBtn = XboxController.Button.kY.value;
+		
+		public static final int kClimbBtn = PS4Controller.Button.kOptions.value;
 		public static final int kCollectBtn = PS4Controller.Button.kCross.value;
 		public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
-		public static final int kShootBtn = PS4Controller.Button.kR1.value;
+		public static final int kShootSpeakerBtn = PS4Controller.Button.kR1.value;
+		public static final int kshootAmpBtn = PS4Controller.Button.kCircle.value;
 		public static final int kRaiseBtn = PS4Controller.Button.kR2.value;
 		public static final int kLowerBtn = PS4Controller.Button.kL2.value;
-		public static final int kAimArmToSpeaker = PS4Controller.Button.kL1.value;
+		public static final int kAimArmToSpeakerBtn = PS4Controller.Button.kL1.value;
+		public static final int kSwitchArmConstrainBtn = PS4Controller.Button.kPS.value;
+		public static final int kStayBtn = PS4Controller.Button.kShare.value;
 
 	}
 
@@ -172,28 +175,39 @@ public final class Constants {
 		public static final int MOTOR_ID2 = 10;
 		public static final double VALUES_MULTIPLAYER = 1;
 
-		public static double CURRENTPID_P = 0.03;
-		public static double CURRENTPID_I = 0;
-		public static double CURRENTPID_D = 0;
-		public static double CUREENTPID_TOLORANCE = 0.5;
+		public static double PID_P = 0.04;
+		public static double PID_I = 0.000;
+		public static double PID_D = 0;
+		public static double PID_TOLORANCE = 0.5;
 
 		public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
-		public static final double SPEED = 0.4;
+		public static final double SPEED = 0.75;
+		public static final double SLOW_SPEED = 0.1;
 
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 320.6;
-    public static final int CLAW_CURRENT_LIMIT = 50;
+		public static final double ENCODER_OFFSET = 319.6;
 
 
 		public static double getArmAngle(double distance) {
-			double angle = (-28.8 +
-			0.0707 * distance +
-			-4.56 * Math.pow(10,-5) * Math.pow(distance, 2) +
-			1.51 * Math.pow(10, -8) * Math.pow(distance, 3) +
-			-1.89 * Math.pow(10, -12) * Math.pow(distance, 4));
+			double x = 205 / distance;
+			// double angle = (32927 +
+			// -173 * distance +
+			// +0.389 * Math.pow(distance, 2) +
+			// -4.89 * Math.pow(10, -4) * Math.pow(distance, 3) +
+			// +3.76 * Math.pow(10, -7) * Math.pow(distance, 4));
+			double angle = 21.2 +
+			2798 * x +
+			-112314 * Math.pow(x, 2) +
+			1.86 * Math.pow(10, 6) * Math.pow(x, 3) +
+			-1.51 * Math.pow(10, 7) * Math.pow(x, 4) +
+			5.08 * Math.pow(10, 7) * Math.pow(x, 5) +
+			4.36 * Math.pow(10, 7) * Math.pow(x, 6) +
+			-7.19 * Math.pow(10, 8) * Math.pow(x, 7) +
+			1.3 * Math.pow(10, 9) * Math.pow(x, 8);
 			return angle;
+
 		}
 
 		public static int ENCODER_TO_DEGREES(int encoderCount) {
@@ -203,14 +217,14 @@ public final class Constants {
 		public static int DEGREES_TO_ENCODER(int degrees) {
 			return degrees * (DEADAXIS_ENCODER_MAX_COUNT / MAX_DEGREES);
 		}
+}
 
-  }
-  public static final class CollectorConstants {
-    public static final int COLLECTOR_PORT = 15;
-    public static final int LIMIT_SWITCH_CHANNEL = 0;
-    public static final double COLLECTOR_SPEED = 0.7;
-  }
-  
+public static final class CollectorConstants {
+public static final int COLLECTOR_PORT = 15;
+public static final int LIMIT_SWITCH_CHANNEL = 0;
+
+public static final double COLLECTOR_SPEED = 0.7;
+}
 
   public static final class AutoConstants {
 	  public static final double kMaxSpeedMetersPerSecond = 2; // Can go up to 3, for safety and accuracy only 2 at the
@@ -242,24 +256,25 @@ public final class Constants {
     public static final double kToleranceThetaController = 0.1;
   }
 
-  public static final class LimeLightConstants{
-    public static final double AIMING_KP = 0.004;
-    public static final double AIMING_KI = 0.003;
-    public static final double AIMING_KD = 0;
-    public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 30.2; // how many degrees back is your limelight rotated
-    // from perfectly vertical
-    public static final double LIMELIGHT_LENSE_HEIGHT_CM = 37.5; // distance from the center of the Limelight lens to
-    // the floor
-    public static final double GOAL_HEIGHT_CM = 145.7; // distance from the target to the floor
+public static final class LimeLightConstants {
+	public static final double AIMING_KP = 0.006;
+	public static final double AIMING_KI = 0.0017;
+	public static final double AIMING_KD = 0.001;
+	public static final double LIMELIGHT_MOUNT_ANGLE_DEGREES = 31.7; // how many degrees back is your limelight rotated 30.3
+	// from perfectly vertical
+	public static final double LIMELIGHT_LENSE_HEIGHT_CM = 37.5; // distance from the center of the Limelight lens to
+	// the floor
+	public static final double GOAL_HEIGHT_CM = 144; // distance from the target to the floor
 
-    public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 30.5;
-    public static final double distanceFromRobotToGoalCentimetersPreset = 216.7; // distance from target in to calibrate the LimeLight mount angle
-  }
+	public static final double LL_DISTANCE_FROM_ROBOT_EDGE = 28; //30.5
+	public static final double distanceFromRobotToGoalCentimetersPreset = 92; // distance from target in to calibrate
+	// the LimeLight mount angle
 
-  
-  public static final class FieldConstants {
-	  public static final double FIELD_CENTER_X = 8.308467;
-	  public static final double FIELD_CENTER_Y = 4.098925;
+}
+
+public static final class FieldConstants {
+	public static final double FIELD_CENTER_X = 8.308467;
+	public static final double FIELD_CENTER_Y = 4.098925;
 
 	  public static final Map<Integer, Pose3d> APRILTAGS = Map.ofEntries(
 			Map.entry(1,

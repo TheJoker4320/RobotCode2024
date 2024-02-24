@@ -59,10 +59,6 @@ public class Shooter extends SubsystemBase {
   
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("shooter speed", output);
-    SmartDashboard.putNumber("Encoder Distance", encoder.getDistance());
-    SmartDashboard.putNumber("Rate of shooter", encoder.getRate());
-    SmartDashboard.putNumber("Encoding", encoder.getEncodingScale());
-    SmartDashboard.putBoolean("isStopped", encoder.getStopped());
+    SmartDashboard.putNumber("Shooter speed", getSpeed());
   }
 }

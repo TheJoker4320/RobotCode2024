@@ -12,11 +12,8 @@ import frc.robot.subsystems.Arm;
 
 public class Stay extends Command {
   private final Arm arm;
-  private double desiredAngle;
-  private PIDController pidController;
   public Stay(Arm arm) {
     this.arm = arm;
-    pidController = new PIDController(0.03, 0, 0);
     addRequirements(arm);
   }
 
@@ -24,18 +21,13 @@ public class Stay extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    desiredAngle = arm.getPosition();
-    pidController.setSetpoint(arm.getPosition());
+    arm.setSetpoint(arm.getPosition());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ArmPosition = arm.getPosition();
-    double output = pidController.calculate(ArmPosition);
-    output = output > 0.1 ? 0.1 : output;
-    output = -0.1 > output ? -0.1 : output;
-    arm.setSpeed(output);
+    arm.setSpeedByMeasurement(arm.getPosition());
   }
 
   // Called once the command ends or is interrupted.

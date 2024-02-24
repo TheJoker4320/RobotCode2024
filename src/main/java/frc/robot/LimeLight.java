@@ -47,7 +47,6 @@ public class LimeLight {
         return table.getEntry("ta").getDouble(0.0);
     }
 
-    
     public int GetId(){
         return (int) table.getEntry("tid").getInteger(0);
     }

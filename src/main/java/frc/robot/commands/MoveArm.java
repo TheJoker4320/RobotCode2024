@@ -2,9 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
 
-import frc.robot.Constants.ArmConstants;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -24,7 +21,7 @@ public class MoveArm extends Command {
     @Override
     public void execute() {
         int reversed = isReversed ? -1 : 1;
-        arm.setSpeed(ArmConstants.SPEED * reversed);
+        arm.setSpeed(reversed);
     }
 
     @Override
@@ -34,8 +31,6 @@ public class MoveArm extends Command {
 
     @Override
     public boolean isFinished() {
-        return ((arm.getPosition() > ArmConstants.MAX_DEGREES && !isReversed && arm.getPosition() < 350)
-                || (arm.getPosition() < ArmConstants.MIN_DEGREES && isReversed));
+        return false;
     }
-
 }
