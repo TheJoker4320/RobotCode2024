@@ -11,6 +11,7 @@ import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToLLDegree;
 import frc.robot.commands.ResetHeading;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SlowMode;
 import frc.robot.commands.SwitchArmConstrain;
 import frc.robot.commands.autonomousCommands.AimToTarget;
@@ -146,9 +147,18 @@ public class RobotContainer {
     JoystickButton switchArmConstrainBtn = new JoystickButton(m_operatorController, OperatorConstants.kSwitchArmConstrainBtn);
     switchArmConstrainBtn.onTrue(new SwitchArmConstrain(arm));
     
+    //Touchpad
+    JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
+    shootManualBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
+    new Collect(collector, true))));
 
-  }
-
+    //L3
+     JoystickButton prepareShooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kPrepareShooterBtn);
+      prepareShooterBtn.whileTrue(new Shoot(shooter, 1));
+      //R3
+      JoystickButton collectToShootBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectToShootBtn);
+      collectToShootBtn.whileTrue(new Collect(collector, true));
+    }
   /**
    * Returns the current alliance as a boolean,
    * True reprsents the red alliance

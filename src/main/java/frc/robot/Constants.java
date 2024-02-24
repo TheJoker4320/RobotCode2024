@@ -51,6 +51,10 @@ public final class Constants {
 		public static final int kAimArmToSpeakerBtn = PS4Controller.Button.kL1.value;
 		public static final int kSwitchArmConstrainBtn = PS4Controller.Button.kPS.value;
 		public static final int kStayBtn = PS4Controller.Button.kShare.value;
+		public static final int kShootManualBtn = PS4Controller.Button.kTouchpad.value;
+		public static final int kPrepareShooterBtn = PS4Controller.Button.kL3.value;
+		public static final int kCollectToShootBtn = PS4Controller.Button.kR3.value;
+
 
 	}
 
