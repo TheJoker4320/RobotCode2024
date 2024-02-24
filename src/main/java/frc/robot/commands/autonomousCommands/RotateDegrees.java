@@ -5,6 +5,7 @@
 package frc.robot.commands.autonomousCommands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
@@ -14,12 +15,14 @@ public class RotateDegrees extends Command {
   private DriveSubsystem driveSubsystem;
   private double desiredDegree;
   private PIDController pidController;
+  private Timer timer;
   public RotateDegrees(DriveSubsystem driveSubsystem, double desiredDegree) {
     this.driveSubsystem = driveSubsystem;
     this.desiredDegree = desiredDegree;
     pidController = new PIDController(0.06, 0.001, 0.03);
     pidController.enableContinuousInput(-180, 180);
     pidController.setTolerance(1);
+    timer = new Timer();
     addRequirements(driveSubsystem);
   }
 
@@ -27,6 +30,7 @@ public class RotateDegrees extends Command {
   @Override
   public void initialize() {
     pidController.setSetpoint(desiredDegree);
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,6 +47,8 @@ public class RotateDegrees extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("Finished", true);
+    timer.stop();
+    timer.stop();
     driveSubsystem.drive(0, 0, 0, true, true);
   }
 
