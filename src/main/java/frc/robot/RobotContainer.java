@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
-import frc.robot.commands.Eject;
 import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToLLDegree;
@@ -25,6 +24,8 @@ import frc.robot.subsystems.Shooter;
 import frc.utils.PoseEstimatorUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
@@ -52,6 +53,7 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   private final LimeLight limeLight = new LimeLight();
   private final AutoCreator autoCreator = new AutoCreator();
+  private final SendableChooser<Command> m_chooser;
   private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils(m_robotDrive, limeLight);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
@@ -61,7 +63,11 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    m_chooser = new SendableChooser<>();
+    m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
+    m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
 
+    SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -112,10 +118,6 @@ public class RobotContainer {
     JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector, false));
 
-    //SQUARE
-    JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
-    ejectBtn.whileTrue(new Eject(collector));
-
     //R1
     JoystickButton shootSpeakerBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootSpeakerBtn);
     shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive),
@@ -140,15 +142,13 @@ public class RobotContainer {
     
     //CIRCLE
     JoystickButton shootAmpBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
-    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
-    new Collect(collector, true)));
-    
+    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 20, false),new Collect(collector, true)));
     //PS
     JoystickButton switchArmConstrainBtn = new JoystickButton(m_operatorController, OperatorConstants.kSwitchArmConstrainBtn);
     switchArmConstrainBtn.onTrue(new SwitchArmConstrain(arm));
     
     //Touchpad
-    JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
+    JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootManualBtn);
     shootManualBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
     new Collect(collector, true))));
 
@@ -188,6 +188,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     m_robotDrive.resetEncoders();
     m_robotDrive.zeroHeading();
-    return autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm);
+    return m_chooser.getSelected();
   }
 }

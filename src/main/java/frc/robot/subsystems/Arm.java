@@ -71,7 +71,7 @@ public class Arm extends SubsystemBase {
 		if(constrain){
 			if(!((getPosition() > ArmConstants.MAX_DEGREES && speed > 0 && getPosition() < 350)
 				|| ((getPosition() < ArmConstants.MIN_DEGREES || getPosition() > 350) && speed < 0 ))){ //software stop
-					if((getPosition() < 15 && speed < 0) || (getPosition() > 85 && speed > 0)){ //Slowmode near edge
+					if((getPosition() < 30 && speed < 0) || (getPosition() > 70 && speed > 0)){ //Slowmode near edge
 						ownerMotor.set(speed * ArmConstants.SLOW_SPEED);
 					}
 					else{
