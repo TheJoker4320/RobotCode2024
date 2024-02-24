@@ -53,7 +53,7 @@ public class RobotContainer {
   private final Arm arm = Arm.getInstance();
   private final LimeLight limeLight = new LimeLight();
   private final AutoCreator autoCreator = new AutoCreator();
-  private final SendableChooser<Command> m_chooser;
+  //private final SendableChooser<Command> m_chooser;
   private final PoseEstimatorUtils m_poseEstimator = new PoseEstimatorUtils(m_robotDrive, limeLight);
   // Creating the XboxController
   private final XboxController m_driverController = new XboxController(OperatorConstants.kDriverControllerPort);
@@ -63,11 +63,19 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_chooser = new SendableChooser<>();
-    m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
-
-    SmartDashboard.putData(m_chooser);
+    //m_chooser = new SendableChooser<>();
+    //m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
+    //m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
+    //m_chooser.addOption(null, autoCreator.getBlueShootSpeakerGoAmp(shooter, collector, m_robotDrive, arm)) NOT WORKING
+    //m_chooser.addOption(null, autoCreator.getBlueSpeakerTwiceLeaveAreaBot());  TO CHECK
+    //m_chooser.addOption(null, autoCreator.getBlueStealNote4FromMid()); NOT WORKING
+    //m_chooser.addOption(null, autoCreator.getRedShootSpeakerGoAmp()); NOT WORKING
+    //m_chooser.addOption(null, autoCreator.getRedSpeakerTwiceLeaveAreaBot()); NOT WORKING
+    //m_chooser.addOption(null, autoCreator.getRedStealNote4()); NOT WORKING
+    //m_chooser.addOption("TwoNoteBotRedOrTopBlue", autoCreator.getTwoNoteBotRedOrTopBlue(shooter, collector, m_robotDrive, arm));
+    //m_chooser.addOption("getTwoNoteMid", autoCreator.getTwoNoteMid(shooter, collector, m_robotDrive, arm));
+    //m_chooser.addOption("TwoNoteTopRedOrBotBlue", autoCreator.getTwoNoteTopRedOrBotBlue(shooter, collector, m_robotDrive, arm));
+    //SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -188,6 +196,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     m_robotDrive.resetEncoders();
     m_robotDrive.zeroHeading();
-    return m_chooser.getSelected();
+    return null;
   }
 }
