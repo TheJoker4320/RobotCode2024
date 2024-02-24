@@ -33,26 +33,30 @@ public class DriveSubsystem extends SubsystemBase
     DriveConstants.kFrontLeftDrivingCanId,
     DriveConstants.kFrontLeftTurningCanId,
     DriveConstants.kFrontLeftChassisAngularOffset,
-    false);
+    false,
+    DriveConstants.kFrontLeftModuleId);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
     DriveConstants.kFrontRightDrivingCanId,
     DriveConstants.kFrontRightTurningCanId,
     DriveConstants.kFrontRightChassisAngularOffset,
-    false);
+    false,
+    DriveConstants.kFrontRightModuleId);
     
-    private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
-      DriveConstants.kRearLeftDrivingCanId,
-      DriveConstants.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset,
-      false);
+  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    DriveConstants.kRearLeftDrivingCanId,
+    DriveConstants.kRearLeftTurningCanId,
+    DriveConstants.kBackLeftChassisAngularOffset,
+    false,
+    DriveConstants.kRearLeftModuleId);
       
-      private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-        DriveConstants.kRearRightDrivingCanId,
-        DriveConstants.kRearRightTurningCanId,
-        DriveConstants.kBackRightChassisAngularOffset,
-        false);
-
+  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+    DriveConstants.kRearRightDrivingCanId,
+    DriveConstants.kRearRightTurningCanId,
+    DriveConstants.kBackRightChassisAngularOffset,
+    false,
+    DriveConstants.kRearRightModuleId);
+  
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
   
@@ -67,6 +71,9 @@ public class DriveSubsystem extends SubsystemBase
 
   private final StructArrayPublisher<SwerveModuleState> publisher;
 
+  // Variables for keeping track of current angle assuming the starting angle isnt 0
+  private double m_realStartingAngle;
+  private double m_currentRealAngle;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -78,6 +85,7 @@ public class DriveSubsystem extends SubsystemBase
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         });
+  
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() 
   {
@@ -86,13 +94,15 @@ public class DriveSubsystem extends SubsystemBase
     zeroHeading();
     publisher = NetworkTableInstance.getDefault()
       .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
+
+    m_realStartingAngle = 0;
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getYaw()),
+        Rotation2d.fromDegrees(-1 * getCurrentRealAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -105,13 +115,52 @@ public class DriveSubsystem extends SubsystemBase
         m_rearLeft.getState(),
         m_rearRight.getState()
     });
-    SmartDashboard.putNumber("Robot heading", m_gyro.getYaw());
+    SmartDashboard.putNumber("Robot heading", -1 * getCurrentRealAngle());
+  }
+
+  /**
+   * This methods sets the angle actual start, this is adviced to be used in cases where the robot doesnt start in the
+   * angle 0, so we can tell him what his current angle actually is
+   * 
+   * @param realStartAngle What the real starting angle
+   */
+  public void setRealStartAngle(double realStartAngle)
+  {
+    m_realStartingAngle = realStartAngle;
   }
   
-  /** Zeroes the heading of the robot. */
+  /** Zeroes the heading of the robot.
+   * it also resets the real starting angle, should be used only if
+   * you know the robot is at the angle 0 at that exact moment
+   */
   public void zeroHeading() {
     m_gyro.zeroYaw();
+    m_realStartingAngle = 0;
   }
+
+  /** Zeroes the heading of the robot.
+   * this should be used when you know the robot is not at the 0 angle
+   * this method should be later paired with the method:
+   * setRealStartngle(realStartAngle)
+   */
+  public void zeroHeadingNonSpecific()
+  {
+    m_gyro.zeroYaw();
+  }
+
+  public double getCurrentRealAngle()
+  {
+    if (Math.abs(m_realStartingAngle) < 0.15)
+      return m_gyro.getYaw();
+    else
+    {
+      double currentGyroAngle = m_gyro.getYaw();
+      double actualAngle = m_realStartingAngle + currentGyroAngle;
+      actualAngle = actualAngle > 180 ? actualAngle - 360 : actualAngle;
+      return actualAngle;
+    } 
+  }
+
   public void setInputMultiplier(double inputMultiplier){
     this.inputMultiplier = inputMultiplier;
   }
@@ -255,8 +304,8 @@ public class DriveSubsystem extends SubsystemBase
     SwerveModuleState[] swerveModuleStates;
     if (fieldRelative)
     {
-      double xSpeedsAdjusted = xSpeedDelivered * Math.cos(Units.degreesToRadians(m_gyro.getYaw() * -1)) + ySpeedDelivered *  Math.sin(Units.degreesToRadians(m_gyro.getYaw() * -1));
-      double ySpeedsAdjusted = -1 * xSpeedDelivered * Math.sin(Units.degreesToRadians(m_gyro.getYaw() * -1)) + ySpeedDelivered *  Math.cos(Units.degreesToRadians(m_gyro.getYaw() * -1));
+      double xSpeedsAdjusted = xSpeedDelivered * Math.cos(Units.degreesToRadians(getCurrentRealAngle() * -1)) + ySpeedDelivered *  Math.sin(Units.degreesToRadians(getCurrentRealAngle() * -1));
+      double ySpeedsAdjusted = -1 * xSpeedDelivered * Math.sin(Units.degreesToRadians(getCurrentRealAngle() * -1)) + ySpeedDelivered *  Math.cos(Units.degreesToRadians(getCurrentRealAngle() * -1));
       
       SmartDashboard.putNumber("Original X Speed", xSpeedDelivered);
       SmartDashboard.putNumber("Adujsted X Speed", xSpeedsAdjusted);

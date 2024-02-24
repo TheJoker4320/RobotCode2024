@@ -89,9 +89,9 @@ public final class Constants {
 		public static final double kTurningEncoderPositionPIDMinInput = 0; // radians
 		public static final double kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor; // radians
 
-		public static final double kDrivingP = 0.04;
-		public static final double kDrivingI = 0;
-		public static final double kDrivingD = 0;
+		public static final double[] kDrivingP = {0.04, 0.04, 0.04, 0.04};
+		public static final double[] kDrivingI = {0, 0, 0, 0};
+		public static final double[] kDrivingD = {0, 0, 0, 0};
 		public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
 		public static final double kDrivingMinOutput = -1;
 		public static final double kDrivingMaxOutput = 1;
@@ -149,6 +149,11 @@ public final class Constants {
 		public static final int kRearLeftTurningCanId = 5;
 		public static final int kFrontRightTurningCanId = 1;
 		public static final int kRearRightTurningCanId = 3;
+
+    public static final int kFrontLeftModuleId = 0;
+		public static final int kRearLeftModuleId = 2;
+		public static final int kFrontRightModuleId = 1;
+		public static final int kRearRightModuleId = 3;
 
 		public static final boolean kGyroReversed = false;
 	}
@@ -250,8 +255,8 @@ public static final double COLLECTOR_SPEED = 0.7;
     public static final double kIYController = kIXController;
     public static final double kDYController = kDXController;
     public static final double kToleranceYController = kToleranceXController;
-    public static final double kPThetaController = 0.3;
-    public static final double kIThetaController = 0;
+    public static final double kPThetaController = 0.004;
+    public static final double kIThetaController = 0.003;
     public static final double kDThetaController = 0;
     public static final double kToleranceThetaController = 0.1;
   }

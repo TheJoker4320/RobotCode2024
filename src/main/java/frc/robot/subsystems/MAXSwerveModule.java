@@ -15,6 +15,8 @@ import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule 
 {
+    private final int m_moduleId;
+
     private final CANSparkMax m_drivingSparkMax;
     private final CANSparkMax m_turningSparkMax;
 
@@ -37,9 +39,12 @@ public class MAXSwerveModule
    * @param turningCANId The can id of the turning motor
    * @param chassisAngularOffset The angular offset of this module from the chassis
    * @param drivingInvereted Wether the driving motor is inverted or not
+   * @param moduleId The id of this module in order to have seperate pid values for each module
    */
-    public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean drivingInverted)
+    public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean drivingInverted, int moduleId)
     {
+        m_moduleId = moduleId;
+
         m_drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
         m_drivingSparkMax.setInverted(drivingInverted);
         m_turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
@@ -79,9 +84,9 @@ public class MAXSwerveModule
         m_turningPIDController.setPositionPIDWrappingMaxInput(ModuleConstants.kTurningEncoderPositionPIDMaxInput);
 
         // Set the PID gains for the driving motor. Note these are example gains, and you
-        m_drivingPIDController.setP(ModuleConstants.kDrivingP);
-        m_drivingPIDController.setI(ModuleConstants.kDrivingI);
-        m_drivingPIDController.setD(ModuleConstants.kDrivingD);
+        m_drivingPIDController.setP(ModuleConstants.kDrivingP[m_moduleId]);
+        m_drivingPIDController.setI(ModuleConstants.kDrivingI[m_moduleId]);
+        m_drivingPIDController.setD(ModuleConstants.kDrivingD[m_moduleId]);
         m_drivingPIDController.setFF(ModuleConstants.kDrivingFF);
         m_drivingPIDController.setOutputRange(ModuleConstants.kDrivingMinOutput,ModuleConstants.kDrivingMaxOutput);
 
