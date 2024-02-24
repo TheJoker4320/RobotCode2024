@@ -116,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase
         m_rearRight.getState()
     });
     SmartDashboard.putNumber("Robot heading", -1 * getCurrentRealAngle());
+    SmartDashboard.putNumber("Speed Multiplier", inputMultiplier);
   }
 
   /**
