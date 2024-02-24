@@ -43,7 +43,6 @@ public final class Constants {
 		
 		public static final int kClimbBtn = PS4Controller.Button.kOptions.value;
 		public static final int kCollectBtn = PS4Controller.Button.kCross.value;
-		public static final int kEjectBtn = PS4Controller.Button.kSquare.value;
 		public static final int kShootSpeakerBtn = PS4Controller.Button.kR1.value;
 		public static final int kshootAmpBtn = PS4Controller.Button.kCircle.value;
 		public static final int kRaiseBtn = PS4Controller.Button.kR2.value;

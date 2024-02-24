@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
-import frc.robot.commands.Eject;
 import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveToLLDegree;
@@ -112,10 +111,6 @@ public class RobotContainer {
     JoystickButton collectBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectBtn);
     collectBtn.toggleOnTrue(new Collect(collector, false));
 
-    //SQUARE
-    JoystickButton ejectBtn = new JoystickButton(m_operatorController, OperatorConstants.kEjectBtn);
-    ejectBtn.whileTrue(new Eject(collector));
-
     //R1
     JoystickButton shootSpeakerBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootSpeakerBtn);
     shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive),
@@ -140,15 +135,13 @@ public class RobotContainer {
     
     //CIRCLE
     JoystickButton shootAmpBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
-    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
-    new Collect(collector, true)));
-    
+    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 20, false),new Collect(collector, true)));
     //PS
     JoystickButton switchArmConstrainBtn = new JoystickButton(m_operatorController, OperatorConstants.kSwitchArmConstrainBtn);
     switchArmConstrainBtn.onTrue(new SwitchArmConstrain(arm));
     
     //Touchpad
-    JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
+    JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootManualBtn);
     shootManualBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
     new Collect(collector, true))));
 
