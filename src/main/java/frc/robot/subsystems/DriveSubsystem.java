@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase
         });
   
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() 
+  private DriveSubsystem() 
   {
     //Zeroes heading.
     //TODO: This constructor might require changing since its not guranteed we zero the angle here.

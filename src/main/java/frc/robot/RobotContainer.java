@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Collect;
 import frc.robot.commands.Eject;
@@ -16,8 +14,6 @@ import frc.robot.commands.ResetHeading;
 import frc.robot.commands.SlowMode;
 import frc.robot.commands.SwitchArmConstrain;
 import frc.robot.commands.autonomousCommands.AimToTarget;
-import frc.robot.commands.autonomousCommands.CollectOnTime;
-import frc.robot.commands.autonomousCommands.RotateDegrees;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
 import frc.robot.commands.autonomousCommands.Stay;
@@ -30,42 +26,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.autonomousCommands.StraightPidDrive;
-import frc.robot.commands.autonomousCommands.resetModuleOrientation;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.utils.PoseEstimatorUtils;
-
-import java.util.List;
-
-import com.pathplanner.lib.commands.FollowPathHolonomic;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -77,7 +44,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive = DriveSubsystem.getInstance();
   private final Climber climber= Climber.getInstance();
   private final Collector collector = Collector.getInstance();
   private final Shooter shooter = Shooter.getInstance();
@@ -153,9 +120,9 @@ public class RobotContainer {
     shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive),
                             new ParallelDeadlineGroup(new MoveToLLDegree(arm),
                             new ShootReachSpeed(shooter, 60)),
-                            new ParallelCommandGroup(new Stay(arm),
+                            new ParallelCommandGroup(new Stay(arm, false),
                             new SequentialCommandGroup(new ShootReachSpeed(shooter, 60),
-                            new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60),
+                            new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
                             new Collect(collector, true))))));
 
     //R2
@@ -168,11 +135,11 @@ public class RobotContainer {
 
     //SHARE
     JoystickButton stayBtn = new JoystickButton(m_operatorController, OperatorConstants.kStayBtn);
-    stayBtn.toggleOnTrue(new Stay(arm));
+    stayBtn.toggleOnTrue(new Stay(arm, false));
     
     //CIRCLE
     JoystickButton shootAmpBtn = new JoystickButton(m_operatorController, OperatorConstants.kshootAmpBtn);
-    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter,60),
+    shootAmpBtn.whileTrue(new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
     new Collect(collector, true)));
     
     //PS

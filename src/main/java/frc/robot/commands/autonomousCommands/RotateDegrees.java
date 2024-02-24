@@ -17,7 +17,7 @@ public class RotateDegrees extends Command {
   public RotateDegrees(DriveSubsystem driveSubsystem, double desiredDegree) {
     this.driveSubsystem = driveSubsystem;
     this.desiredDegree = desiredDegree;
-    pidController = new PIDController(0.06, 0.001, 0.02);
+    pidController = new PIDController(0.06, 0.001, 0.03);
     pidController.enableContinuousInput(-180, 180);
     pidController.setTolerance(1);
     addRequirements(driveSubsystem);
@@ -27,8 +27,6 @@ public class RotateDegrees extends Command {
   @Override
   public void initialize() {
     pidController.setSetpoint(desiredDegree);
-    SmartDashboard.putBoolean("Finished", false);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,8 +34,8 @@ public class RotateDegrees extends Command {
   public void execute() {
     double output = pidController.calculate(driveSubsystem.getHeading());
     output *= -1;
-    // output = output > 0.6 ? 0.6 : output;
-    // output = output < -0.6 ? -0.6 : output;
+    output = output > 0.6 ? 0.6 : output;
+    output = output < -0.6 ? -0.6 : output;
     driveSubsystem.drive(0, 0, output, true, true);
   }
 

@@ -37,7 +37,7 @@ public class Arm extends SubsystemBase {
 		
 		// Initialize the PID controller for Arm pid control
 		pidController = new PIDController(ArmConstants.PID_P,ArmConstants.PID_I ,ArmConstants.PID_D);
-		pidController.setTolerance(0.5);
+		pidController.setTolerance(1);
     }
     
     /**

@@ -32,6 +32,7 @@ public class AimToTarget extends Command {
   @Override
   public void initialize() {
     pidController.setSetpoint(0);
+    timer.reset();
     timer.start();
   }
 

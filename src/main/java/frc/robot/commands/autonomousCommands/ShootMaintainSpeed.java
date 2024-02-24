@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
@@ -11,11 +12,15 @@ public class ShootMaintainSpeed extends Command {
   /** Creates a new ShootMaintainSpeed. */
   private Shooter shooter;
   private double speed;
+  private Timer timer;
+  private boolean isTimer;
 
   /** Creates a new Shoot. */
-  public ShootMaintainSpeed(Shooter shooter, double speed) {
+  public ShootMaintainSpeed(Shooter shooter, double speed, boolean isTimer) {
     this.shooter = shooter;
     this.speed = speed;
+    this.timer = new Timer();
+    this.isTimer = isTimer;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
 
@@ -24,6 +29,8 @@ public class ShootMaintainSpeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (isTimer)
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,11 +43,13 @@ public class ShootMaintainSpeed extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setOutput(0);
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false || timer.get() >= 1;
   }
 }
