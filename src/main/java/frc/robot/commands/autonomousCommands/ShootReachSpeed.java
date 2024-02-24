@@ -17,6 +17,7 @@ public class ShootReachSpeed extends Command {
   public ShootReachSpeed(Shooter shooter, double speed) {
     this.shooter = shooter;
     this.speed = speed;
+    this.timeout = new Timer();
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -45,7 +46,7 @@ public class ShootReachSpeed extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      return shooter.getSpeed() >= speed || timeout.get() >= 2;
+      return shooter.getSpeed() >= speed || timeout.get() >= 3;
     
 
     }
