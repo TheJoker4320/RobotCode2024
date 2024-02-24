@@ -48,39 +48,39 @@ public class AutoCreator
             )
         );
     }
-
-    //red command for mid note
-    public Command redShootSpeakerTwiceAndLeave(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
-    {
-        TrajectoryConfig config =
+    
+    private TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared
                 ).setKinematics(DriveConstants.kDriveKinematics);
 
+    //red command for mid note
+    public Command redShootSpeakerTwiceAndLeave(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
+    {
     Trajectory driveToCollect = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDrive = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
       List.of(new Translation2d(2.33, 5.53)),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.35, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(6.39, 4.67, new Rotation2d(0)), 
-      config);
+      config.setReversed(false)); //TODO: Check This
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
       AutoConstants.kPThetaController, 
@@ -163,35 +163,29 @@ public class AutoCreator
   //blue command for mid note
   public Command blueShootSpeakerTwiceAndLeave(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollect = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDrive = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.35, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(6.39, 6.39, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
       AutoConstants.kPThetaController, 
@@ -274,46 +268,40 @@ public class AutoCreator
   //blue command for mid note with top note
   public Command getBlueShootSpeakerGoAmp(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
     
     Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 5.53, new Rotation2d(Math.PI / 2)),
       List.of(),
       new Pose2d(1.45, 7, new Rotation2d(Math.PI / 2)), 
-      config);
+      config.setReversed(false));
     Trajectory collectDriveSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 7, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.4, 7, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.4, 7, new Rotation2d(Math.PI / 2)),
       List.of(),
       new Pose2d(2.4, 7.62, new Rotation2d(Math.PI / 2)), 
-      config);
+      config.setReversed(false));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -425,46 +413,40 @@ public class AutoCreator
   //red command for mid note and top node
   public Command getRedShootSpeakerGoAmp(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
     
     Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 5.53, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(1.45, 4.06, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
     Trajectory collectDriveSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 4.06, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.4, 4.06, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.4, 4.06, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(2.4, 3.44, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -576,35 +558,29 @@ public class AutoCreator
   //blue command to shoot starting note, collect top and leave
   public Command getBlueSpeakerTwiceLeaveAreaTop(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectTop = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 6.98, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 6.98, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveTop = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 6.98, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 6.98, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 6.98, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 6.98, new Rotation2d(0)),
+      new Pose2d(2.33, 6.98, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 6.98, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 6.98, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(6.12, 6.98, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(false));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -688,35 +664,29 @@ public class AutoCreator
   */
   public Command getRedSpeakerTwiceLeaveAreaTop(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectTop = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 6.98, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 6.98, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveTop = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 6.98, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 6.98)),
-      new Pose2d(2.13, 6.98, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 6.98, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 6.98, new Rotation2d(0)),
+      new Pose2d(2.33, 6.98, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 6.98, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 6.98, new Rotation2d(0)),
+      new Pose2d(1.45, 6.98, new Rotation2d(0)),
       List.of(),
       new Pose2d(6.12, 6.98, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -798,35 +768,29 @@ public class AutoCreator
   //blue command to shoot starting note, collect bottom and leave
   public Command getBlueSpeakerTwiceLeaveAreaBot(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectBot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 4.13, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 4.13, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveBot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 4.13, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 4.13)),
-      new Pose2d(2.13, 4.13, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 4.13, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 4.13, new Rotation2d(0)),
+      new Pose2d(2.33, 4.13, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 4.13, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 4.13, new Rotation2d(0)),
       List.of(new Translation2d(3.13, 1.6)),
       new Pose2d(6.12, 1.6, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -908,35 +872,29 @@ public class AutoCreator
   //red command to shoot starting note, collect bottom and leave
   public Command getRedSpeakerTwiceLeaveAreaBot(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectBot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 4.13, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 4.13, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveBot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 4.13, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 4.13)),
-      new Pose2d(2.13, 4.13, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 4.13, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 4.13, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 4.13, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 4.13, new Rotation2d(0)),
       List.of(new Translation2d(3.13, 5.73)),
       new Pose2d(6.12, 5.73, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -1018,46 +976,40 @@ public class AutoCreator
   //blue command to shoot starting note, collect bottom and leave
   public Command getBlueStealNote4FromMid(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 5.53, new Rotation2d(0)),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
     
     Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 5.53, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(1.45, 4.06, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
     Trajectory collectDriveSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 4.06, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.4, 4.06, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.4, 4.06, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(2.4, 3.44, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
@@ -1169,46 +1121,40 @@ public class AutoCreator
     //red command to shoot starting note, collect bottom and leave
   public Command getRedStealNote4(Shooter shooter, Collector collector, DriveSubsystem m_robotDrive, Arm arm)
   {
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(DriveConstants.kDriveKinematics);
-
     Trajectory driveToCollectMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory collectDriveMid = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
-      List.of(new Translation2d(2.33, 5.53)),
-      new Pose2d(2.13, 5.53, new Rotation2d(0)), 
-      config);
+      List.of(),
+      new Pose2d(2.33, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
     
     Trajectory driveToShoot = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.13, 5.53, new Rotation2d(0)),
       List.of(),
       new Pose2d(1.45, 5.53, new Rotation2d(0)), 
-      config);
+      config.setReversed(true));
     
     Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 5.53, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(1.45, 4.06, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
     Trajectory collectDriveSecond = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.45, 4.06, new Rotation2d(0)),
       List.of(),
       new Pose2d(2.4, 4.06, new Rotation2d(0)), 
-      config);
+      config.setReversed(false));
 
     Trajectory driveToLeave = TrajectoryGenerator.generateTrajectory(
       new Pose2d(2.4, 4.06, new Rotation2d(- Math.PI / 2)),
       List.of(),
       new Pose2d(2.4, 3.44, new Rotation2d(- Math.PI / 2)), 
-      config);
+      config.setReversed(true));
 
 
     ProfiledPIDController thetaController = new ProfiledPIDController(
