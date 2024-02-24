@@ -38,8 +38,8 @@ public class RotateDegrees extends Command {
   public void execute() {
     double output = pidController.calculate(driveSubsystem.getHeading());
     output *= -1;
-    output = output > 0.6 ? 0.6 : output;
-    output = output < -0.6 ? -0.6 : output;
+    output = output > 0.4 ? 0.4 : output;
+    output = output < -0.4 ? -0.4 : output;
     driveSubsystem.drive(0, 0, output, true, true);
   }
 
