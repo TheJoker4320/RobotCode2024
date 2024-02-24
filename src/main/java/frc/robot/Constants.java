@@ -241,8 +241,8 @@ public final class Constants {
     public static final double kIYController = kIXController;
     public static final double kDYController = kDXController;
     public static final double kToleranceYController = kToleranceXController;
-    public static final double kPThetaController = 0.3;
-    public static final double kIThetaController = 0;
+    public static final double kPThetaController = 0.004;
+    public static final double kIThetaController = 0.003;
     public static final double kDThetaController = 0;
     public static final double kToleranceThetaController = 0.1;
   }
