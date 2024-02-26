@@ -41,7 +41,7 @@ public class AutoCreator
     public Command getShootSequenceCommand(DriveSubsystem robotDrive, Shooter shooter, Collector collector, Arm arm)
     { 
         return new SequentialCommandGroup(
-                            new AimToTarget(robotDrive),
+                            new AimToTarget(robotDrive), //Try along with. Test
                             new MoveToLLDegree(arm),
                             new ShootReachSpeed(shooter, 60),
                             new ParallelRaceGroup(new ShootMaintainSpeed(shooter,60, true),
@@ -666,12 +666,6 @@ public class AutoCreator
     Trajectory driveToCollectTop = TrajectoryGenerator.generateTrajectory(
       new Pose2d(1.35, 6.98, new Rotation2d(0)),
       List.of(),
-      new Pose2d(2.13, 6.98, new Rotation2d(0)), 
-      config.setReversed(false));
-
-    Trajectory collectDriveTop = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(2.13, 6.98, new Rotation2d(0)),
-      List.of(),
       new Pose2d(2.33, 6.98, new Rotation2d(0)), 
       config.setReversed(false));
     
@@ -715,16 +709,6 @@ public class AutoCreator
       m_robotDrive::setModuleStates,
       m_robotDrive);
     
-    SwerveControllerCommand commandCollectDrive = new SwerveControllerCommand(
-      collectDriveTop,
-      m_robotDrive::getPose, 
-      DriveConstants.kDriveKinematics, 
-      xController, 
-      yController, 
-      thetaController,
-      m_robotDrive::setModuleStates,
-      m_robotDrive);
-    
     SwerveControllerCommand commandDriveToShoot = new SwerveControllerCommand(
       driveToShoot,
       m_robotDrive::getPose, 
@@ -753,10 +737,9 @@ public class AutoCreator
       new MoveToDegree(arm, 0),
       new RotateDegrees(m_robotDrive, 0),
       new WaitCommand(0.5),
-      commandDriveToCollect,
       new WaitCommand(0.5),
       new ParallelDeadlineGroup(
-        commandCollectDrive,
+        commandDriveToCollect,
         new Collect(collector, false)
       ),
       new WaitCommand(0.5),
@@ -1642,5 +1625,143 @@ public class AutoCreator
 
   public Command getWaitAndDrive(DriveSubsystem m_robotDrive, int time){
     return new WaitCommand(time).andThen(new DriveByTime(2, 0.5, 0, m_robotDrive)); 
+  }
+
+  /** @return Shoot first note, collect mid, shoot, collect shoot */
+  public Command getShootRotate2CollectRight(DriveSubsystem m_robotDrive, Arm arm, Collector collector, Shooter shooter){
+    Trajectory driveToCollectFirst = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(1.35, 5.53, new Rotation2d(0)),
+      List.of(),
+      new Pose2d(2.53, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
+    
+    Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(2.53, 5.53, new Rotation2d(Math.PI / 2)),
+      List.of(),
+      new Pose2d(2.53, 7.03, new Rotation2d(Math.PI / 2)), //FIXME: check correct distance
+      config.setReversed(true));
+
+
+    ProfiledPIDController thetaController = new ProfiledPIDController(
+      AutoConstants.kPThetaController, 
+      AutoConstants.kIThetaController, 
+      AutoConstants.kDThetaController, 
+      AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    PIDController xController = new PIDController(
+      AutoConstants.kPXController,
+      AutoConstants.kIXController,
+      AutoConstants.kDXController);
+
+    PIDController yController = new PIDController(
+      AutoConstants.kPYController,
+      AutoConstants.kIYController,
+      AutoConstants.kDYController);
+    
+    SwerveControllerCommand commandDriveToCollectFirst = new SwerveControllerCommand(
+      driveToCollectFirst,
+      m_robotDrive::getPose, 
+      DriveConstants.kDriveKinematics, 
+      xController, 
+      yController, 
+      thetaController,
+      m_robotDrive::setModuleStates,
+      m_robotDrive);
+    
+    SwerveControllerCommand commandDriveToCollectSecond = new SwerveControllerCommand(
+      driveToCollectSecond,
+      m_robotDrive::getPose, 
+      DriveConstants.kDriveKinematics, 
+      xController, 
+      yController, 
+      thetaController,
+      m_robotDrive::setModuleStates,
+      m_robotDrive);
+
+    m_robotDrive.resetOdometry(driveToCollectFirst.getInitialPose());
+    return new SequentialCommandGroup(
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
+      new ParallelDeadlineGroup(
+        commandDriveToCollectFirst,
+        new Collect(collector, false)
+      ),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
+      new RotateDegrees(m_robotDrive, 90),
+      new ParallelDeadlineGroup(
+        commandDriveToCollectSecond,
+        new Collect(collector, false)),
+      new RotateDegrees(m_robotDrive, 45),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm)
+    );
+  }
+
+    /** @return Shoot first note, collect mid, shoot, collect left, shoot */
+  public Command getShootRotate2CollectLeft(DriveSubsystem m_robotDrive, Arm arm, Collector collector, Shooter shooter){
+    Trajectory driveToCollectFirst = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(1.35, 5.53, new Rotation2d(0)),
+      List.of(),
+      new Pose2d(2.53, 5.53, new Rotation2d(0)), 
+      config.setReversed(false));
+    
+    Trajectory driveToCollectSecond = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(2.53, 5.53, new Rotation2d(-Math.PI / 2)),
+      List.of(),
+      new Pose2d(2.53, 7.03, new Rotation2d(-Math.PI / 2)), //FIXME: check correct distance
+      config.setReversed(true));
+
+
+    ProfiledPIDController thetaController = new ProfiledPIDController(
+      AutoConstants.kPThetaController, 
+      AutoConstants.kIThetaController, 
+      AutoConstants.kDThetaController, 
+      AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    PIDController xController = new PIDController(
+      AutoConstants.kPXController,
+      AutoConstants.kIXController,
+      AutoConstants.kDXController);
+
+    PIDController yController = new PIDController(
+      AutoConstants.kPYController,
+      AutoConstants.kIYController,
+      AutoConstants.kDYController);
+    
+    SwerveControllerCommand commandDriveToCollectFirst = new SwerveControllerCommand(
+      driveToCollectFirst,
+      m_robotDrive::getPose, 
+      DriveConstants.kDriveKinematics, 
+      xController, 
+      yController, 
+      thetaController,
+      m_robotDrive::setModuleStates,
+      m_robotDrive);
+    
+    SwerveControllerCommand commandDriveToCollectSecond = new SwerveControllerCommand(
+      driveToCollectSecond,
+      m_robotDrive::getPose, 
+      DriveConstants.kDriveKinematics, 
+      xController, 
+      yController, 
+      thetaController,
+      m_robotDrive::setModuleStates,
+      m_robotDrive);
+
+    m_robotDrive.resetOdometry(driveToCollectFirst.getInitialPose());
+    return new SequentialCommandGroup(
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
+      new ParallelDeadlineGroup(
+        commandDriveToCollectFirst,
+        new Collect(collector, false)
+      ),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm),
+      new RotateDegrees(m_robotDrive, -90),
+      new ParallelDeadlineGroup(
+        commandDriveToCollectSecond,
+        new Collect(collector, false)),
+      new RotateDegrees(m_robotDrive, -45),
+      getShootSequenceCommand(m_robotDrive, shooter, collector, arm)
+    );
   }
 }
