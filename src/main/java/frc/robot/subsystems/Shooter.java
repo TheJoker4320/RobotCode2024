@@ -54,7 +54,7 @@ public class Shooter extends SubsystemBase {
   }
   
   public double getSpeed() {
-    return encoder.getRate();
+    return encoder.getRate(); //once getting to speed of 0.8 give stronger pulse for little time
   }
   
   @Override
