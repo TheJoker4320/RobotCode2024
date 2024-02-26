@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ModuleConstants;
 
 public class Climber extends SubsystemBase {
   private CANSparkMax masterMotor;
@@ -18,6 +19,10 @@ public class Climber extends SubsystemBase {
   public Climber() {
     masterMotor = new CANSparkMax(11, MotorType.kBrushless);
     slaveMotor = new CANSparkMax(12, MotorType.kBrushless);
+
+    masterMotor.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
+    slaveMotor.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
+    
     masterMotor.setInverted(true);
     encoder = masterMotor.getEncoder();
     slaveMotor.follow(masterMotor, true);

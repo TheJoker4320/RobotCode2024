@@ -10,7 +10,8 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ModuleConstants;;
 
 public class Arm extends SubsystemBase {
 	/** Creates a new Arm. */
@@ -25,6 +26,9 @@ public class Arm extends SubsystemBase {
 		// Initialize the Arm motor
 		ownerMotor = new CANSparkMax(ArmConstants.MOTOR_ID2, ArmConstants.MOTOR_TYPE);
 		SlaveMotor = new CANSparkMax(ArmConstants.MOTOR_ID1, ArmConstants.MOTOR_TYPE);
+
+		ownerMotor.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
+		SlaveMotor.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
 		SlaveMotor.follow(ownerMotor, true);
 		ownerMotor.setSmartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT);
 		ownerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);

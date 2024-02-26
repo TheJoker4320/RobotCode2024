@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ChangeRobotFieldrelative;
 import frc.robot.commands.Collect;
 import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
@@ -14,6 +15,8 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.SlowMode;
 import frc.robot.commands.SwitchArmConstrain;
 import frc.robot.commands.autonomousCommands.AimToTarget;
+import frc.robot.commands.autonomousCommands.DriveByTime;
+import frc.robot.commands.autonomousCommands.RotateDegrees;
 import frc.robot.commands.autonomousCommands.ShootMaintainSpeed;
 import frc.robot.commands.autonomousCommands.ShootReachSpeed;
 import frc.robot.commands.autonomousCommands.Stay;
@@ -33,8 +36,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -85,7 +90,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.kDriveDeadband),
-                true, true),
+                true, true, false),
             m_robotDrive));
 
   }
@@ -101,15 +106,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
     ///////////////////Driver///////////////////
+    //X
+    JoystickButton changeFieldRelativness = new JoystickButton(m_driverController, 3);
+    changeFieldRelativness.onTrue(new ChangeRobotFieldrelative(m_robotDrive));
+
     //LB
     JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeadingBtn);
     resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
+
+    //RB
+    JoystickButton Moveto45Degrees = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
+    Moveto45Degrees.toggleOnTrue(new RotateDegrees(m_robotDrive, 45));
 
     //A
     JoystickButton slowSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kSlowBtn);
     slowSpeedBtn.onTrue(new SlowMode(m_robotDrive, 0.3));
 
-    //X
+    //B
     JoystickButton moderateSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kModerateBtn);
     moderateSpeedBtn.onTrue(new SlowMode(m_robotDrive, 0.7));
 
@@ -128,13 +141,27 @@ public class RobotContainer {
 
     //R1
     JoystickButton shootSpeakerBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootSpeakerBtn);
-    shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(new AimToTarget(m_robotDrive),
-                            new ParallelDeadlineGroup(new MoveToLLDegree(arm),
-                            new ShootReachSpeed(shooter, 60)),
-                            new ParallelCommandGroup(new Stay(arm, false),
-                            new SequentialCommandGroup(new ShootReachSpeed(shooter, 60),
-                            new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
-                            new Collect(collector, true))))));
+    // shootSpeakerBtn.toggleOnTrue(new SequentialCommandGroup(
+    //   new AimToTarget(m_robotDrive),
+    //   new ParallelDeadlineGroup(
+    //     new MoveToLLDegree(arm),
+    //     new ShootReachSpeed(shooter, 60)),
+    //   new ParallelCommandGroup(
+    //     new Stay(arm, false),
+    //     new SequentialCommandGroup(
+    //       new ShootReachSpeed(shooter, 60),
+    //       new ParallelCommandGroup(
+    //         new ShootMaintainSpeed(shooter, 60, false),
+    //         new Collect(collector, true))))));
+    shootSpeakerBtn.toggleOnTrue(
+      new SequentialCommandGroup(
+                            new AimToTarget(m_robotDrive),
+                            new MoveToLLDegree(arm),
+                            new ShootReachSpeed(shooter, 60),
+                            new ParallelRaceGroup(new ShootMaintainSpeed(shooter,60, true),
+                            new Collect(collector, true)))
+    );
+            
 
     //R2
     JoystickButton raiseBtn = new JoystickButton(m_operatorController, OperatorConstants.kRaiseBtn);
@@ -196,6 +223,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     m_robotDrive.resetEncoders();
     m_robotDrive.zeroHeading();
-    return null;
+    //return autoCreator.getShootSequenceCommand(m_robotDrive, shooter, collector, arm);
+    return autoCreator.getTwoNoteMid(shooter, collector, m_robotDrive, arm);
+    //autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm)
+    //return new WaitCommand(1);
   }
 }

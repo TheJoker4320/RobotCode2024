@@ -51,7 +51,8 @@ public class LimeLight {
     }
 
     public static Pose2d getLimeLightBotPose(){
-
+        if(!doesLimeLightHaveTargets())
+            return new Pose2d();
         double[] botpose;
         if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
             botpose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[1]);

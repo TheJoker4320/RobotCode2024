@@ -19,7 +19,7 @@ public class RotateDegrees extends Command {
   public RotateDegrees(DriveSubsystem driveSubsystem, double desiredDegree) {
     this.driveSubsystem = driveSubsystem;
     this.desiredDegree = desiredDegree;
-    pidController = new PIDController(0.06, 0.001, 0.03);
+    pidController = new PIDController(0.06, 0, 0.03);
     pidController.enableContinuousInput(-180, 180);
     pidController.setTolerance(1);
     timer = new Timer();
@@ -40,7 +40,7 @@ public class RotateDegrees extends Command {
     output *= -1;
     output = output > 0.4 ? 0.4 : output;
     output = output < -0.4 ? -0.4 : output;
-    driveSubsystem.drive(0, 0, output, true, true);
+    driveSubsystem.drive(0, 0, output, true, true, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -49,12 +49,12 @@ public class RotateDegrees extends Command {
     SmartDashboard.putBoolean("Finished", true);
     timer.stop();
     timer.stop();
-    driveSubsystem.drive(0, 0, 0, true, true);
+    driveSubsystem.drive(0, 0, 0, true, true, true);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return pidController.atSetpoint() || timer.get() >= 2;
   }
 }

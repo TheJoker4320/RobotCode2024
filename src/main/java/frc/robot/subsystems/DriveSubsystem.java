@@ -26,6 +26,7 @@ import frc.utils.SwerveUtils;
 
 public class DriveSubsystem extends SubsystemBase 
 {
+  private static boolean isFieldRelative = true;
   private static DriveSubsystem driveSubsystem;
   private double inputMultiplier = 1;
   // Create MAXSwerveModules
@@ -96,6 +97,8 @@ public class DriveSubsystem extends SubsystemBase
       .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
 
     m_realStartingAngle = 0;
+
+    isFieldRelative = true;
   }
 
   @Override
@@ -207,6 +210,11 @@ public class DriveSubsystem extends SubsystemBase
         },
         pose);
   }
+
+  public void changeFieldRelative()
+  {
+    this.isFieldRelative = !this.isFieldRelative;
+  }
   
   /**
    * Method to drive the robot using joystick info.
@@ -218,8 +226,14 @@ public class DriveSubsystem extends SubsystemBase
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) 
+  public void drive(double xSpeed, double ySpeed, double rot, boolean robotfieldRelative, boolean rateLimit, boolean shouldOverride) 
   {
+    boolean fieldRelative;
+    if (shouldOverride)
+      fieldRelative = robotfieldRelative; //Argument
+    else
+      fieldRelative = isFieldRelative; //Member
+    
     xSpeed = xSpeed * inputMultiplier;
     ySpeed = ySpeed * inputMultiplier;
     //rot = rot * inputMultiplier;
@@ -233,15 +247,12 @@ public class DriveSubsystem extends SubsystemBase
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
-      SmartDashboard.putNumber("Input Translation Direction: ", inputTranslationDir);
-      SmartDashboard.putNumber("Input Translation Mag: ", inputTranslationMag);
 
       // Calculate the direction slew rate based on an estimate of the lateral acceleration
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) 
       {
         directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
-        SmartDashboard.putNumber("Direction Slew Rate", directionSlewRate);
       } 
       else 
       {
@@ -252,7 +263,6 @@ public class DriveSubsystem extends SubsystemBase
       double currentTime = WPIUtilJNI.now() * 1e-6;
       double elapsedTime = currentTime - m_prevTime;
       double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
-      SmartDashboard.putNumber("Angle Difference:" , angleDif);
 
       if (angleDif < 0.45*Math.PI)
       {
@@ -282,9 +292,6 @@ public class DriveSubsystem extends SubsystemBase
       xSpeedCommanded = m_currentTranslationMag * Math.cos(m_currentTranslationDir);
       ySpeedCommanded = m_currentTranslationMag * Math.sin(m_currentTranslationDir);
       m_currentRotation = m_rotLimiter.calculate(rot);
-      SmartDashboard.putNumber("X Speed Commanded: ", xSpeedCommanded);
-      SmartDashboard.putNumber("Y Speed Commanded: ", ySpeedCommanded);
-      SmartDashboard.putNumber("Current Rotation: ", m_currentRotation);
     } 
     else 
     {
@@ -297,9 +304,6 @@ public class DriveSubsystem extends SubsystemBase
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
-    SmartDashboard.putNumber("X Speed Delivered: ", xSpeedDelivered);
-    SmartDashboard.putNumber("Y Speed Delivered: ", ySpeedDelivered);
-    SmartDashboard.putNumber("Delivered Rotation: ", rotDelivered);
 
 
     SwerveModuleState[] swerveModuleStates;
@@ -308,11 +312,7 @@ public class DriveSubsystem extends SubsystemBase
       double xSpeedsAdjusted = xSpeedDelivered * Math.cos(Units.degreesToRadians(getCurrentRealAngle() * -1)) + ySpeedDelivered *  Math.sin(Units.degreesToRadians(getCurrentRealAngle() * -1));
       double ySpeedsAdjusted = -1 * xSpeedDelivered * Math.sin(Units.degreesToRadians(getCurrentRealAngle() * -1)) + ySpeedDelivered *  Math.cos(Units.degreesToRadians(getCurrentRealAngle() * -1));
       
-      SmartDashboard.putNumber("Original X Speed", xSpeedDelivered);
-      SmartDashboard.putNumber("Adujsted X Speed", xSpeedsAdjusted);
 
-      SmartDashboard.putNumber("Original Y Speed", ySpeedDelivered);
-      SmartDashboard.putNumber("Adujsted Y Speed", ySpeedsAdjusted);
       
       swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
       new ChassisSpeeds(xSpeedsAdjusted,

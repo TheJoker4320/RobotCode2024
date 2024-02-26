@@ -14,6 +14,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AimToTarget extends Command {
   private final PIDController pidController;
   private final DriveSubsystem driveSubsystem;
+  private boolean foundInitialy;
   private double lastMeasure;
   private Timer timer;
   public AimToTarget(final DriveSubsystem driveSubsystem) {
@@ -29,9 +30,13 @@ public class AimToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    foundInitialy = false;
     pidController.setSetpoint(0);
     timer.reset();
     timer.start();
+
+    if(LimeLight.doesLimeLightHaveTargets())
+      foundInitialy = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,9 +44,21 @@ public class AimToTarget extends Command {
   public void execute() {
     double rotValue;
     if(LimeLight.doesLimeLightHaveTargets())
+    {
       lastMeasure = LimeLight.getLimeLightXValue();
-    rotValue = pidController.calculate(lastMeasure);
-    driveSubsystem.drive(0,0,rotValue,true,true);
+      rotValue = pidController.calculate(lastMeasure);
+      foundInitialy = true;
+    }
+    else if (!foundInitialy)
+    {
+      rotValue = 0;
+    }
+    else
+    {
+      rotValue = pidController.calculate(lastMeasure);
+    }
+
+    driveSubsystem.drive(0,0,rotValue,true,true, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -57,6 +74,6 @@ public class AimToTarget extends Command {
   public boolean isFinished() {
     //if(limelight.getLimeLightXValue() < 5 && limelight.getLimeLightXValue() >= -5)
       //return true;
-    return pidController.atSetpoint() || timer.get() >= 1.5;
+    return !foundInitialy || pidController.atSetpoint() || timer.get() >= 1;
   }
 }

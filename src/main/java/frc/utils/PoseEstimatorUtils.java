@@ -52,11 +52,6 @@ public class PoseEstimatorUtils extends SubsystemBase {
     pose[1] = position.getTranslation().getY();
     pose[2] = position.getRotation().getRadians() *-1;
 
-    SmartDashboard.putNumberArray("position", pose);
-    SmartDashboard.putNumber("estimated x", position.getTranslation().getX());
-    SmartDashboard.putNumber("estimated y", position.getTranslation().getY());
-    SmartDashboard.putNumber("estimated degree", position.getRotation().getDegrees());
-    SmartDashboard.putNumber("estimated rotation", position.getRotation().getRotations());
   }
 
 }

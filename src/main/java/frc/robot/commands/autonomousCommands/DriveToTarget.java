@@ -64,14 +64,14 @@ public class DriveToTarget extends Command {
     double xSpeed = m_pidControllerProfiledX.calculate(m_poseEstimator.GetPosition().getX());
     double ySpeed = m_pidControllerProfiledY.calculate(m_poseEstimator.GetPosition().getY());
     double omega = m_pidControllerProfiledOmega.calculate(m_poseEstimator.GetPosition().getRotation().getRadians());
-    m_driveSubsystem.drive(xSpeed,ySpeed,omega,true,true);
+    m_driveSubsystem.drive(xSpeed,ySpeed,omega,true,true, true);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_driveSubsystem.drive(0,0,0,true,true);
+    m_driveSubsystem.drive(0,0,0,true,true, true);
   }
 
   // Returns true when the command should end.

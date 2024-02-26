@@ -59,7 +59,8 @@ public class StraightPidDrive extends Command {
                            /*yAxis.calculate(currentPose2d.getY(), goal.getY()) / DriveConstants.kMaxSpeedMetersPerSecond*/0,
                            /*thetaAxis.calculate(currentPose2d.getRotation().getRadians(), goal.getRotation().getRadians()) / DriveConstants.kMaxAngularSpeed*/0,
                            true,
-                           false);
+                           false,
+                           true);
   }
 
   // Called once the command ends or is interrupted.
@@ -68,7 +69,7 @@ public class StraightPidDrive extends Command {
   {
     timer.stop();
     timer.reset();
-    m_DriveSubsystem.drive(0, 0, 0, false, false);
+    m_DriveSubsystem.drive(0, 0, 0, false, false, true);
   }
 
   // Returns true when the command should end.
