@@ -34,7 +34,7 @@ public final class Constants {
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
 		public static final int kOperatorControllerPort = 1;
-		public static final double kDriveDeadband = 0.05;
+		public static final double kDriveDeadband = 0.1;
 
 		public static final int kZeroHeadingBtn = XboxController.Button.kLeftBumper.value; // LB
 		public static final int kSlowBtn = XboxController.Button.kA.value;
@@ -125,9 +125,9 @@ public final class Constants {
 		public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
 		// Chassis configuration
-		public static final double kTrackWidth = Units.inchesToMeters(30);
+		public static final double kTrackWidth = 0.675;
 		// Distance between centers of right and left wheels on robot
-		public static final double kWheelBase = Units.inchesToMeters(30);
+		public static final double kWheelBase = 0.675;
 		// Distance between front and back wheels on robot
 		public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
 				new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -189,7 +189,7 @@ public final class Constants {
 		public static double PID_TOLORANCE = 0.5;
 
 		public static final PIDController CURRENT_PID = new PIDController(0.000, 0, 0, 0.0077);
-		public static final double SPEED = 0.75;
+		public static final double SPEED = 0.5;
 		public static final double SLOW_SPEED = 0.1;
 		public static final double NO_CONSTRAIN_SPEED = 0.4;
 
@@ -197,7 +197,7 @@ public final class Constants {
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 377.6;
+		public static final double ENCODER_OFFSET = 322.7883625;
 
         //Does not work. do not try.
 		public static double getArmAngle(double distance) {
