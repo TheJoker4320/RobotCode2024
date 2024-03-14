@@ -47,6 +47,6 @@ public class Stay extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false || timer.get() > 0.5;
+    return false || timer.get() > 2;
   }
 }
