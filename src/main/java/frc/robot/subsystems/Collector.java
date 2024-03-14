@@ -17,12 +17,20 @@ public class Collector extends SubsystemBase {
   private static Collector collectorInstance;
   private final TalonSRX m_main;
   private final DigitalInput m_limitSwitch;
+  private boolean isCollecting;
 
   public Collector() {
+    isCollecting = false;
+
     this.m_main = new TalonSRX(Constants.CollectorConstants.COLLECTOR_PORT);
     this.m_limitSwitch = new DigitalInput(Constants.CollectorConstants.LIMIT_SWITCH_CHANNEL);
 
     m_main.setInverted(true);
+  }
+
+  public void setCollectorState(boolean state)
+  {
+    isCollecting = state;
   }
 
   public static Collector getInstance() {
@@ -44,5 +52,6 @@ public class Collector extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("IsCollected", getLimitSwitch());
+    SmartDashboard.putBoolean("Is Collecting Now", isCollecting);
   }
 }

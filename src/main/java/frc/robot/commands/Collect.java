@@ -21,6 +21,7 @@ public class Collect extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_Collector.setCollectorState(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,6 +34,7 @@ public class Collect extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_Collector.setCollectorState(false);
     m_Collector.setSpeed(0);
   }
 

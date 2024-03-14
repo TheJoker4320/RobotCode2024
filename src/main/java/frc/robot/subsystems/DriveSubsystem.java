@@ -120,6 +120,7 @@ public class DriveSubsystem extends SubsystemBase
     });
     SmartDashboard.putNumber("Robot heading", -1 * getCurrentRealAngle());
     SmartDashboard.putNumber("Speed Multiplier", inputMultiplier);
+    SmartDashboard.putBoolean ("IsFieldRelative", isFieldRelative);
   }
 
   /**
