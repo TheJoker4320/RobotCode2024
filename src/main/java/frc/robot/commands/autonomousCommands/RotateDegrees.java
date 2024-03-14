@@ -19,9 +19,9 @@ public class RotateDegrees extends Command {
   public RotateDegrees(DriveSubsystem driveSubsystem, double desiredDegree) {
     this.driveSubsystem = driveSubsystem;
     this.desiredDegree = desiredDegree;
-    pidController = new PIDController(0.06, 0, 0.03);
+    pidController = new PIDController(0.08, 0, 0.02);
     pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(1);
+    pidController.setTolerance(1.5);
     timer = new Timer();
     addRequirements(driveSubsystem);
   }
