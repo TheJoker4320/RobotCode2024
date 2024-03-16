@@ -109,7 +109,7 @@ public class Arm extends SubsystemBase {
 
     // Get the current position of the Arm motor
     public double getPosition() {
-        return encoder.getPosition();
+        return encoder.getPosition() > 350 ? 0 : encoder.getPosition();
     }
 
 

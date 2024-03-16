@@ -20,7 +20,7 @@ public class MoveToDegree extends Command {
     this.arm = arm;
     this.degree = degree;
     pidController = new PIDController(0.1, 0, 0);
-    pidController.setTolerance(1);
+    pidController.setTolerance(0.75);
     timer = new Timer();
     addRequirements(arm);
 }

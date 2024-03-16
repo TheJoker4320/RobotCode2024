@@ -76,6 +76,8 @@ public class RobotContainer {
     m_chooser.addOption("TwoNoteTopRedOrBotBlue", autoCreator.getTwoNoteTopRedOrBotBlue(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Shoot one Note", autoCreator.getShootSequenceCommand(m_robotDrive, shooter, collector, arm));
     m_chooser.addOption("Shoot one Note Drive Out", autoCreator.getShootAndDriveOut(shooter, collector, m_robotDrive, arm));
+    m_chooser.addOption("TEST", autoCreator.getTest(m_robotDrive, arm, collector, shooter));
+    m_chooser.addOption("Three Note Left", autoCreator.getThreeNoteLeft(shooter, collector, m_robotDrive, arm));
     SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -110,9 +112,9 @@ public class RobotContainer {
     JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeadingBtn);
     resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
 
-    //RB
-    JoystickButton Moveto45Degrees = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
-    Moveto45Degrees.toggleOnTrue(new RotateDegrees(m_robotDrive, 45));
+    //R3
+    JoystickButton LookAtTarget = new JoystickButton(m_driverController, XboxController.Button.kRightStick.value);
+    LookAtTarget.onTrue(new RotateDegrees(m_robotDrive, 45));
 
     //Start
     JoystickButton MoveTo0Degrees = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
@@ -141,21 +143,21 @@ public class RobotContainer {
     //R1
     JoystickButton shootSpeakerBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootSpeakerBtn);
     shootSpeakerBtn.toggleOnTrue(
-     new SequentialCommandGroup(
-      new SequentialCommandGroup(
-        new ParallelDeadlineGroup(
-          new AimToTarget(m_robotDrive),
-          new MoveToLLDegree(arm)),
-        new ParallelDeadlineGroup(
-          new MoveToLLDegree(arm),
-          new ShootMaintainSpeed(shooter, 60, false)),
-        new ParallelCommandGroup(
-          new Stay(arm , false),
-          new SequentialCommandGroup(
-            new ShootReachSpeed(shooter, 60),
-            new ParallelRaceGroup(
-              new ShootMaintainSpeed(shooter,60, true),
-              new Collect(collector, true))))))
+    //  new SequentialCommandGroup(
+    //   new SequentialCommandGroup(
+    //     new ParallelDeadlineGroup(
+    //       new AimToTarget(m_robotDrive),
+    //       new MoveToLLDegree(arm)),
+    //     new ParallelDeadlineGroup(
+    //       new MoveToLLDegree(arm),
+    //       new ShootMaintainSpeed(shooter, 60, false)),
+    //     new ParallelCommandGroup(
+    //       new Stay(arm , false),
+    //       new SequentialCommandGroup(
+    //         new ShootReachSpeed(shooter, 60),
+    //         new ParallelRaceGroup(
+    //           new ShootMaintainSpeed(shooter,60, true),
+    //           new Collect(collector, true))))))
     // shootSpeakerBtn.toggleOnTrue(
     //   new SequentialCommandGroup(
     //                         new AimToTarget(m_robotDrive),
@@ -165,6 +167,18 @@ public class RobotContainer {
     //                         new ShootReachSpeed(shooter, 60),
     //                         new ParallelRaceGroup(new ShootMaintainSpeed(shooter,60, true),
     //                         new Collect(collector, true)))))
+    new SequentialCommandGroup(
+                            new AimToTarget(m_robotDrive),
+                            new ParallelCommandGroup(
+                              new MoveToLLDegree(arm),
+                              new ShootReachSpeed(shooter, 60)),
+                            new ShootReachSpeed(shooter, 60),
+                            new ParallelCommandGroup(
+                              new Stay(arm, false),
+                              new ParallelRaceGroup(
+                                new ShootMaintainSpeed(shooter,70, true),
+                                new Collect(collector, true)))
+                            )
     );
             
 

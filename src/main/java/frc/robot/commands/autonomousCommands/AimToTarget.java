@@ -58,6 +58,8 @@ public class AimToTarget extends Command {
       rotValue = pidController.calculate(lastMeasure);
     }
 
+    rotValue = rotValue > 0.3 ? 0.3 : rotValue;
+    rotValue = rotValue < -0.3 ? 0.3 : rotValue;
     driveSubsystem.drive(0,0,rotValue,true,true, true);
   }
 

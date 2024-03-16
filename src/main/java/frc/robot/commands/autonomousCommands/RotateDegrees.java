@@ -4,6 +4,8 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,9 +21,9 @@ public class RotateDegrees extends Command {
   public RotateDegrees(DriveSubsystem driveSubsystem, double desiredDegree) {
     this.driveSubsystem = driveSubsystem;
     this.desiredDegree = desiredDegree;
-    pidController = new PIDController(0.08, 0, 0.02);
+    pidController = new PIDController(0.04, 0, 0);
     pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(1.5);
+    pidController.setTolerance(1);
     timer = new Timer();
     addRequirements(driveSubsystem);
   }
@@ -30,16 +32,19 @@ public class RotateDegrees extends Command {
   @Override
   public void initialize() {
     pidController.setSetpoint(desiredDegree);
+    SmartDashboard.putBoolean("Finished", false);
     timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("RotateHeading", driveSubsystem.getHeading());
+    SmartDashboard.putNumber("RotateSetpoint", pidController.getSetpoint());
     double output = pidController.calculate(driveSubsystem.getHeading());
     output *= -1;
-    output = output > 0.4 ? 0.4 : output;
-    output = output < -0.4 ? -0.4 : output;
+    output = output > 0.3 ? 0.3 : output;
+    output = output < -0.3 ? -0.3 : output;
     driveSubsystem.drive(0, 0, output, true, true, true);
   }
 
@@ -48,13 +53,12 @@ public class RotateDegrees extends Command {
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("Finished", true);
     timer.stop();
-    timer.stop();
-    driveSubsystem.drive(0, 0, 0, true, true, true);
+    driveSubsystem.setX();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint() || timer.get() >= 2;
+    return pidController.atSetpoint() || timer.get() >= 5;
   }
 }
