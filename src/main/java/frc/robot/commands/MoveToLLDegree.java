@@ -38,6 +38,6 @@ public class MoveToLLDegree extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.atSetpoint() || output < 0;
+    return arm.atSetpoint() || (arm.getPosition() < 3 && output < 0);
   }
 }

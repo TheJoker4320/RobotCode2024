@@ -111,14 +111,6 @@ public class RobotContainer {
     //LB
     JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeadingBtn);
     resetHeadingBtn.whileTrue(new ResetHeading(m_robotDrive));
-
-    //R3
-    JoystickButton LookAtTarget = new JoystickButton(m_driverController, XboxController.Button.kRightStick.value);
-    LookAtTarget.onTrue(new RotateDegrees(m_robotDrive, 45));
-
-    //Start
-    JoystickButton MoveTo0Degrees = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
-    MoveTo0Degrees.toggleOnTrue(new RotateDegrees(m_robotDrive, 0));
     //A
     JoystickButton slowSpeedBtn = new JoystickButton(m_driverController, OperatorConstants.kSlowBtn);
     slowSpeedBtn.onTrue(new SlowMode(m_robotDrive, 0.3));
