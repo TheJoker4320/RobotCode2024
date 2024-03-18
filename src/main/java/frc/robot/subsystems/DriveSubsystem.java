@@ -238,7 +238,7 @@ public class DriveSubsystem extends SubsystemBase
     
     xSpeed = xSpeed * inputMultiplier;
     ySpeed = ySpeed * inputMultiplier;
-    //rot = rot * inputMultiplier;
+    rot = rot * inputMultiplier;
 
     double xSpeedCommanded;
     double ySpeedCommanded;
