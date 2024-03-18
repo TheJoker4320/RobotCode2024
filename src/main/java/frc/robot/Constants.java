@@ -197,7 +197,7 @@ public final class Constants {
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 322.7883625;
+		public static final double ENCODER_OFFSET = 316;
 
         //Does not work. do not try.
 		public static double getArmAngle(double distance) {
@@ -237,9 +237,9 @@ public static final double COLLECTOR_SPEED = 0.7;
 }
 
   public static final class AutoConstants {
-	  public static final double kMaxSpeedMetersPerSecond = 2; // Can go up to 3, for safety and accuracy only 2 at the
+	  public static final double kMaxSpeedMetersPerSecond = 2.5; // Can go up to 3, for safety and accuracy only 2 at the
   	// current moment
-	  public static final double kMaxAccelerationMetersPerSecondSquared = 2; // Can go up to 3, for safety and accuracy
+	  public static final double kMaxAccelerationMetersPerSecondSquared = 2.5; // Can go up to 3, for safety and accuracy
 	  // only 2 at the current moment
 	  public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
 	  public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
