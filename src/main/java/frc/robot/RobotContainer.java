@@ -78,6 +78,7 @@ public class RobotContainer {
     m_chooser.addOption("Shoot one Note Drive Out", autoCreator.getShootAndDriveOut(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("TEST", autoCreator.getTest(m_robotDrive, arm, collector, shooter));
     m_chooser.addOption("Three Note Left", autoCreator.getThreeNoteLeft(shooter, collector, m_robotDrive, arm));
+    m_chooser.addOption("Three Note Right", autoCreator.getThreeNoteRight(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Two Note Side Left", autoCreator.get2NoteBlueTopRedBotton(shooter, collector, arm, m_robotDrive));
     m_chooser.addOption("Two Note Side Right", autoCreator.get2NoteBlueBottonRedTop(shooter, collector, arm, m_robotDrive));
     SmartDashboard.putData(m_chooser);
