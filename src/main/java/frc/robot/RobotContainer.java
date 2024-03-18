@@ -71,13 +71,15 @@ public class RobotContainer {
     m_chooser = new SendableChooser<>();
     m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("TwoNoteBotRedOrTopBlue", autoCreator.getTwoNoteBotRedOrTopBlue(shooter, collector, m_robotDrive, arm));
+    // m_chooser.addOption("TwoNoteBotRedOrTopBlue", autoCreator.getTwoNoteBotRedOrTopBlue(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("getTwoNoteMid", autoCreator.getTwoNoteMid(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("TwoNoteTopRedOrBotBlue", autoCreator.getTwoNoteTopRedOrBotBlue(shooter, collector, m_robotDrive, arm));
+    // m_chooser.addOption("TwoNoteTopRedOrBotBlue", autoCreator.getTwoNoteTopRedOrBotBlue(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Shoot one Note", autoCreator.getShootSequenceCommand(m_robotDrive, shooter, collector, arm));
     m_chooser.addOption("Shoot one Note Drive Out", autoCreator.getShootAndDriveOut(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("TEST", autoCreator.getTest(m_robotDrive, arm, collector, shooter));
     m_chooser.addOption("Three Note Left", autoCreator.getThreeNoteLeft(shooter, collector, m_robotDrive, arm));
+    m_chooser.addOption("Two Note Side Left", autoCreator.get2NoteBlueTopRedBotton(shooter, collector, arm, m_robotDrive));
+    m_chooser.addOption("Two Note Side Right", autoCreator.get2NoteBlueBottonRedTop(shooter, collector, arm, m_robotDrive));
     SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -235,7 +237,10 @@ public class RobotContainer {
     m_robotDrive.resetEncoders();
     m_robotDrive.zeroHeading();
     //return autoCreator.getShootSequenceCommand(m_robotDrive, shooter, collector, arm);
+    
     return m_chooser.getSelected();
+    // return autoCreator.get2NoteBlueTopRedBotton(shooter, collector, arm, m_robotDrive);
+
     //autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm)
     //return new WaitCommand(1);
   }
