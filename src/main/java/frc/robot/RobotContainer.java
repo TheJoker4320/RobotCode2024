@@ -195,15 +195,15 @@ public class RobotContainer {
     
     //Touchpad
     JoystickButton shootManualBtn = new JoystickButton(m_operatorController, OperatorConstants.kShootManualBtn);
-    shootManualBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 60), new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
+    shootManualBtn.toggleOnTrue(new SequentialCommandGroup(new ShootReachSpeed(shooter, 62), new ParallelCommandGroup(new ShootMaintainSpeed(shooter, 60, false),
     new Collect(collector, true))));
 
     //L3
-     JoystickButton prepareShooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kPrepareShooterBtn);
-      prepareShooterBtn.whileTrue(new Shoot(shooter, 1));
-      //R3
-      JoystickButton collectToShootBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectToShootBtn);
-      collectToShootBtn.whileTrue(new Collect(collector, true));
+    JoystickButton prepareShooterBtn = new JoystickButton(m_operatorController, OperatorConstants.kPrepareShooterBtn);
+    prepareShooterBtn.whileTrue(new Shoot(shooter, 1));
+    //R3
+    JoystickButton collectToShootBtn = new JoystickButton(m_operatorController, OperatorConstants.kCollectToShootBtn);
+    collectToShootBtn.whileTrue(new Collect(collector, true));
     }
   /**
    * Returns the current alliance as a boolean,
