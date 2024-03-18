@@ -10,6 +10,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ModuleConstants;
 
@@ -161,8 +162,11 @@ public class MAXSwerveModule
         m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
         m_desiredState = desiredState;
-
-        SmartDashboard.putNumber("Modle [" + m_turningSparkMax.getDeviceId() + "] direction", m_turningEncoder.getPosition());
+        
+        SmartDashboard.putNumber("Module [" + m_turningSparkMax.getDeviceId() + "] output", m_turningSparkMax.getAppliedOutput());
+        SmartDashboard.putNumber("Module [" + m_turningSparkMax.getDeviceId() + "] setpoint", optimizedDesiredState.angle.getDegrees());
+        SmartDashboard.putNumber("Module [" + m_turningSparkMax.getDeviceId() + "] direction", Units.radiansToDegrees(m_turningEncoder.getPosition()));
+        SmartDashboard.putNumber("Module [" + m_turningSparkMax.getDeviceId() + "] error", (int) (Math.round((optimizedDesiredState.angle.getDegrees()- Units.radiansToDegrees(m_turningEncoder.getPosition())) * 100)) /100.0);
         //SmartDashboard.putNumber("Modle [" + m_turningSparkMax.getDeviceId() + "] speed", m_turningEncoder.getPosition());
     }
 
