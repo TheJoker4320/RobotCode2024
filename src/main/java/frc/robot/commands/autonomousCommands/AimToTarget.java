@@ -74,6 +74,6 @@ public class AimToTarget extends Command {
   public boolean isFinished() {
     //if(limelight.getLimeLightXValue() < 5 && limelight.getLimeLightXValue() >= -5)
       //return true;
-    return !foundInitialy || pidController.atSetpoint() || timer.get() >= 1;
+    return !foundInitialy || pidController.atSetpoint() || timer.get() >= 0.7;
   }
 }
