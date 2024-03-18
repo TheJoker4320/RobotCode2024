@@ -98,14 +98,14 @@ public final class Constants {
 		public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
 		public static final double kDrivingMinOutput = -1;
 		public static final double kDrivingMaxOutput = 1;
-
-    public static final double kTurningP = 1;
-    public static final double kTurningI = 0.002;
-    public static final double kTurningD = 0;
-    public static final double kTurningFF = 0;
-    public static final double kTurningIZone = 0.08;
-    public static final double kTurningMinOutput = -1;
-    public static final double kTurningMaxOutput = 1;
+		
+		public static final double kTurningP = 1;
+		public static final double kTurningI = 0.002;
+		public static final double kTurningD = 0;
+		public static final double kTurningFF = 0;
+		public static final double kTurningIZone = 0.08;
+		public static final double kTurningMinOutput = -1;
+		public static final double kTurningMaxOutput = 1;
 
 		public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
 		public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
@@ -122,7 +122,7 @@ public final class Constants {
 
 		public static final double kDirectionSlewRate = 1.2; // radians per second
 		public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-		public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+		public static final double kRotationalSlewRate = 3; // percent per second (1 = 100%)
 
 		// Chassis configuration
 		public static final double kTrackWidth = 0.675;
