@@ -197,7 +197,7 @@ public final class Constants {
 		public static final int DEADAXIS_ENCODER_MAX_COUNT = 2048;
 		public static int MAX_DEGREES = 90;
 		public static int MIN_DEGREES = 3;
-		public static final double ENCODER_OFFSET = 316;
+		public static final double ENCODER_OFFSET = 319;
 
         //Does not work. do not try.
 		public static double getArmAngle(double distance) {
