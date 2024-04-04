@@ -105,4 +105,7 @@ public class LimeLight {
         double distance = 10 * getTrueDistance();
         return -54.7 + 0.166 * distance - 1.64E-4 * Math.pow(distance, 2) + 8.52E-8 * Math.pow(distance, 3) - 2.18E-11 * Math.pow(distance, 4) + 2.18E-15 * Math.pow(distance, 5); //c used to be 28.8
     }
+    public static void setLedMode(int mode){
+        table.getEntry("ledMode").setNumber(mode);
+    }
 }

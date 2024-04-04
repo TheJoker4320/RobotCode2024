@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimeLight;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
 
@@ -22,6 +23,9 @@ public class Collect extends Command {
   @Override
   public void initialize() {
     m_Collector.setCollectorState(true);
+    if(!m_isShoot){
+      LimeLight.setLedMode(2);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,6 +40,8 @@ public class Collect extends Command {
   public void end(boolean interrupted) {
     m_Collector.setCollectorState(false);
     m_Collector.setSpeed(0);
+    LimeLight.setLedMode(0);
+
   }
 
   // Returns true when the command should end.
