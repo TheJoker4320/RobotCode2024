@@ -35,8 +35,8 @@ public class MoveToDegree extends Command {
   @Override
   public void execute() {
     output = pidController.calculate(arm.getPosition());
-    output = 0.4 < output ? 0.4 : output;
-    output = -0.4 > output ? -0.4 : output;
+    output = 0.4 < output ? 0.5 : output;
+    output = -0.4 > output ? -0.5 : output;
     arm.setSpeed(output);
   }
 
