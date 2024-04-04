@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 
 
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimeLight;
 import frc.robot.subsystems.Arm;
@@ -13,14 +15,17 @@ import frc.robot.subsystems.Arm;
 public class MoveToKnownDegree extends Command {
   private Arm arm;
   private double output;
+  private Timer timer;
   public MoveToKnownDegree(Arm arm) {
     this.arm = arm;
+    this.timer = new Timer();
     addRequirements(arm);
 }
   
   @Override
   public void initialize() {
     arm.setSetpoint(26);
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,11 +38,13 @@ public class MoveToKnownDegree extends Command {
   @Override
   public void end(boolean interrupted) {
     arm.stop();
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.atSetpoint() || (arm.getPosition() < 3 && output < 0);
+    return arm.atSetpoint() || (arm.getPosition() < 3 && output < 0) || timer.get() > 3.5;
   }
 }
