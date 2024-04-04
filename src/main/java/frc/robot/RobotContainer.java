@@ -9,6 +9,8 @@ import frc.robot.commands.ChangeRobotFieldrelative;
 import frc.robot.commands.Collect;
 import frc.robot.commands.ElevateByPlayer;
 import frc.robot.commands.MoveArm;
+import frc.robot.commands.MoveToDegree;
+import frc.robot.commands.MoveToKnownDegree;
 import frc.robot.commands.MoveToLLDegree;
 import frc.robot.commands.ResetHeading;
 import frc.robot.commands.Shoot;
@@ -69,18 +71,20 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     m_chooser = new SendableChooser<>();
-    m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
+    //m_chooser.setDefaultOption("Red side 2 notes from top side", autoCreator.getRedSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
+    //m_chooser.addOption("Blue side 2 notes from top side", autoCreator.getBlueSpeakerTwiceLeaveAreaTop(shooter, collector, m_robotDrive, arm));
     // m_chooser.addOption("TwoNoteBotRedOrTopBlue", autoCreator.getTwoNoteBotRedOrTopBlue(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("getTwoNoteMid", autoCreator.getTwoNoteMid(shooter, collector, m_robotDrive, arm));
     // m_chooser.addOption("TwoNoteTopRedOrBotBlue", autoCreator.getTwoNoteTopRedOrBotBlue(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("Shoot one Note", autoCreator.getShootSequenceCommand(m_robotDrive, shooter, collector, arm));
+    m_chooser.addOption("Shoot No Move", autoCreator.getShootOneNoteMid(shooter, collector, m_robotDrive, arm));
+    // m_chooser.addOption("Side Shoot No Move", autoCreator.getShootOneNoteSide(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Shoot one Note Drive Out", autoCreator.getShootAndDriveOut(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("TEST", autoCreator.getTest(m_robotDrive, arm, collector, shooter));
-    m_chooser.addOption("Three Note Left", autoCreator.getThreeNoteLeft(shooter, collector, m_robotDrive, arm));
-    m_chooser.addOption("Three Note Right", autoCreator.getThreeNoteRight(shooter, collector, m_robotDrive, arm));
+    // m_chooser.addOption("TEST", autoCreator.getTest(m_robotDrive, arm, collector, shooter));
+    m_chooser.addOption("Three Note Middle Left", autoCreator.getThreeNoteLeft(shooter, collector, m_robotDrive, arm));
+    m_chooser.addOption("Three Note Middle Right", autoCreator.getThreeNoteRight(shooter, collector, m_robotDrive, arm));
     m_chooser.addOption("Two Note Side Left", autoCreator.get2NoteBlueTopRedBotton(shooter, collector, arm, m_robotDrive));
     m_chooser.addOption("Two Note Side Right", autoCreator.get2NoteBlueBottonRedTop(shooter, collector, arm, m_robotDrive));
+    m_chooser.addOption("Nothing", new WaitCommand(10));
     SmartDashboard.putData(m_chooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -91,7 +95,8 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.kDriveDeadband),
-                true, false, false),
+                !m_driverController.getRawButton(XboxController.Button.kRightBumper.value), false,
+                 true),
             m_robotDrive));
 
   }
@@ -108,8 +113,8 @@ public class RobotContainer {
   private void configureBindings() {
     ///////////////////Driver///////////////////
     //X
-    JoystickButton changeFieldRelativness = new JoystickButton(m_driverController, 3);
-    changeFieldRelativness.onTrue(new ChangeRobotFieldrelative(m_robotDrive));
+    /*JoystickButton changeFieldRelativness = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
+    changeFieldRelativness.onTrue(new ChangeRobotFieldrelative(m_robotDrive));*/
 
     //LB
     JoystickButton resetHeadingBtn = new JoystickButton(m_driverController, OperatorConstants.kZeroHeadingBtn);
@@ -175,8 +180,23 @@ public class RobotContainer {
                                 new Collect(collector, true)))
                             )
     );
-            
 
+    //SQUARE
+    // JoystickButton ShootSide = new JoystickButton(m_operatorController, PS4Controller.Button.kSquare.value);
+    // ShootSide.toggleOnTrue(
+    //       new SequentialCommandGroup(
+    //                         new AimToTarget(m_robotDrive),
+    //                         new ParallelCommandGroup(
+    //                           new MoveToKnownDegree(arm),
+    //                           new ShootReachSpeed(shooter, 60)),
+    //                         new ShootReachSpeed(shooter, 60),
+    //                         new ParallelCommandGroup(
+    //                           new Stay(arm, false),
+    //                           new ParallelRaceGroup(
+    //                             new ShootMaintainSpeed(shooter,70, true),
+    //                             new Collect(collector, true)))
+    //                         )
+    // );
     //R2
     JoystickButton raiseBtn = new JoystickButton(m_operatorController, OperatorConstants.kRaiseBtn);
     raiseBtn.whileTrue(new MoveArm(arm, false));
