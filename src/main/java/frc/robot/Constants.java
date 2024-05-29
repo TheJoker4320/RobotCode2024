@@ -53,7 +53,6 @@ public final class Constants {
 		public static final int kShootManualBtn = PS4Controller.Button.kTouchpad.value;
 		public static final int kPrepareShooterBtn = PS4Controller.Button.kL3.value;
 		public static final int kCollectToShootBtn = PS4Controller.Button.kR3.value;
-		public static final int ageOfItay = 13;
 
 	}
 
